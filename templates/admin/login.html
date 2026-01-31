@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Login · CureHelp+</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
+</head>
+<body class="admin-login-shell">
+    <section class="login-panel">
+        <div class="login-panel__copy">
+            <div class="login-brand">
+                <span class="brand-kicker">Admin console</span>
+                <h1>CureHelp<span>+</span></h1>
+            </div>
+            <p class="login-lead">Monitor predictions, curate patient insights, and orchestrate care programs from a single control room.</p>
+            <div class="login-highlights">
+                <div>
+                    <h3>Live triage metrics</h3>
+                    <p>Track screening throughput and critical risk flags in real time.</p>
+                </div>
+                <div>
+                    <h3>Secure access</h3>
+                    <p>Role-based controls with audit-ready activity logs.</p>
+                </div>
+            </div>
+            <div class="login-meta">
+                <span>Protected • HIPAA-ready workflows</span>
+                <span>Support: admin@curehelp.ai</span>
+            </div>
+        </div>
+        <div class="login-panel__form">
+            <div class="login-form-header">
+                <h2>Sign in</h2>
+                <p>Use your admin credentials to access the console.</p>
+            </div>
+            <form class="login-form" method="post" novalidate>
+                <label>
+                    <span>Username</span>
+                    <input type="text" name="username" required autocomplete="username" placeholder="Enter username" />
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" required autocomplete="current-password" placeholder="Enter password" />
+                </label>
+                {% if error %}<p class="login-error">{{ error }}</p>{% endif %}
+                <button type="submit" class="goo-button">Access console</button>
+            </form>
+            <p class="login-help">Need help? Contact IT support to reset access.</p>
+        </div>
+    </section>
+</body>
+</html>

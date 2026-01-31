@@ -1,0 +1,9 @@
+flask
+joblib
+matplotlib
+numpy
+pandas
+PyPDF2
+scikit-learn
+werkzeug
+python-dotenv

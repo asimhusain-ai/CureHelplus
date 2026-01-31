@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CureHelp+</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" aria-haspopup="menu" aria-expanded="false">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 14.25A8.76 8.76 0 0 1 11.75 5 6.75 6.75 0 1 0 21 14.25Z"></path>
+        </svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.5"></circle>
+            <line x1="12" y1="2.25" x2="12" y2="5"></line>
+            <line x1="12" y1="19" x2="12" y2="21.75"></line>
+            <line x1="4.22" y1="4.22" x2="6.07" y2="6.07"></line>
+            <line x1="17.93" y1="17.93" x2="19.78" y2="19.78"></line>
+            <line x1="2.25" y1="12" x2="5" y2="12"></line>
+            <line x1="19" y1="12" x2="21.75" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="6.07" y2="17.93"></line>
+            <line x1="17.93" y1="6.07" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span class="sr-only">Toggle theme</span>
+    </button>
+    <div id="theme-menu" class="theme-menu" role="menu" aria-labelledby="theme-toggle">
+        <button type="button" data-theme-action="system" role="menuitem">Reset to System Theme</button>
+    </div>
+    <div id="app-root">
+        <section id="landing-page" class="page active">
+            <div class="landing-shell">
+                <div class="landing-content">
+                    <h1 class="hero-title">
+                        <span class="hero-logo-letter">
+                            <img src="{{ url_for('static', filename='assets/c.png') }}" alt="C" class="hero-logo-image" />
+                        </span><span class="hero-title-outline">ureHelp<span class="accent accent-sup">+</span></span>
+                        <span class="hero-subtitle">Triage symptoms and deliver clinician-ready summaries in minutes.</span>
+                    </h1>
+                    <p class="hero-body">
+                        Transform patient data into actionable insights with AI-assisted screening,
+                        smart symptom triage, and clinician-ready summaries—built for fast, safe
+                        decision support from intake to outcome.
+                    </p>
+                    <div class="hero-highlights">
+                        <div class="highlight-card">
+                            <h3>Fast Patient Intake</h3>
+                            <p>Capture profiles and reports in minutes.</p>
+                        </div>
+                        <div class="highlight-card">
+                            <h3>AI Risk Screening</h3>
+                            <p>Detects diabetes, heart, fever, and anemia risks.</p>
+                        </div>
+                        <div class="highlight-card">
+                            <h3>Decision-Ready Insights</h3>
+                            <p>Clear summaries that support confident care.</p>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button id="start-onboarding" class="goo-button" type="button">
+                            <span class="goo-button-label">GET STARTED</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="landing-visual" aria-hidden="true">
+                    <div class="pulse-orb"></div>
+                    <div class="visual-card visual-card-video">
+                        <div class="video-preview">
+                            <video class="video-embed" autoplay muted playsinline loop>
+                                <source src="{{ url_for('static', filename='assets/vids/Revolutionizing Cancer Treatment with NanoGhost   Medical Animation.mp4') }}" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="footer-tip" class="footer-tip" aria-live="polite" aria-atomic="true">
+            <span class="footer-tip-label" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="footer-tip-icon" role="img" aria-label="Tip">
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M12 10v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <circle cx="12" cy="7.5" r="1" fill="currentColor" />
+                </svg>
+            </span>
+            <span id="footer-typing-text" class="footer-typing-text"></span>
+            <span class="footer-typing-caret" aria-hidden="true"></span>
+        </div>
+
+        <section id="patient-page" class="page hidden">
+            <div class="card card-lg">
+                <h2 class="section-title">Enter Patient Details</h2>
+                <form id="patient-form" class="grid-two" enctype="multipart/form-data">
+                    <label>
+                        Full Name*
+                        <input type="text" name="name" required placeholder="Enter full name" />
+                    </label>
+                    <label>
+                        Age*
+                        <input type="number" name="age" min="1" max="120" required />
+                    </label>
+                    <div class="contact-status-row span-two">
+                        <label class="contact-field">
+                            Contact Number*
+                            <input type="tel" name="contact" required placeholder="Enter phone number" />
+                        </label>
+                        <label class="status-field">
+                            Gender*
+                            <select name="gender" required>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+                        <label class="status-field">
+                            Marital Status*
+                            <select name="marital_status" required>
+                                <option value="">Select</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="span-two address-upload-row">
+                        <label class="address-field">
+                            Address*
+                            <textarea name="address" rows="3" required placeholder="Enter complete address"></textarea>
+                        </label>
+                        <label class="report-upload-field">
+                            Upload Medical Report
+                            <input type="file" id="medical-report" name="medical_report" accept=".csv,.pdf,.xls,.xlsx" />
+                            <span class="form-hint">Supports: CSV, PDF, XLS, XLSX (Max: 200&nbsp;MB)</span>
+                        </label>
+                    </div>
+                    <div class="form-actions form-actions-center span-two">
+                        <button id="loginBtn" type="submit" class="goo-button">
+                            <span class="goo-button-label">LOGIN</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="dashboard" class="page hidden">
+            <header class="dashboard-header">
+                <div class="dashboard-title-group">
+                    <h2 class="dashboard-title">CureHelp<span class="accent">+</span> Dashboard</h2>
+                    <p id="patient-summary" class="muted">No patient selected.</p>
+                </div>
+                <nav class="tab-navigation">
+                    <div class="relative">
+                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="goo-button inline-flex items-center justify-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="button">
+                            <span class="goo-button-label">Diseases</span>
+                            <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+                        </button>
+                        <div id="dropdown" class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
+                            <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownDefaultButton">
+                                <li>
+                                    <a href="#" data-tab="diabetes" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Diabetes</a>
+                                </li>
+                                <li>
+                                    <a href="#" data-tab="heart" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Heart Disease</a>
+                                </li>
+                                <li>
+                                    <a href="#" data-tab="fever" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Fever</a>
+                                </li>
+                                <li>
+                                    <a href="#" data-tab="anemia" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Anemia</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="tab-button goo-button assistant-tab-hidden" data-tab="assistant" aria-hidden="true" tabindex="-1">
+                        <span class="goo-button-label">Assistant</span>
+                    </button>
+                    <button class="tab-button goo-button" data-tab="consultants">
+                        <span class="goo-button-label">Consultants</span>
+                    </button>
+                    <button class="tab-button goo-button" data-tab="profiles">
+                        <span class="goo-button-label">Patients</span>
+                    </button>
+                </nav>
+            </header>
+
+            <div class="tab-wrapper tab-wrapper-flat">
+                <div class="tab-panel active" id="diabetes-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Diabetes Risk </h3>
+                        <button type="button" class="primary prediction-button test-inputs-button" data-disease="diabetes">TEST-INPUTS</button>
+                    </div>
+                    <form id="diabetes-form" class="grid-three">
+                        <label>
+                            Gender
+                            <select name="gender">
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                            </select>
+                        </label>
+                        <label>
+                            Age
+                            <input type="number" name="age" value="40" min="1" max="120" />
+                        </label>
+                        <label>
+                            BMI
+                            <input type="number" step="0.1" name="bmi" value="25" />
+                        </label>
+                        <label>
+                            Glucose
+                            <input type="number" name="glucose" value="100" />
+                        </label>
+                        <label>
+                            Blood Pressure
+                            <input type="number" name="blood_pressure" value="120" />
+                        </label>
+                        <label>
+                            Pregnancies
+                            <input type="number" name="pregnancies" value="0" min="0" max="20" />
+                        </label>
+                        <label>
+                            Skin Thickness
+                            <input type="number" name="skin_thickness" value="20" />
+                        </label>
+                        <label>
+                            Insulin
+                            <input type="number" name="insulin" value="79" />
+                        </label>
+                        <label>
+                            Diabetes Pedigree Function
+                            <input type="number" step="0.01" name="diabetes_pedigree_function" value="0.5" />
+                        </label>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="diabetes-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel" id="heart-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Heart Disease Risk </h3>
+                        <button type="button" class="primary prediction-button test-inputs-button" data-disease="heart">TEST-INPUTS</button>
+                    </div>
+                    <form id="heart-form" class="grid-three">
+                        <label>
+                            Gender
+                            <select name="gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </label>
+                        <label>
+                            Age
+                            <input type="number" name="age" value="40" />
+                        </label>
+                        <label>
+                            Resting BP
+                            <input type="number" name="resting_bp" value="130" />
+                        </label>
+                        <label>
+                            Cholesterol
+                            <input type="number" name="cholesterol" value="220" />
+                        </label>
+                        <label>
+                            Chest Pain Type
+                            <select name="chest_pain_type">
+                                <option value="1">1 - typical angina</option>
+                                <option value="2">2 - atypical angina</option>
+                                <option value="3">3 - non-anginal pain</option>
+                                <option value="4">4 - asymptomatic</option>
+                            </select>
+                        </label>
+                        <label>
+                            Fasting BS &gt; 120
+                            <select name="fasting_bs">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Resting ECG
+                            <select name="resting_ecg">
+                                <option value="0">0 - normal</option>
+                                <option value="1">1 - ST-T abnormality</option>
+                                <option value="2">2 - LV hypertrophy</option>
+                            </select>
+                        </label>
+                        <label>
+                            Max Heart Rate
+                            <input type="number" name="max_heart_rate" value="150" />
+                        </label>
+                        <label>
+                            Exercise Angina
+                            <select name="exercise_angina">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            ST Depression
+                            <input type="number" step="0.1" name="st_depression" value="1.0" />
+                        </label>
+                        <label>
+                            Slope of ST
+                            <select name="slope">
+                                <option value="1">1 - upsloping</option>
+                                <option value="2">2 - flat</option>
+                                <option value="3">3 - downsloping</option>
+                            </select>
+                        </label>
+                        <label>
+                            Major Vessels (ca)
+                            <input type="number" name="major_vessels" value="0" min="0" max="3" />
+                        </label>
+                        <label>
+                            Thalassemia
+                            <select name="thal">
+                                <option value="3">3 - normal</option>
+                                <option value="6">6 - fixed defect</option>
+                                <option value="7">7 - reversible defect</option>
+                            </select>
+                        </label>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="heart-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel" id="fever-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Fever Risk &amp; Severity </h3>
+                        <button type="button" class="primary prediction-button test-inputs-button" data-disease="fever">TEST-INPUTS</button>
+                    </div>
+                    <form id="fever-form" class="grid-three">
+                        <label>
+                            Age
+                            <input type="number" name="age" value="40" />
+                        </label>
+                        <label>
+                            BMI
+                            <input type="number" step="0.1" name="bmi" value="25" />
+                        </label>
+                        <label>
+                            Temperature (°C)
+                            <input type="number" step="0.1" name="temperature" value="36.5" />
+                        </label>
+                        <label>
+                            Humidity (%)
+                            <input type="number" name="humidity" value="50" />
+                        </label>
+                        <label>
+                            Air Quality Index
+                            <input type="number" name="air_quality" value="50" />
+                        </label>
+                        <label>
+                            Heart Rate
+                            <input type="number" name="heart_rate" value="70" />
+                        </label>
+                        <label>
+                            Gender
+                            <select name="gender">
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                            </select>
+                        </label>
+                        <label>
+                            Headache
+                            <select name="headache">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Body Ache
+                            <select name="body_ache">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Fatigue
+                            <select name="fatigue">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Chronic Conditions
+                            <select name="chronic_conditions">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Allergies
+                            <select name="allergies">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Smoking History
+                            <select name="smoking_history">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Alcohol Consumption
+                            <select name="alcohol_consumption">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </label>
+                        <label>
+                            Physical Activity
+                            <select name="physical_activity">
+                                <option value="Sedentary">Sedentary</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Active">Active</option>
+                            </select>
+                        </label>
+                        <label>
+                            Diet Type
+                            <select name="diet_type">
+                                <option value="Vegan">Vegan</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                            </select>
+                        </label>
+                        <label>
+                            Blood Pressure
+                            <select name="blood_pressure">
+                                <option value="Normal">Normal</option>
+                                <option value="Low">Low</option>
+                                <option value="High">High</option>
+                            </select>
+                        </label>
+                        <label>
+                            Previous Medication
+                            <select name="previous_medication">
+                                <option value="None">None</option>
+                                <option value="Ibuprofen">Ibuprofen</option>
+                                <option value="Paracetamol">Paracetamol</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="fever-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel" id="anemia-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Anemia Risk </h3>
+                        <button type="button" class="primary prediction-button test-inputs-button" data-disease="anemia">TEST-INPUTS</button>
+                    </div>
+                    <form id="anemia-form" class="grid-three">
+                        <label>
+                            Gender
+                            <select name="gender">
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                            </select>
+                        </label>
+                        <label>
+                            RBC (10^6/µL)
+                            <input type="number" step="0.01" name="rbc" value="5" />
+                        </label>
+                        <label>
+                            Hemoglobin (g/dL)
+                            <input type="number" step="0.1" name="hemoglobin" value="14" />
+                        </label>
+                        <label>
+                            Hematocrit
+                            <input type="number" step="0.1" name="hematocrit" value="42" />
+                        </label>
+                        <label>
+                            MCV (fL)
+                            <input type="number" step="0.1" name="mcv" value="90" />
+                        </label>
+                        <label>
+                            MCH (pg)
+                            <input type="number" step="0.1" name="mch" value="30" />
+                        </label>
+                        <label>
+                            MCHC (g/dL)
+                            <input type="number" step="0.1" name="mchc" value="34" />
+                        </label>
+                        <label>
+                            WBC (10^3/µL)
+                            <input type="number" step="0.1" name="wbc" value="7" />
+                        </label>
+                        <label>
+                            Platelets (10^3/µL)
+                            <input type="number" step="0.1" name="platelets" value="250" />
+                        </label>
+                        <label>
+                            RDW
+                            <input type="number" step="0.1" name="rdw" value="13.5" />
+                        </label>
+                        <label>
+                            PDW
+                            <input type="number" step="0.1" name="pdw" value="12" />
+                        </label>
+                        <label>
+                            PCT
+                            <input type="number" step="0.01" name="pct" value="0.22" />
+                        </label>
+                        <label>
+                            Lymphocytes (%)
+                            <input type="number" step="0.1" name="lymphocytes" value="30" />
+                        </label>
+                        <label>
+                            Neutrophils (%)
+                            <input type="number" step="0.1" name="neutrophils_pct" value="60" />
+                        </label>
+                        <label>
+                            Neutrophils (#)
+                            <input type="number" step="0.1" name="neutrophils_num" value="4.2" />
+                        </label>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="anemia-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel assistant-panel-hidden" id="assistant-panel" aria-hidden="true">
+                    <h3 class="panel-title">CureHelp+ Assistant</h3>
+                    <p class="muted assistant-panel-message">Use the chat icon in the bottom-right corner to open the assistant.</p>
+                </div>
+
+                <div class="tab-panel" id="profiles-panel">
+                    <h3 class="panel-title">Saved Patient Profiles</h3>
+                    <div class="toolbar">
+                        <input type="search" id="profile-search" placeholder="Search patients by name" />
+                        <button id="refresh-profiles" class="ghost">Refresh</button>
+                    </div>
+                    <div id="profiles-grid" class="grid-cards"></div>
+                </div>
+
+                <div class="tab-panel" id="consultants-panel">
+                    <h3 class="panel-title">Nearest Healthcare </h3>
+                    <div class="toolbar consultant-toolbar">
+                        <div class="consultant-tabs" role="tablist" aria-label="Provider type">
+                            <button type="button" id="hospital-tab" class="consultant-tab active" data-target="hospital-view" role="tab" aria-controls="hospital-view" aria-selected="true">Hospitals</button>
+                            <button type="button" id="doctor-tab" class="consultant-tab" data-target="doctor-view" role="tab" aria-controls="doctor-view" aria-selected="false">Doctors</button>
+                        </div>
+                        <div class="consultant-controls">
+                            <input type="search" id="consultant-search" placeholder="Search hospitals or doctors" />
+                            <button id="refresh-consultants" class="ghost">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="consultant-views">
+                        <section id="hospital-view" class="consultant-view active" role="tabpanel" aria-labelledby="hospital-tab" aria-hidden="false">
+                            <h4 class="column-title">Hospitals Nearby</h4>
+                            <div id="hospital-list" class="grid-cards"></div>
+                        </section>
+                        <section id="doctor-view" class="consultant-view" role="tabpanel" aria-labelledby="doctor-tab" aria-hidden="true" hidden>
+                            <h4 class="column-title">Doctors Nearby</h4>
+                            <div id="doctor-list" class="grid-cards"></div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <button id="chatbot-launcher" class="chatbot-launcher" type="button" aria-label="Open CureHelp Assistant" aria-haspopup="dialog" aria-controls="chatbot-modal">
+        <img src="{{ url_for('static', filename='assets/chatbot.png') }}" alt="" loading="lazy" aria-hidden="true" />
+    </button>
+
+    <div id="chatbot-overlay" class="chatbot-overlay" hidden></div>
+    <div id="chatbot-modal" class="chatbot-modal" role="dialog" aria-modal="true" aria-labelledby="chatbot-modal-title" hidden>
+        <div class="chatbot-modal-card">
+            <div class="chatbot-modal-header">
+                <h3 id="chatbot-modal-title">CureHelp+ Assistant</h3>
+                <button type="button" id="chatbot-close" class="chatbot-modal-close" aria-label="Close Assistant">&times;</button>
+            </div>
+            <div class="chatbot-modal-body">
+                <div id="chat-history" class="chat-history"></div>
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="chat-input" placeholder="Ask a question or describe symptoms..." />
+                    <button type="submit" class="primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="test-inputs-modal" class="modal-overlay" hidden>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="test-inputs-title">
+            <h3 id="test-inputs-title">Sample Inputs</h3>
+            <p id="test-inputs-message" class="modal-message">Choose preset values to autofill this form.</p>
+            <div class="test-inputs-actions">
+                <button type="button" id="test-inputs-normal" class="test-inputs-action">Normal</button>
+                <button type="button" id="test-inputs-abnormal" class="test-inputs-action">Abnormal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="report-loading-modal" class="processing-modal" role="alert" aria-live="assertive" hidden>
+        <div class="processing-modal-card">
+            <div class="processing-spinner" aria-hidden="true"></div>
+            <p class="processing-modal-message">Parsing medical report…</p>
+        </div>
+    </div>
+
+    <div id='css3-spinner-svg-pulse-wrapper' style="display:none;">
+      <svg id='css3-spinner-svg-pulse' version='1.2' height='210' width='550' xmlns='http://www.w3.org/2000/svg' viewport='0 0 60 60' xmlns:xlink='http://www.w3.org/1999/xlink'>
+        <path id='css3-spinner-pulse' stroke='#DE6262' fill='none' stroke-width='2' stroke-linejoin='round'
+          d='M0,90L250,90Q257,60 262,87T267,95 270,88 273,92t6,35 7,-60T290,127 297,107s2,-11 10,-10 1,1 8,-10T319,95c6,4 8,-6 10,-17s2,10 9,11h210' />
+      </svg>
+    </div>
+
+    <svg width="0" height="0" style="position: absolute;">
+        <filter id="goo" x="-50%" y="-50%" width="200%" height="200%">
+            <feComponentTransfer>
+                <feFuncA type="discrete" tableValues="0 1"></feFuncA>
+            </feComponentTransfer>
+            <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+            <feComponentTransfer>
+                <feFuncA type="table" tableValues="-5 11"></feFuncA>
+            </feComponentTransfer>
+        </filter>
+    </svg>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+        <script>
+                (function () {
+                    const loader = document.getElementById("css3-spinner-svg-pulse-wrapper");
+                    const DEFAULT_DURATION = 3000;
+
+                    function toggleLoader(visible) {
+                        if (!loader) return;
+                        loader.style.display = visible ? "block" : "none";
+                    }
+
+                    function startLoader(duration = DEFAULT_DURATION) {
+                        toggleLoader(true);
+                        return new Promise((resolve) => {
+                            window.setTimeout(() => {
+                                toggleLoader(false);
+                                resolve();
+                            }, duration);
+                        });
+                    }
+
+                    window.startLoader = startLoader;
+                    window.showLoader3Sec = function showLoader3Sec() {
+                        return startLoader(DEFAULT_DURATION);
+                    };
+                }());
+                </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

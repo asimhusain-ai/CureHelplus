@@ -1,0 +1,140 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Operations Dashboard{% endblock %}
+{% block content %}
+<section class="stats-grid">
+    <article class="stat-card">
+        <p class="label">Total Patients</p>
+        <p class="value">{{ metrics.total_profiles }}</p>
+        <p class="hint">Profiles stored in user ledger</p>
+    </article>
+    <article class="stat-card">
+        <p class="label">Predictions Logged</p>
+        <p class="value">{{ metrics.total_predictions }}</p>
+        <p class="hint">Sum of all stored disease inferences</p>
+    </article>
+    <article class="stat-card critical">
+        <p class="label">High-Risk Alerts</p>
+        <p class="value">{{ metrics.high_risk }}</p>
+        <p class="hint">Probability ≥ 70% across cohorts</p>
+    </article>
+</section>
+
+<section id="insights" class="insights-grid">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Disease Mix</h2>
+            <span class="eyebrow">Share of predictions</span>
+        </div>
+
+        {% set donut_colors = ["#E11D48", "#16A34A", "#F59E0B", "#9333EA"] %}
+        {% set donut_data = namespace(items=[]) %}
+        {% for item in metrics.disease_breakdown %}
+            {% set color = donut_colors[loop.index0 % donut_colors|length] %}
+            {% set _ = donut_data.items.append({"name": item.name, "percent": item.percent, "color": color}) %}
+        {% endfor %}
+
+        {% if metrics.disease_breakdown %}
+        <div class="donut-card" data-donut='{{ donut_data.items | tojson }}'>
+            <div class="donut-wrapper">
+                <div class="donut-visual" role="img" aria-label="Disease mix donut chart"></div>
+                <div class="donut-center">
+                    <p class="donut-value">{{ metrics.total_predictions }}</p>
+                    <p class="donut-label">Predictions</p>
+                </div>
+            </div>
+            <ul class="donut-legend">
+                {% for item in metrics.disease_breakdown %}
+                    {% set color = donut_colors[loop.index0 % donut_colors|length] %}
+                    <li class="legend-item" style="--legend-color: {{ color }}">
+                        <span class="legend-dot"></span>
+                        <div>
+                            <p class="legend-title">{{ item.name }}</p>
+                            <p class="legend-note">{{ item.count }} cases · {{ item.percent }}%</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p class="empty">No predictions logged yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Gender Distribution</h2>
+            <span class="eyebrow">Across registered profiles</span>
+        </div>
+        {% if metrics.gender_breakdown %}
+            {% set gender_palette = ["#2563EB", "#10B981", "#F59E0B", "#E11D48", "#9333EA"] %}
+            {% set gender_chart = namespace(items=[]) %}
+            {% for gender in metrics.gender_breakdown %}
+                {% set color = gender_palette[loop.index0 % gender_palette|length] %}
+                {% set _ = gender_chart.items.append({
+                    "label": gender.label,
+                    "count": gender.count,
+                    "percent": gender.percent,
+                    "color": color
+                }) %}
+            {% endfor %}
+            <div class="chart-card">
+                <div class="chart-wrapper">
+                    <canvas aria-label="Gender distribution donut" role="img" data-chart='{{ gender_chart.items | tojson }}'></canvas>
+                </div>
+                <ul class="chart-legend">
+                    {% for entry in gender_chart.items %}
+                    <li class="legend-item" style="--legend-color: {{ entry.color }}">
+                        <span class="legend-dot"></span>
+                        <p class="legend-inline">
+                            <span class="legend-title">{{ entry.label }}</span>
+                            <span class="legend-note"><span class="legend-strong">{{ entry.count }}</span> ({{ entry.percent }}%)</span>
+                        </p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p class="empty">No profile data yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section id="patients" class="panel">
+    <div class="panel-header">
+        <h2>Recent Patient Activity</h2>
+        <span class="eyebrow">Last five updates</span>
+    </div>
+    <div class="table">
+        <div class="table-head">
+            <span>Patient</span>
+            <span>Predictions</span>
+            <span>Last Updated</span>
+            <span>Actions</span>
+        </div>
+        {% for profile in metrics.recent_profiles %}
+        <div class="table-row">
+            <div>
+                <p class="table-title">{{ profile.name }}</p>
+                <p class="table-subtitle">ID · {{ profile.id }}</p>
+            </div>
+            <div class="badge-group">
+                {% for disease in profile.diseases %}
+                <span class="badge {{ disease.risk }}">{{ disease.name }}{% if disease.prob is not none %} · {{ '%.0f'|format(disease.prob) }}%{% endif %}</span>
+                {% else %}
+                <span class="badge muted">No predictions yet</span>
+                {% endfor %}
+            </div>
+            <span class="table-date">{{ profile.last_updated or 'N/A' }}</span>
+            <div class="table-actions">
+                <form method="post" action="{{ url_for('admin.delete_patient', profile_id=profile.id) }}">
+                    <button type="submit" class="danger-btn">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p class="empty">No recent updates.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

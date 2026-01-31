@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Admin Panel{% endblock %} · CureHelp+</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+</head>
+<body class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span class="mark">CureHelp<span class="accent">+</span></span>
+            <small class="tagline">Operations Console</small>
+        </div>
+        <nav class="admin-nav" aria-label="Admin navigation">
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.path == url_for('admin.dashboard') %}active{% endif %}">
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#patients" class="nav-link">
+                <span>Patients</span>
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#insights" class="nav-link">
+                <span>Insights</span>
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}#settings" class="nav-link disabled" aria-disabled="true">
+                <span>Settings</span>
+                <span class="chip">Soon</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <p class="eyebrow">{{ metrics.last_refresh if metrics else '' }}</p>
+                <h1>{% block header %}Admin Control Center{% endblock %}</h1>
+            </div>
+            <form method="post" action="{{ url_for('admin.logout') }}"><button type="submit" class="ghost-btn">Log out</button></form>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <div class="flash-stack">
+                {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
