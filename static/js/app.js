@@ -7,7 +7,9 @@ const pages = {
 };
 
 const patientForm = document.getElementById("patient-form");
+const patientDobInput = patientForm?.querySelector("input[name='dob']") || null;
 const patientSummary = document.getElementById("patient-summary");
+const logoutButton = document.getElementById("logout-button");
 const startButton = document.getElementById("start-onboarding");
 const backButton = document.getElementById("back-to-landing");
 const resetSessionButton = document.getElementById("reset-session");
@@ -27,6 +29,8 @@ const testInputsTitle = document.getElementById("test-inputs-title");
 const testInputsMessage = document.getElementById("test-inputs-message");
 const testInputsNormal = document.getElementById("test-inputs-normal");
 const testInputsAbnormal = document.getElementById("test-inputs-abnormal");
+const logoutConfirmModal = document.getElementById("logout-confirm-modal");
+const logoutConfirmOk = document.getElementById("logout-confirm-ok");
 const themeToggle = document.getElementById("theme-toggle");
 const rootElement = document.documentElement;
 const THEME_STORAGE_KEY = "curehelp-theme";
@@ -63,14 +67,6 @@ const FORM_CONSTRAINTS = {
     max_heart_rate: { min: 60, max: 220 },
     st_depression: { min: 0, max: 10, step: 0.1 },
     major_vessels: { min: 0, max: 3 },
-  },
-  "fever-form": {
-    age: { min: 1, max: 110 },
-    bmi: { min: 10, max: 60, step: 0.1 },
-    temperature: { min: 30, max: 43, step: 0.1 },
-    humidity: { min: 0, max: 100 },
-    air_quality: { min: 0, max: 500 },
-    heart_rate: { min: 40, max: 220 },
   },
   "anemia-form": {
     rbc: { min: 2, max: 8, step: 0.01 },
@@ -147,48 +143,6 @@ const TEST_INPUT_PRESETS = {
       thal: "7",
     },
   },
-  fever: {
-    normal: {
-      age: 28,
-      bmi: 22.1,
-      temperature: 36.7,
-      humidity: 45,
-      air_quality: 40,
-      heart_rate: 72,
-      gender: "Female",
-      headache: "No",
-      body_ache: "No",
-      fatigue: "No",
-      chronic_conditions: "No",
-      allergies: "No",
-      smoking_history: "No",
-      alcohol_consumption: "No",
-      physical_activity: "Active",
-      diet_type: "Vegetarian",
-      blood_pressure: "Normal",
-      previous_medication: "None",
-    },
-    abnormal: {
-      age: 35,
-      bmi: 27.5,
-      temperature: 39.5,
-      humidity: 75,
-      air_quality: 110,
-      heart_rate: 105,
-      gender: "Male",
-      headache: "Yes",
-      body_ache: "Yes",
-      fatigue: "Yes",
-      chronic_conditions: "Yes",
-      allergies: "Yes",
-      smoking_history: "Yes",
-      alcohol_consumption: "Yes",
-      physical_activity: "Sedentary",
-      diet_type: "Non-Vegetarian",
-      blood_pressure: "High",
-      previous_medication: "Other",
-    },
-  },
   anemia: {
     normal: {
       gender: "Female",
@@ -229,8 +183,11 @@ const TEST_INPUT_PRESETS = {
 
 const diabetesForm = document.getElementById("diabetes-form");
 const heartForm = document.getElementById("heart-form");
-const feverForm = document.getElementById("fever-form");
 const anemiaForm = document.getElementById("anemia-form");
+const pneumoniaForm = document.getElementById("pneumonia-form");
+const pneumoniaImageInput = document.getElementById("pneumonia-image");
+const tuberculosisForm = document.getElementById("tuberculosis-form");
+const tuberculosisImageInput = document.getElementById("tuberculosis-image");
 
 const chatForm = document.getElementById("chat-form");
 const chatHistory = document.getElementById("chat-history");
@@ -259,17 +216,50 @@ const state = {
   chatHistory: [],
 };
 
+function isLogoutConfirmModalOpen() {
+  return Boolean(logoutConfirmModal?.classList.contains("open"));
+}
+
+function closeLogoutConfirmModal() {
+  if (!logoutConfirmModal) return;
+  if (!logoutConfirmModal.classList.contains("open")) {
+    logoutConfirmModal.hidden = true;
+    return;
+  }
+  logoutConfirmModal.classList.remove("open");
+  logoutConfirmModal.hidden = true;
+  unlockBodyScroll();
+}
+
+function openLogoutConfirmModal() {
+  if (!logoutConfirmModal) return;
+  if (isLogoutConfirmModalOpen()) return;
+  lockBodyScroll();
+  logoutConfirmModal.hidden = false;
+  logoutConfirmModal.classList.add("open");
+  logoutConfirmOk?.focus?.({ preventScroll: true });
+}
+
+async function logoutUser() {
+  await resetSession({ redirect: true, recordHistory: false });
+  updateHistoryState({ page: "landing", tab: "diabetes" }, { replace: true });
+}
+
 let pendingTestInputsDisease = null;
 let historyInitialized = false;
 let isRestoringHistory = false;
 let isDiseasesDropdownOpen = false;
-const diseaseTabKeys = new Set(["diabetes", "heart", "fever", "anemia"]);
+const diseaseTabKeys = new Set(["pneumonia", "tuberculosis", "diabetes", "heart", "anemia"]);
 const diseaseTabLabels = {
-  diabetes: "Diabetes",
-  heart: "Heart Disease",
-  fever: "Fever",
+  pneumonia: "Pneumonia",
+  tuberculosis: "Tuberculosis(TB)",
+  diabetes: "Type-2 Diabetes",
+  heart: "Coronary Artery Disease",
   anemia: "Anemia",
 };
+const PNEUMONIA_ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png"]);
+const PNEUMONIA_ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/jpg", "application/octet-stream"]);
+const MAX_XRAY_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 let modalOpenCount = 0;
 let chatTypingIndicator = null;
 const REPORT_ALLOWED_EXTENSIONS = new Set([".csv", ".pdf", ".xls", ".xlsx"]);
@@ -585,28 +575,38 @@ function createMultipartRequest(formData) {
 }
 
 function startLoaderDelay(duration = 3000) {
-  const hasWindow = typeof window !== "undefined";
+  const startTime = (typeof performance !== "undefined" && typeof performance.now === "function")
+    ? performance.now()
+    : Date.now();
 
-  if (hasWindow && typeof window.startLoader === "function") {
-    return window.startLoader(duration);
-  }
-
-  const shouldHideManually = !hasWindow || typeof window.showLoader3Sec !== "function";
-
-  if (hasWindow && typeof window.showLoader3Sec === "function") {
-    window.showLoader3Sec();
-  } else if (loaderWrapper) {
+  if (loaderWrapper) {
     loaderWrapper.style.display = "block";
   }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (shouldHideManually && loaderWrapper) {
-        loaderWrapper.style.display = "none";
+  let finished = false;
+  return {
+    finish() {
+      if (finished) {
+        return Promise.resolve();
       }
-      resolve();
-    }, duration);
-  });
+      finished = true;
+
+      const now = (typeof performance !== "undefined" && typeof performance.now === "function")
+        ? performance.now()
+        : Date.now();
+      const elapsed = now - startTime;
+      const remaining = Math.max(0, duration - elapsed);
+
+      return new Promise((resolve) => {
+        window.setTimeout(() => {
+          if (loaderWrapper) {
+            loaderWrapper.style.display = "none";
+          }
+          resolve();
+        }, remaining);
+      });
+    },
+  };
 }
 
 function clampValue(value, { min, max }) {
@@ -805,8 +805,266 @@ function initializeFormConstraints() {
   registerInputConstraints(patientForm, FORM_CONSTRAINTS["patient-form"]);
   registerInputConstraints(diabetesForm, FORM_CONSTRAINTS["diabetes-form"]);
   registerInputConstraints(heartForm, FORM_CONSTRAINTS["heart-form"]);
-  registerInputConstraints(feverForm, FORM_CONSTRAINTS["fever-form"]);
   registerInputConstraints(anemiaForm, FORM_CONSTRAINTS["anemia-form"]);
+}
+
+function isValidPneumoniaImage(file) {
+  if (!file) {
+    return { valid: false, message: "Please upload a chest X-ray image." };
+  }
+
+  const extension = getFileExtension(file.name || "");
+  const mimeType = (file.type || "").toLowerCase();
+
+  if (!PNEUMONIA_ALLOWED_EXTENSIONS.has(extension) && !PNEUMONIA_ALLOWED_MIME_TYPES.has(mimeType)) {
+    return { valid: false, message: "Unsupported image type. Please upload JPG, JPEG, or PNG." };
+  }
+
+  if (!PNEUMONIA_ALLOWED_EXTENSIONS.has(extension)) {
+    return { valid: false, message: "Unsupported image extension. Allowed: .jpg, .jpeg, .png." };
+  }
+
+  if ((file.size || 0) > MAX_XRAY_IMAGE_SIZE_BYTES) {
+    return { valid: false, message: "Image size must be 10MB or smaller." };
+  }
+
+  return { valid: true, message: "" };
+}
+
+function isValidTuberculosisImage(file) {
+  if (!file) {
+    return { valid: false, message: "Please upload a chest X-ray image." };
+  }
+
+  const extension = getFileExtension(file.name || "");
+  const mimeType = (file.type || "").toLowerCase();
+
+  if (!PNEUMONIA_ALLOWED_EXTENSIONS.has(extension) && !PNEUMONIA_ALLOWED_MIME_TYPES.has(mimeType)) {
+    return { valid: false, message: "Unsupported image type. Please upload JPG, JPEG, or PNG." };
+  }
+
+  if (!PNEUMONIA_ALLOWED_EXTENSIONS.has(extension)) {
+    return { valid: false, message: "Unsupported image extension. Allowed: .jpg, .jpeg, .png." };
+  }
+
+  if ((file.size || 0) > MAX_XRAY_IMAGE_SIZE_BYTES) {
+    return { valid: false, message: "Image size must be 10MB or smaller." };
+  }
+
+  return { valid: true, message: "" };
+}
+
+function bindFileDropZone(input, validateFile) {
+  if (!input) {
+    return;
+  }
+
+  const dropZone = input.closest(".report-upload-field");
+  if (!dropZone) {
+    return;
+  }
+
+  let dragDepth = 0;
+
+  const stopEvent = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const setDragState = (active) => {
+    dropZone.classList.toggle("is-dragover", Boolean(active));
+  };
+
+  dropZone.addEventListener("dragenter", (event) => {
+    stopEvent(event);
+    dragDepth += 1;
+    setDragState(true);
+  });
+
+  dropZone.addEventListener("dragover", (event) => {
+    stopEvent(event);
+    setDragState(true);
+  });
+
+  dropZone.addEventListener("dragleave", (event) => {
+    stopEvent(event);
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) {
+      setDragState(false);
+    }
+  });
+
+  dropZone.addEventListener("drop", (event) => {
+    stopEvent(event);
+    dragDepth = 0;
+    setDragState(false);
+
+    const droppedFile = event.dataTransfer?.files?.[0];
+    if (!droppedFile) {
+      return;
+    }
+
+    if (typeof validateFile === "function") {
+      const validation = validateFile(droppedFile);
+      if (!validation?.valid) {
+        alert(validation?.message || "Unsupported file.");
+        return;
+      }
+    }
+
+    if (typeof DataTransfer !== "undefined") {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(droppedFile);
+      input.files = dataTransfer.files;
+    }
+
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+}
+
+function formatFileSize(bytes) {
+  const size = Number(bytes);
+  if (!Number.isFinite(size) || size < 0) return "0 B";
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+function initReferenceFileUpload(input) {
+  if (!input) return;
+
+  const root = input.closest("[data-hs-file-upload]");
+  if (!root) return;
+
+  const trigger = root.querySelector("[data-hs-file-upload-trigger]");
+  const browse = root.querySelector(".file-upload-browse");
+  const prompt = root.querySelector(".file-upload-prompt");
+  const meta = root.querySelector(".file-upload-meta");
+  const browseDefaultText = browse?.textContent?.trim() || "browse";
+  const promptDefaultText = prompt?.textContent?.trim() || "Drop your file here or";
+  const metaDefaultText = meta?.textContent?.trim() || "Pick a file up to 2MB.";
+
+  const openPicker = () => input.click();
+
+  trigger?.addEventListener("click", (event) => {
+    if (event.target.closest("[data-hs-file-upload-remove]")) return;
+    openPicker();
+  });
+
+  browse?.addEventListener("click", openPicker);
+  browse?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openPicker();
+    }
+  });
+
+  input.addEventListener("change", () => {
+    const file = input.files?.[0];
+    if (!file) {
+      if (prompt) prompt.textContent = promptDefaultText;
+      if (browse) browse.textContent = browseDefaultText;
+      if (meta) meta.textContent = metaDefaultText;
+      return;
+    }
+
+    if (prompt) prompt.textContent = file.name || "Selected file";
+    if (browse) browse.textContent = "change";
+    if (meta) meta.textContent = formatFileSize(file.size);
+  });
+}
+
+function parseDobDdMmYyyy(value) {
+  const trimmed = (value || "").toString().trim();
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(trimmed);
+  if (!match) {
+    return { date: null, error: "DOB must be in dd/mm/yyyy format." };
+  }
+
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+
+  if (!Number.isFinite(day) || !Number.isFinite(month) || !Number.isFinite(year)) {
+    return { date: null, error: "DOB must be in dd/mm/yyyy format." };
+  }
+
+  const candidate = new Date(year, month - 1, day, 12, 0, 0, 0);
+  if (
+    candidate.getFullYear() !== year ||
+    candidate.getMonth() !== month - 1 ||
+    candidate.getDate() !== day
+  ) {
+    return { date: null, error: "DOB is not a valid calendar date." };
+  }
+
+  const today = new Date();
+  if (candidate.getTime() > today.getTime()) {
+    return { date: null, error: "DOB cannot be in the future." };
+  }
+
+  return { date: candidate, error: null };
+}
+
+function calculateAgeFromDob(dobDate, referenceDate = new Date()) {
+  const dob = dobDate instanceof Date ? dobDate : null;
+  if (!dob || Number.isNaN(dob.getTime())) return null;
+
+  const today = referenceDate instanceof Date ? referenceDate : new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  const dayDiff = today.getDate() - dob.getDate();
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age -= 1;
+  }
+  return age;
+}
+
+function clearPatientDobDerivedAge() {
+  if (patientDobInput) {
+    patientDobInput.dataset.computedAge = "";
+    patientDobInput.setCustomValidity("");
+  }
+}
+
+function syncPatientDobDerivedAge({ setInputValidity = false } = {}) {
+  if (!patientDobInput) {
+    return null;
+  }
+
+  const rawDob = patientDobInput.value.trim();
+  if (!rawDob) {
+    if (setInputValidity) {
+      patientDobInput.setCustomValidity("");
+    }
+    patientDobInput.dataset.computedAge = "";
+    return null;
+  }
+
+  const parsed = parseDobDdMmYyyy(rawDob);
+  if (parsed.error) {
+    if (setInputValidity) {
+      patientDobInput.setCustomValidity(parsed.error);
+    }
+    patientDobInput.dataset.computedAge = "";
+    return null;
+  }
+
+  const age = calculateAgeFromDob(parsed.date);
+  if (!Number.isFinite(age) || age < 1 || age > 120) {
+    const message = "Calculated age must be between 1 and 120.";
+    if (setInputValidity) {
+      patientDobInput.setCustomValidity(message);
+    }
+    patientDobInput.dataset.computedAge = "";
+    return null;
+  }
+
+  if (setInputValidity) {
+    patientDobInput.setCustomValidity("");
+  }
+  patientDobInput.dataset.computedAge = String(age);
+  return age;
 }
 
 function setSessionValue(key, value) {
@@ -1022,9 +1280,15 @@ function showPage(key, { recordHistory = true } = {}) {
 function setPatientSummary(profile) {
   if (!profile) {
     patientSummary.textContent = "No patient selected.";
+    if (logoutButton) {
+      logoutButton.hidden = true;
+    }
     return;
   }
   patientSummary.textContent = `Current Patient: ${profile.name} • Age ${profile.age} • ${profile.gender}`;
+  if (logoutButton) {
+    logoutButton.hidden = false;
+  }
 }
 
 async function fetchCurrentProfile() {
@@ -1066,9 +1330,9 @@ function activateTab(tabName, { recordHistory = true } = {}) {
     diseasesDropdownToggle.classList.toggle("active", diseaseTabKeys.has(tabName));
     if (diseasesDropdownLabel) {
       if (diseaseTabKeys.has(tabName)) {
-        diseasesDropdownLabel.textContent = diseaseTabLabels[tabName] || "Diseases";
+        diseasesDropdownLabel.textContent = diseaseTabLabels[tabName] || "Type-2 Diabetes";
       } else {
-        diseasesDropdownLabel.textContent = "Diseases";
+        diseasesDropdownLabel.textContent = "Type-2 Diabetes";
       }
     }
   }
@@ -1216,11 +1480,35 @@ function renderRecommendations(list = [], title = "") {
   return `<div><h4>${title}</h4><ul>${items}</ul></div>`;
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!(file instanceof File)) {
+      resolve("");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(new Error("Unable to read uploaded image."));
+    reader.readAsDataURL(file);
+  });
+}
+
 function renderRiskView(targetId, payload) {
   const container = document.getElementById(targetId);
   if (!container) return;
 
-  const { disease, probability, prob, score, severity, inputs = {}, normal_values = {}, recommendations = {} } = payload;
+  const {
+    disease,
+    probability,
+    prob,
+    score,
+    severity,
+    result,
+    inputs = {},
+    normal_values = {},
+    recommendations = {},
+  } = payload;
 
   let probabilityValue = [probability, prob, score]
     .map((value) => (value === null || value === undefined ? null : Number(value)))
@@ -1239,6 +1527,30 @@ function renderRiskView(targetId, payload) {
   const gaugeId = `${targetId}-gauge-${Date.now()}`;
 
   const diseaseLabel = disease || "Selected disease";
+  const diseaseKey = String(disease || "").toLowerCase();
+  const isLungsImagePrediction = diseaseKey === "pneumonia" || diseaseKey === "tuberculosis";
+  const lungsPositiveLabel = diseaseKey === "tuberculosis" ? "Tuberculosis" : "Pneumonia";
+  const lungsClass = String(result || payload.prediction || "").trim() || (probabilityValue >= 50 ? lungsPositiveLabel : "Normal");
+  const lungsClassColor = lungsClass.toLowerCase() === lungsPositiveLabel.toLowerCase() ? "#dc2626" : "#16a34a";
+  const lungsClassText = lungsClass.toUpperCase();
+  const uploadedImageDataUrl = isLungsImagePrediction && typeof payload.uploaded_image_data_url === "string"
+    ? payload.uploaded_image_data_url
+    : "";
+  const lungsImageMarkup = uploadedImageDataUrl
+    ? `<img src="${uploadedImageDataUrl}" alt="Uploaded chest X-ray" style="max-width:68%;max-height:300px;border-radius:12px;object-fit:contain;border:1px solid rgba(148,163,184,0.35);" />`
+    : "";
+  const lungsMarkup = `
+    <div style="height:100%;display:flex;flex-direction:row;align-items:center;justify-content:center;text-align:center;line-height:1.15;padding:1rem;gap:1rem;">
+      ${lungsImageMarkup}
+      <div style="font-size:30px;font-weight:700;color:${lungsClassColor};white-space:nowrap;letter-spacing:0.08em;">${lungsClassText}</div>
+    </div>
+  `;
+  const meterLabel = isLungsImagePrediction
+    ? `Confidence • ${probabilityValue.toFixed(1)}%`
+    : `${badge.text} Risk • ${probabilityValue.toFixed(1)}%`;
+  const leftColumnMarkup = isLungsImagePrediction
+    ? `<div class="chart-box">${lungsMarkup}</div>`
+    : `<div class="chart-box"><div id="${barId}"></div></div>`;
 
   container.innerHTML = `
     <div class="result-card">
@@ -1257,11 +1569,11 @@ function renderRiskView(targetId, payload) {
         </button>
       </div>
       <div class="result-head">
-        <span class="${badge.className}"> ${badge.text} Risk • ${probabilityValue.toFixed(1)}%</span>
+        <span class="${badge.className}"> ${meterLabel}</span>
       </div>
       ${severity ? `<p class="muted">Predicted Severity: <strong>${severity}</strong></p>` : ""}
       <div class="charts-row">
-        <div class="chart-box"><div id="${barId}"></div></div>
+        ${leftColumnMarkup}
         <div class="gauge-box"><div id="${gaugeId}"></div></div>
       </div>
       <div class="recommendations">
@@ -1271,7 +1583,9 @@ function renderRiskView(targetId, payload) {
     </div>
   `;
 
-  buildBarChart(barId, disease, inputs || {}, normal_values || state.normals[disease?.toLowerCase()] || {});
+  if (!isLungsImagePrediction) {
+    buildBarChart(barId, disease, inputs || {}, normal_values || state.normals[disease?.toLowerCase()] || {});
+  }
   buildGauge(gaugeId, probabilityValue);
 }
 
@@ -1336,11 +1650,135 @@ async function submitPrediction(form, url, resultId) {
     state.predictions = state.predictions || {};
     const diseaseKey = (payload.disease || "").toLowerCase() || resultId;
     state.predictions[diseaseKey] = payload;
-    await loaderDelay;
+    await loaderDelay.finish();
     renderRiskView(resultId, payload);
     hidePanelInputs(resultId);
   } catch (error) {
-    await loaderDelay;
+    await loaderDelay.finish();
+    const container = document.getElementById(resultId);
+    if (container) {
+      container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
+    }
+    panel?.classList.remove("result-only");
+  } finally {
+    panel?.classList.remove("loader-hidden");
+  }
+}
+
+async function submitPneumoniaPrediction() {
+  if (typeof pneumoniaForm?.reportValidity === "function" && !pneumoniaForm.reportValidity()) {
+    return;
+  }
+
+  const imageFile = pneumoniaImageInput?.files?.[0] || null;
+  const validation = isValidPneumoniaImage(imageFile);
+  if (!validation.valid) {
+    alert(validation.message);
+    return;
+  }
+
+  const resultId = "pneumonia-result";
+  const panel = pneumoniaForm?.closest(".tab-panel");
+  panel?.classList.add("loader-hidden");
+  const loaderDelay = startLoaderDelay();
+
+  try {
+    const uploadedImageDataUrl = await fileToDataUrl(imageFile);
+    const formData = new FormData(pneumoniaForm);
+    const multipart = createMultipartRequest(formData);
+
+    const response = await fetch("/api/pneumonia", {
+      method: "POST",
+      headers: {
+        "Content-Type": multipart.contentType,
+      },
+      body: multipart.body,
+    });
+
+    let payload;
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      payload = await response.json();
+    } else {
+      const responseText = await response.text();
+      throw new Error(responseText || "Unexpected server response.");
+    }
+
+    if (!response.ok || !payload.success) {
+      throw new Error(payload.error || "Prediction failed");
+    }
+
+    payload.uploaded_image_data_url = uploadedImageDataUrl;
+
+    state.predictions = state.predictions || {};
+    state.predictions.pneumonia = payload;
+    await loaderDelay.finish();
+    renderRiskView(resultId, payload);
+    hidePanelInputs(resultId);
+  } catch (error) {
+    await loaderDelay.finish();
+    const container = document.getElementById(resultId);
+    if (container) {
+      container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
+    }
+    panel?.classList.remove("result-only");
+  } finally {
+    panel?.classList.remove("loader-hidden");
+  }
+}
+
+async function submitTuberculosisPrediction() {
+  if (typeof tuberculosisForm?.reportValidity === "function" && !tuberculosisForm.reportValidity()) {
+    return;
+  }
+
+  const imageFile = tuberculosisImageInput?.files?.[0] || null;
+  const validation = isValidTuberculosisImage(imageFile);
+  if (!validation.valid) {
+    alert(validation.message);
+    return;
+  }
+
+  const resultId = "tuberculosis-result";
+  const panel = tuberculosisForm?.closest(".tab-panel");
+  panel?.classList.add("loader-hidden");
+  const loaderDelay = startLoaderDelay();
+
+  try {
+    const uploadedImageDataUrl = await fileToDataUrl(imageFile);
+    const formData = new FormData(tuberculosisForm);
+    const multipart = createMultipartRequest(formData);
+
+    const response = await fetch("/api/tuberculosis", {
+      method: "POST",
+      headers: {
+        "Content-Type": multipart.contentType,
+      },
+      body: multipart.body,
+    });
+
+    let payload;
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      payload = await response.json();
+    } else {
+      const responseText = await response.text();
+      throw new Error(responseText || "Unexpected server response.");
+    }
+
+    if (!response.ok || !payload.success) {
+      throw new Error(payload.error || "Prediction failed");
+    }
+
+    payload.uploaded_image_data_url = uploadedImageDataUrl;
+
+    state.predictions = state.predictions || {};
+    state.predictions.tuberculosis = payload;
+    await loaderDelay.finish();
+    renderRiskView(resultId, payload);
+    hidePanelInputs(resultId);
+  } catch (error) {
+    await loaderDelay.finish();
     const container = document.getElementById(resultId);
     if (container) {
       container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
@@ -1489,23 +1927,36 @@ function renderProfileCard(profile, currentProfileId = state.profile?.id) {
         probabilityValue *= 100;
       }
       probabilityValue = Math.min(Math.max(probabilityValue, 0), 100);
-      return `${disease}: ${probabilityValue.toFixed(1)}%${data.severity ? ` (${data.severity})` : ""}`;
+      return `${disease}: ${probabilityValue.toFixed(1)}%`;
     })
-    .join("<br />");
+    .join("&nbsp;&nbsp;&nbsp;");
 
   const isCurrent = Boolean(currentProfileId && profile.id && profile.id === currentProfileId);
   const currentNote = "";
 
+  const ageGenderParts = [];
+  if (profile.age) ageGenderParts.push(`Age ${profile.age}`);
+  if (profile.gender) ageGenderParts.push(String(profile.gender));
+  const ageGender = ageGenderParts.join(" • ") || "Basic details unavailable";
+
+  const updatedAt = profile.last_updated || profile.created_at || "-";
+
   return `
-    <div class="profile-card${isCurrent ? " current" : ""}" data-profile-id="${profile.id || ""}">
-      <h4>${profile.name || "Unknown"}</h4>
-      <p>ID: ${profile.id || "-"}</p>
-      <p>${profile.age ? `Age: ${profile.age}` : ""} ${profile.gender ? `• ${profile.gender}` : ""}</p>
-      <p>Contact: ${profile.contact || "-"}</p>
-      <p class="muted">${profile.address || ""}</p>
-      <p><strong>Predictions:</strong><br />${summary || "No predictions"}</p>
-      <p class="muted">Updated: ${profile.last_updated || profile.created_at || "-"}</p>
-      ${currentNote}
+    <div class="profile-card${isCurrent ? " current" : ""}" data-profile-id="${profile.id || ""}" tabindex="0">
+      <div class="profile-card-summary">
+        <div class="profile-card-heading">
+          <h4 class="profile-card-name">${profile.name || "Unknown"}</h4>
+          <span class="profile-card-badge">${profile.id || "-"}</span>
+        </div>
+        <p class="profile-card-meta">${ageGender}</p>
+        <p class="profile-card-updated muted">Updated: ${updatedAt}</p>
+      </div>
+      <div class="profile-card-details">
+        <p>Contact: ${profile.contact || "-"}</p>
+        ${profile.address ? `<p class="muted">${profile.address}</p>` : ""}
+        <p><strong>Predictions:</strong> <span class="profile-predictions-line">${summary || "No predictions"}</span></p>
+        ${currentNote}
+      </div>
     </div>
   `;
 }
@@ -1535,27 +1986,33 @@ function getConsultantInitials(name = "") {
 
 function renderConsultantCard(item, { isDoctor = false, isHospital = false, imageUrl = "" } = {}) {
   if (!isDoctor) {
+    const hospitalName = item.name || "Hospital";
     const initials = getConsultantInitials(item.name || "Hospital");
     const avatarMarkup = imageUrl
       ? `<img src="${imageUrl}" alt="${item.name || "Hospital"}" loading="lazy" />`
       : initials || "H";
+    const rawContact = String(item.contact || "").trim();
+    const callTarget = rawContact.replace(/[^\d+]/g, "");
+    const callLinkMarkup = callTarget
+      ? `
+      <a href="tel:${callTarget}" class="hospital-call-link" aria-label="Call ${hospitalName}" title="Call ${hospitalName}">
+        <span aria-hidden="true">📞</span>
+      </a>
+    `
+      : "";
     return `
       <div class="consultant-card hospital-card">
+        ${callLinkMarkup}
         <div class="hospital-card-header">
           <div class="hospital-avatar" aria-hidden="true">${avatarMarkup}</div>
           <div class="hospital-info">
-            <h4>${item.name}</h4>
+            <h4>${hospitalName}</h4>
             <p class="hospital-speciality">${item.speciality || item.specialization || ""}</p>
           </div>
         </div>
         <div class="hospital-meta">
           <p>${item.address || ""}</p>
           <p>Contact: ${item.contact || "-"}</p>
-          <p class="muted">${item.distance ? `Distance: ${item.distance}` : ""}</p>
-        </div>
-        <div class="form-actions">
-          ${item.website_url ? `<a href="${item.website_url}" target="_blank">Website</a>` : ""}
-          ${item.location_url ? `<a href="${item.location_url}" target="_blank">Location</a>` : ""}
         </div>
       </div>
     `;
@@ -1568,13 +2025,24 @@ function renderConsultantCard(item, { isDoctor = false, isHospital = false, imag
   const avatarMarkup = imageUrl
     ? `<img src="${imageUrl}" alt="${item.name || "Doctor"}" loading="lazy" />`
     : initials;
+  const rawContact = String(item.contact || "").trim();
+  const callTarget = rawContact.replace(/[^\d+]/g, "");
+  const doctorName = item.name || "Doctor";
+  const callLinkMarkup = callTarget
+    ? `
+      <a href="tel:${callTarget}" class="doctor-call-link" aria-label="Call ${doctorName}" title="Call ${doctorName}">
+        <span aria-hidden="true">📞</span>
+      </a>
+    `
+    : "";
 
   return `
     <div class="consultant-card doctor-card">
+      ${callLinkMarkup}
       <div class="doctor-card-header">
         <div class="doctor-avatar" aria-hidden="true">${avatarMarkup}</div>
         <div class="doctor-info">
-          <h4>${item.name}</h4>
+          <h4>${doctorName}</h4>
           <p class="doctor-speciality">${speciality}</p>
         </div>
       </div>
@@ -1582,10 +2050,6 @@ function renderConsultantCard(item, { isDoctor = false, isHospital = false, imag
         <p>${address}</p>
         <p>Contact: ${item.contact || "-"}</p>
         <p class="muted">${distance}</p>
-      </div>
-      <div class="form-actions">
-        ${item.website_url ? `<a href="${item.website_url}" target="_blank">Website</a>` : ""}
-        ${item.location_url ? `<a href="${item.location_url}" target="_blank">Location</a>` : ""}
       </div>
     </div>
   `;
@@ -1598,47 +2062,19 @@ async function loadConsultants(query = "") {
     const payload = await response.json();
     if (!payload.success) throw new Error(payload.error || "Unable to load consultants");
     const { hospitals = [], doctors = [] } = payload.data || {};
-    const hospitalImages = [
-      "/static/assets/hospitals/hos1.jpg",
-      "/static/assets/hospitals/hos2.jpg",
-      "/static/assets/hospitals/hos3.jpg",
-      "/static/assets/hospitals/hos4.jpg",
-      "/static/assets/hospitals/hos5.jpg",
-      "/static/assets/hospitals/hos6.jpg",
-      "/static/assets/hospitals/hos7.jpg",
-      "/static/assets/hospitals/hos8.jpg",
-      "/static/assets/hospitals/hos9.jpg",
-      "/static/assets/hospitals/hos10.jpg",
-      "/static/assets/hospitals/hos11.jpg",
-      "/static/assets/hospitals/hos12.jpg",
-    ];
-    hospitalList.innerHTML = hospitals.length
-      ? hospitals.map((item, index) => renderConsultantCard(item, {
+    const limitedHospitals = hospitals;
+    const limitedDoctors = doctors;
+    hospitalList.innerHTML = limitedHospitals.length
+      ? limitedHospitals.map((item, index) => renderConsultantCard(item, {
           isDoctor: false,
           isHospital: true,
-          imageUrl: hospitalImages[index] || "",
+          imageUrl: item.image_url || "",
         })).join("")
       : '<div class="consultant-card"><p class="muted">No hospitals found.</p></div>';
-    const doctorImages = [
-      "/static/assets/doctors/doc1.jpg",
-      "/static/assets/doctors/doc2.jpg",
-      "/static/assets/doctors/doc3.jpg",
-      "/static/assets/doctors/doc4.jpg",
-      "/static/assets/doctors/doc5.jpg",
-      "/static/assets/doctors/doc6.jpg",
-      "/static/assets/doctors/doc7.jpg",
-      "/static/assets/doctors/doc8.jpg",
-      "/static/assets/doctors/doc9.jpg",
-      "/static/assets/doctors/doc10.jpg",
-      "/static/assets/doctors/doc11.jpg",
-      "/static/assets/doctors/doc12.jpg",
-      "/static/assets/doctors/doc13.jpg",
-      "/static/assets/doctors/doc14.jpg",
-    ];
-    doctorList.innerHTML = doctors.length
-      ? doctors.map((item, index) => renderConsultantCard(item, {
+    doctorList.innerHTML = limitedDoctors.length
+      ? limitedDoctors.map((item, index) => renderConsultantCard(item, {
           isDoctor: true,
-          imageUrl: doctorImages[index] || "",
+          imageUrl: item.image_url || "",
         })).join("")
       : '<div class="consultant-card"><p class="muted">No doctors found.</p></div>';
   } catch (error) {
@@ -1652,7 +2088,6 @@ function applyAutofillValues(values = {}) {
   const formMap = {
     diabetes: diabetesForm,
     heart: heartForm,
-    fever: feverForm,
     anemia: anemiaForm,
   };
 
@@ -1802,7 +2237,6 @@ function applyProfileDemographics(profile) {
 
   addDemographics("diabetes");
   addDemographics("heart");
-  addDemographics("fever");
   addDemographics("anemia", { includeAge: false });
 
   if (Object.keys(defaults).length > 0) {
@@ -1812,6 +2246,13 @@ function applyProfileDemographics(profile) {
 
 async function createProfile(event) {
   event.preventDefault();
+
+  const derivedAge = syncPatientDobDerivedAge({ setInputValidity: true });
+  if (patientDobInput && derivedAge === null) {
+    patientDobInput.reportValidity?.();
+    return;
+  }
+
   if (typeof patientForm?.reportValidity === "function" && !patientForm.reportValidity()) {
     return;
   }
@@ -1826,13 +2267,13 @@ async function createProfile(event) {
   }
 
   const formData = new FormData(patientForm);
+  if (derivedAge !== null) {
+    formData.set("age", String(derivedAge));
+  }
+  formData.delete("dob");
   const multipart = createMultipartRequest(formData);
   const loaderDelay = startLoaderDelay();
   patientCard?.classList.add("loader-hidden");
-
-  if (reportFile) {
-    showReportLoadingModal();
-  }
 
   try {
     const response = await fetch("/api/profile", {
@@ -1862,16 +2303,13 @@ async function createProfile(event) {
     }
     applyProfileDemographics(state.profile);
     const loadProfilesPromise = loadProfiles();
-    await Promise.all([loaderDelay, loadProfilesPromise]);
+    await Promise.all([loaderDelay.finish(), loadProfilesPromise]);
     await enterDashboard("diabetes");
   } catch (error) {
-    await loaderDelay;
+    await loaderDelay.finish();
     alert(error.message);
   } finally {
     patientCard?.classList.remove("loader-hidden");
-    if (reportFile) {
-      hideReportLoadingModal();
-    }
   }
 }
 
@@ -1880,11 +2318,17 @@ async function resetSession(options = {}) {
   await fetch("/api/reset", { method: "POST" });
   state.profile = null;
   state.predictions = {};
+  ["diabetes-result", "heart-result", "anemia-result", "pneumonia-result", "tuberculosis-result"].forEach((id) => {
+    const container = document.getElementById(id);
+    if (container) container.innerHTML = "";
+  });
   patientForm.reset();
+  clearPatientDobDerivedAge();
   diabetesForm.reset();
   heartForm.reset();
-  feverForm.reset();
   anemiaForm.reset();
+  pneumoniaForm?.reset();
+  tuberculosisForm?.reset();
   chatHistory.innerHTML = "";
   profilesGrid.innerHTML = "";
   setPatientSummary(null);
@@ -1986,7 +2430,13 @@ function bindEvents() {
   startButton?.addEventListener("click", () => showPage("patient"));
   backButton?.addEventListener("click", () => showPage("landing"));
   resetSessionButton?.addEventListener("click", resetSession);
+  logoutButton?.addEventListener("click", logoutUser);
+  logoutConfirmOk?.addEventListener("click", () => {
+    closeLogoutConfirmModal();
+  });
   patientForm?.addEventListener("submit", createProfile);
+  patientDobInput?.addEventListener("input", () => syncPatientDobDerivedAge({ setInputValidity: false }));
+  patientDobInput?.addEventListener("blur", () => syncPatientDobDerivedAge({ setInputValidity: true }));
   chatbotLauncher?.setAttribute("aria-expanded", "false");
 
   tabTriggers.forEach((trigger) => {
@@ -2035,6 +2485,12 @@ function bindEvents() {
     });
   }
 
+  bindFileDropZone(medicalReportInput, isValidReportFile);
+  bindFileDropZone(pneumoniaImageInput, isValidPneumoniaImage);
+  bindFileDropZone(tuberculosisImageInput, isValidTuberculosisImage);
+  initReferenceFileUpload(pneumoniaImageInput);
+  initReferenceFileUpload(tuberculosisImageInput);
+
   diabetesForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     submitPrediction(diabetesForm, "/api/diabetes", "diabetes-result");
@@ -2045,14 +2501,19 @@ function bindEvents() {
     submitPrediction(heartForm, "/api/heart", "heart-result");
   });
 
-  feverForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    submitPrediction(feverForm, "/api/fever", "fever-result");
-  });
-
   anemiaForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     submitPrediction(anemiaForm, "/api/anemia", "anemia-result");
+  });
+
+  pneumoniaForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitPneumoniaPrediction();
+  });
+
+  tuberculosisForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitTuberculosisPrediction();
   });
 
   chatForm?.addEventListener("submit", submitChat);
@@ -2117,6 +2578,11 @@ function bindEvents() {
       handled = true;
     }
 
+    if (isLogoutConfirmModalOpen()) {
+      closeLogoutConfirmModal();
+      handled = true;
+    }
+
     if (handled) {
       event.preventDefault();
     }
@@ -2144,6 +2610,16 @@ function bindEvents() {
 
     const currentState = getCurrentAppState();
     if (currentState.page === "dashboard" && targetPage !== "dashboard") {
+      // If a user is still logged in and uses browser Back, ask for confirmation before logging out.
+      if (state.profile) {
+        const confirmed = window.confirm("Do you want to logout?");
+        if (!confirmed) {
+          // Cancel back navigation: keep the user on the dashboard.
+          updateHistoryState({ page: "dashboard", tab: currentState.tab });
+          return;
+        }
+      }
+
       await resetSession({ recordHistory: false });
       updateHistoryState({ page: "landing", tab: "diabetes" }, { replace: true });
       return;

@@ -1,16 +1,52 @@
 [
     {
-        "id": "user_026",
-        "name": "Rishab Jain",
-        "age": 32,
-        "contact": "7829746284",
-        "address": "Agra, Hijdo Bali Gali",
+        "id": "user_001",
+        "name": "Asim Husain",
+        "age": 23,
+        "contact": "07310647227",
+        "address": "Shahpur Sirpura",
+        "gender": "Male",
+        "marital_status": "Married",
+        "predictions": {},
+        "created_at": "15-Feb-2026 13:25",
+        "last_updated": "2026-02-15 14:44:49"
+    },
+    {
+        "id": "user_002",
+        "name": "Asim Husain",
+        "age": 33,
+        "contact": "07310647227",
+        "address": "Shahpur Sirpura",
         "gender": "Female",
-        "marital_status": "Widowed",
+        "marital_status": "Divorced",
         "predictions": {
-            "Diabetes": {
+            "Pneumonia": {
                 "inputs": {
-                    "Age": "32",
+                    "Pneumonia Score": 47.74
+                },
+                "normal_values": {
+                    "Pneumonia Score": 82.0
+                },
+                "prob": 47.73557484149933,
+                "probability": 0.4773557484149933,
+                "result": "Normal"
+            },
+            "Tuberculosis": {
+                "prob": 80.20285367965698,
+                "probability": 0.8020285367965698,
+                "result": "Tuberculosis",
+                "prediction": "Tuberculosis",
+                "confidence": "Very High Risk",
+                "inputs": {
+                    "Tuberculosis Score": 80.2
+                },
+                "normal_values": {
+                    "Tuberculosis Score": 50.0
+                }
+            },
+            "Type-2 Diabetes": {
+                "inputs": {
+                    "Age": "33",
                     "BMI": "25",
                     "Blood Pressure": "120",
                     "Diabetes Pedigree Function": "0.5",
@@ -20,89 +56,26 @@
                     "Pregnancies": 0.0,
                     "Skin Thickness": "20"
                 },
-                "prob": 1.5328093700819267
-            },
-            "Fever": {
-                "inputs": {
-                    "Age": 32.0,
-                    "Air Quality Index": 50.0,
-                    "Alcohol Consumption": "No",
-                    "Allergies": "No",
-                    "BMI": 25.0,
-                    "Blood Pressure": "Normal",
-                    "Body Ache": "No",
-                    "Chronic Conditions": "No",
-                    "Diet Type": "Vegan",
-                    "Fatigue": "No",
-                    "Gender": "Female",
-                    "Headache": "No",
-                    "Heart Rate": 70.0,
-                    "Humidity (%)": 50.0,
-                    "Physical Activity": "Sedentary",
-                    "Previous Medication": "None",
-                    "Smoking History": "No",
-                    "Temperature (C)": 36.5
-                },
-                "prob": 26.991904761904763,
-                "severity": "Normal"
-            },
-            "Heart Disease": {
-                "inputs": {
-                    "Age": "32",
-                    "Chest Pain Type": 1,
-                    "Cholesterol": "220",
-                    "Exercise Angina": 0,
-                    "Fasting BS > 120?": 0,
-                    "Major Vessels (ca)": "0",
-                    "Max Heart Rate": "150",
-                    "Resting BP": "130",
-                    "Resting ECG": "0",
-                    "ST Depression": "1.0",
-                    "Sex": 0,
-                    "Slope of ST": 1,
-                    "Thal": 3
-                },
-                "prob": 0.08976296335458755
-            },
-            "Anemia": {
-                "prob": 5.0,
-                "inputs": {
-                    "Gender": "Female",
-                    "RBC": "5",
-                    "Hemoglobin (Hb)": "14",
-                    "Hematocrit (HCT)": "42",
-                    "MCV": "90",
-                    "MCH": "30",
-                    "MCHC": "34",
-                    "WBC": "7",
-                    "Platelets": "250",
-                    "RDW": "13.5",
-                    "PDW": "12",
-                    "PCT": "0.22",
-                    "Lymphocytes": "30",
-                    "Neutrophils %": "60",
-                    "Neutrophils #": "4.2"
-                },
-                "severity": "Healthy"
+                "prob": 1.5731974122756194
             }
         },
-        "created_at": "25-Nov-2025 21:10",
-        "last_updated": "2025-11-25 21:10:57"
+        "created_at": "15-Feb-2026 13:36",
+        "last_updated": "2026-02-15 14:44:49"
     },
     {
-        "id": "user_086",
+        "id": "user_003",
         "name": "Asim Husain",
-        "age": 21,
+        "age": 23,
         "contact": "07310647227",
-        "address": "TMU Moradabad , Security Checkpost\nSecurity Checkpost",
+        "address": "Shahpur Sirpura",
         "gender": "Female",
         "marital_status": "Married",
         "predictions": {
-            "Diabetes": {
-                "prob": 1.3581908595328507,
+            "Type-2 Diabetes": {
+                "prob": 15.25,
                 "inputs": {
                     "Gender": "Female",
-                    "Age": "21",
+                    "Age": "23",
                     "BMI": "25",
                     "Glucose": "100",
                     "Blood Pressure": "120",
@@ -113,320 +86,57 @@
                 }
             }
         },
-        "created_at": "03-Dec-2025 19:08",
-        "last_updated": "2025-12-03 19:08:19"
+        "created_at": "15-Feb-2026 13:49",
+        "last_updated": "2026-02-15 14:44:49"
     },
     {
-        "id": "user_087",
+        "id": "user_004",
         "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Female",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "21-Dec-2025 09:37",
-        "last_updated": "21-Dec-2025 09:37"
-    },
-    {
-        "id": "user_088",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Female",
-        "marital_status": "Married",
-        "predictions": {
-            "Anemia": {
-                "inputs": {
-                    "Gender": "Female",
-                    "Hematocrit (HCT)": "42",
-                    "Hemoglobin (Hb)": "14",
-                    "Lymphocytes": "30",
-                    "MCH": "30",
-                    "MCHC": "34",
-                    "MCV": "90",
-                    "Neutrophils #": "4.2",
-                    "Neutrophils %": "60",
-                    "PCT": "0.22",
-                    "PDW": "12",
-                    "Platelets": "250",
-                    "RBC": "5",
-                    "RDW": "13.5",
-                    "WBC": "7"
-                },
-                "prob": 5.0,
-                "severity": "Healthy"
-            },
-            "Diabetes": {
-                "prob": 1.3581908595328507,
-                "inputs": {
-                    "Gender": "Female",
-                    "Age": "21",
-                    "BMI": "25",
-                    "Glucose": "100",
-                    "Blood Pressure": "120",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "20",
-                    "Insulin": "79",
-                    "Diabetes Pedigree Function": "0.5"
-                }
-            },
-            "Heart Disease": {
-                "inputs": {
-                    "Age": "21",
-                    "Chest Pain Type": 1,
-                    "Cholesterol": "220",
-                    "Exercise Angina": 0,
-                    "Fasting BS > 120?": 0,
-                    "Major Vessels (ca)": "0",
-                    "Max Heart Rate": "150",
-                    "Resting BP": "130",
-                    "Resting ECG": "0",
-                    "ST Depression": "1.0",
-                    "Sex": 0,
-                    "Slope of ST": 1,
-                    "Thal": 3
-                },
-                "prob": 0.08976296335458755
-            }
-        },
-        "created_at": "21-Dec-2025 09:41",
-        "last_updated": "2025-12-21 09:51:41"
-    },
-    {
-        "id": "user_089",
-        "name": "Asim Husain",
-        "age": 43,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "21-Dec-2025 09:52",
-        "last_updated": "21-Dec-2025 09:52"
-    },
-    {
-        "id": "user_090",
-        "name": "Asim Husain",
-        "age": 32,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "21-Dec-2025 09:57",
-        "last_updated": "21-Dec-2025 09:57"
-    },
-    {
-        "id": "user_091",
-        "name": "hbvfdghskm",
-        "age": 88,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Female",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "21-Dec-2025 09:58",
-        "last_updated": "21-Dec-2025 09:58"
-    },
-    {
-        "id": "user_092",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "7310647227",
-        "address": "USA",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {
-            "Diabetes": {
-                "prob": 55.27979521423126,
-                "inputs": {
-                    "Gender": "Male",
-                    "Age": "21",
-                    "BMI": "31.8",
-                    "Glucose": "165",
-                    "Blood Pressure": "150",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "45",
-                    "Insulin": "250",
-                    "Diabetes Pedigree Function": "1.2"
-                }
-            }
-        },
-        "created_at": "21-Dec-2025 23:31",
-        "last_updated": "2025-12-21 23:31:50"
-    },
-    {
-        "id": "user_093",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Single",
-        "predictions": {},
-        "created_at": "28-Jan-2026 18:57",
-        "last_updated": "28-Jan-2026 18:57"
-    },
-    {
-        "id": "user_094",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Single",
-        "predictions": {},
-        "created_at": "28-Jan-2026 19:15",
-        "last_updated": "28-Jan-2026 19:15"
-    },
-    {
-        "id": "user_095",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Single",
-        "predictions": {},
-        "created_at": "28-Jan-2026 20:08",
-        "last_updated": "28-Jan-2026 20:08"
-    },
-    {
-        "id": "user_096",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "29-Jan-2026 11:24",
-        "last_updated": "29-Jan-2026 11:24"
-    },
-    {
-        "id": "user_097",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Single",
-        "predictions": {
-            "Heart Disease": {
-                "prob": 99.9867172241211,
-                "inputs": {
-                    "Sex": 0,
-                    "Age": "62",
-                    "Resting BP": "165",
-                    "Cholesterol": "280",
-                    "Chest Pain Type": 4,
-                    "Fasting BS > 120?": 1,
-                    "Resting ECG": "2",
-                    "Max Heart Rate": "120",
-                    "Exercise Angina": 1,
-                    "ST Depression": "2.6",
-                    "Slope of ST": 3,
-                    "Major Vessels (ca)": "2",
-                    "Thal": 7
-                }
-            }
-        },
-        "created_at": "29-Jan-2026 13:12",
-        "last_updated": "2026-01-29 13:29:46"
-    },
-    {
-        "id": "user_098",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "29-Jan-2026 18:13",
-        "last_updated": "29-Jan-2026 18:13"
-    },
-    {
-        "id": "user_099",
-        "name": "Asim Husain",
-        "age": 21,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {
-            "Heart Disease": {
-                "inputs": {
-                    "Age": "62",
-                    "Chest Pain Type": 4,
-                    "Cholesterol": "280",
-                    "Exercise Angina": 1,
-                    "Fasting BS > 120?": 1,
-                    "Major Vessels (ca)": "2",
-                    "Max Heart Rate": "120",
-                    "Resting BP": "165",
-                    "Resting ECG": "2",
-                    "ST Depression": "2.6",
-                    "Sex": 0,
-                    "Slope of ST": 3,
-                    "Thal": 7
-                },
-                "prob": 99.9867172241211
-            },
-            "Diabetes": {
-                "prob": 1.3581908595328507,
-                "inputs": {
-                    "Gender": "Male",
-                    "Age": "21",
-                    "BMI": "25",
-                    "Glucose": "100",
-                    "Blood Pressure": "120",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "20",
-                    "Insulin": "79",
-                    "Diabetes Pedigree Function": "0.5"
-                }
-            }
-        },
-        "created_at": "30-Jan-2026 08:52",
-        "last_updated": "2026-01-30 08:59:44"
-    },
-    {
-        "id": "user_100",
-        "name": "Asim Husain",
-        "age": 32,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "30-Jan-2026 09:12",
-        "last_updated": "30-Jan-2026 09:12"
-    },
-    {
-        "id": "user_101",
-        "name": "Asim Husain",
-        "age": 21,
+        "age": 22,
         "contact": "07310647227",
         "address": "Shahpur Sirpura",
         "gender": "Male",
         "marital_status": "Divorced",
-        "predictions": {},
-        "created_at": "30-Jan-2026 09:13",
-        "last_updated": "30-Jan-2026 09:13"
+        "predictions": {
+            "Pneumonia": {
+                "prob": 99.97405409812927,
+                "probability": 0.9997405409812927,
+                "result": "Pneumonia",
+                "inputs": {
+                    "Pneumonia Score": 99.97
+                },
+                "normal_values": {
+                    "Pneumonia Score": 82.0
+                }
+            },
+            "Type-2 Diabetes": {
+                "inputs": {
+                    "Age": "22",
+                    "BMI": "25",
+                    "Blood Pressure": "120",
+                    "Diabetes Pedigree Function": "0.5",
+                    "Gender": "Male",
+                    "Glucose": "100",
+                    "Insulin": "79",
+                    "Pregnancies": 0.0,
+                    "Skin Thickness": "20"
+                },
+                "prob": 15.5
+            }
+        },
+        "created_at": "15-Feb-2026 13:51",
+        "last_updated": "2026-02-15 14:44:49"
     },
     {
-        "id": "user_102",
+        "id": "user_005",
         "name": "Asim Husain",
-        "age": 21,
+        "age": 22,
         "contact": "07310647227",
         "address": "Shahpur Sirpura",
-        "gender": "Male",
+        "gender": "Female",
         "marital_status": "Single",
         "predictions": {},
-        "created_at": "30-Jan-2026 09:15",
-        "last_updated": "30-Jan-2026 09:15"
+        "created_at": "15-Feb-2026 14:44",
+        "last_updated": "2026-02-15 14:44:49"
     }
 ]

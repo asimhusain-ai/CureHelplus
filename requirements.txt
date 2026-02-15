@@ -7,3 +7,13 @@ PyPDF2
 scikit-learn
 werkzeug
 python-dotenv
+tensorflow
+Pillow
+torch
+torchvision
+psycopg2-binary
+opencv-python
+openpyxl
+pytest
+xlrd
+xgboost

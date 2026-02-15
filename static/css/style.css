@@ -1059,11 +1059,11 @@ content: "";
 }
 
 .ghost {
-  background: transparent;
+  background: var(--chip-bg);
   border: 1px solid var(--border-color);
   color: var(--muted);
   padding: 10px 24px;
-  border-radius: 999px;
+  border-radius: 14px;
   font-weight: 500;
   transition: border 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
@@ -1071,6 +1071,7 @@ content: "";
 .ghost:hover {
   border-color: var(--primary);
   color: var(--primary);
+  filter: brightness(1.03);
   transform: translateY(-1px);
 }
 
@@ -1168,6 +1169,38 @@ label {
   font-size: 14px;
   gap: 8px;
   color: var(--muted);
+}
+
+label[data-help] {
+  position: relative;
+}
+
+label[data-help]::before {
+  content: attr(data-help);
+  position: absolute;
+  left: 0;
+  top: -8px;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+  width: min(380px, 92vw);
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-muted) 92%, var(--muted) 8%);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.35;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  z-index: 2;
+}
+
+label[data-help]:hover::before,
+label[data-help]:focus-within::before {
+  opacity: 1;
+  visibility: visible;
 }
 
 input,
@@ -1302,7 +1335,174 @@ textarea {
 }
 
 .address-upload-row > .report-upload-field {
+  flex: 0 1 460px;
+}
+
+#patient-form .address-upload-row > .report-upload-field {
   flex: 0 1 320px;
+}
+
+#pneumonia-form .report-upload-field,
+#tuberculosis-form .report-upload-field {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
+  align-items: stretch;
+}
+
+#pneumonia-form [data-hs-file-upload],
+#tuberculosis-form [data-hs-file-upload] {
+  width: 100%;
+  max-width: none;
+}
+
+#pneumonia-form .file-upload-native-input,
+#tuberculosis-form .file-upload-native-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger],
+#tuberculosis-form [data-hs-file-upload-trigger] {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: clamp(210px, 28vw, 260px);
+  padding: clamp(18px, 3.2vw, 30px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px dashed #c5cad3;
+  background: #f4f4f5;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger]:hover,
+#tuberculosis-form [data-hs-file-upload-trigger]:hover {
+  background: #f1f2f4;
+}
+
+#pneumonia-form .report-upload-field.is-dragover [data-hs-file-upload-trigger],
+#tuberculosis-form .report-upload-field.is-dragover [data-hs-file-upload-trigger] {
+  border-color: #2563eb;
+  box-shadow: none;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] > div,
+#tuberculosis-form [data-hs-file-upload-trigger] > div {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] svg,
+#tuberculosis-form [data-hs-file-upload-trigger] svg {
+  display: block;
+  margin: 0 auto;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .text-muted-foreground,
+#tuberculosis-form [data-hs-file-upload-trigger] .text-muted-foreground {
+  color: #97a0ae;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .text-foreground,
+#tuberculosis-form [data-hs-file-upload-trigger] .text-foreground {
+  color: #111827;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .text-primary,
+#tuberculosis-form [data-hs-file-upload-trigger] .text-primary {
+  color: #2563eb;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .file-upload-browse,
+#tuberculosis-form [data-hs-file-upload-trigger] .file-upload-browse {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  line-height: 1.3;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .text-sm\/6,
+#tuberculosis-form [data-hs-file-upload-trigger] .text-sm\/6 {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .text-xs,
+#tuberculosis-form [data-hs-file-upload-trigger] .text-xs {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .size-16,
+#tuberculosis-form [data-hs-file-upload-trigger] .size-16 {
+  width: 64px;
+  height: 64px;
+}
+
+#pneumonia-form [data-hs-file-upload-trigger] .w-16,
+#tuberculosis-form [data-hs-file-upload-trigger] .w-16 {
+  width: 64px;
+}
+
+#pneumonia-form [data-hs-file-upload-previews],
+#tuberculosis-form [data-hs-file-upload-previews] {
+  display: none;
+}
+
+#pneumonia-form [data-hs-file-upload-previews] > div,
+#tuberculosis-form [data-hs-file-upload-previews] > div {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+#pneumonia-form [data-hs-file-upload-progress-bar],
+#tuberculosis-form [data-hs-file-upload-progress-bar] {
+  background: color-mix(in srgb, var(--muted) 22%, transparent);
+}
+
+#pneumonia-form [data-hs-file-upload-progress-bar-pane],
+#tuberculosis-form [data-hs-file-upload-progress-bar-pane] {
+  background: var(--primary);
+}
+
+#pneumonia-form [data-hs-file-upload-remove],
+#tuberculosis-form [data-hs-file-upload-remove] {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+#pneumonia-form .report-upload-field input[type="file"],
+#tuberculosis-form .report-upload-field input[type="file"] {
+  text-align: center;
+  border-width: 1px;
+  border-style: dotted;
+  border-color: var(--muted);
+}
+
+#pneumonia-form .report-upload-field .form-hint,
+#tuberculosis-form .report-upload-field .form-hint {
+  margin-top: 4px;
 }
 
 .address-upload-row > .address-field {
@@ -1327,13 +1527,35 @@ textarea {
 }
 
 .report-upload-field input[type="file"] {
-  width: 100%;
-  padding: 10px 14px;
+  width: 80%;
+  min-height: 150px;
+  padding: 58px 24px;
   border-radius: 14px;
   border: 1px dashed var(--border-color);
-  background: var(--card-muted-bg);
+  background: linear-gradient(rgba(31, 41, 55, 0.06), rgba(31, 41, 55, 0.06)), var(--card-muted-bg);
   color: var(--muted);
   transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+#patient-form .report-upload-field input[type="file"] {
+  width: 100%;
+  min-height: initial;
+  padding: 10px 14px;
+}
+
+.report-upload-field.is-dragover input[type="file"] {
+  border-color: var(--primary);
+  background: linear-gradient(rgba(31, 41, 55, 0.1), rgba(31, 41, 55, 0.1)), var(--card-muted-bg);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+#pneumonia-form .report-upload-field.is-dragover input[type="file"],
+#pneumonia-form .report-upload-field input[type="file"]:focus-visible,
+#tuberculosis-form .report-upload-field.is-dragover input[type="file"],
+#tuberculosis-form .report-upload-field input[type="file"]:focus-visible {
+  border-width: 1px;
+  border-style: dotted;
+  border-color: var(--muted);
 }
 
 .report-upload-field input[type="file"]:focus-visible {
@@ -1611,6 +1833,17 @@ textarea {
   gap: 35px;
   min-width: 260px;
   margin-top: 68px;
+}
+
+.patient-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+#logout-button[hidden] {
+  display: none;
 }
 
 #patient-summary {
@@ -2274,18 +2507,19 @@ textarea {
 }
 
 #profiles-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 1100px) {
-  #profiles-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
 }
 
 @media (max-width: 720px) {
   #profiles-grid {
-    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  #profiles-grid .profile-card {
+    flex-basis: 100%;
   }
 }
 
@@ -2301,14 +2535,143 @@ textarea {
   height: 100%;
 }
 
+/* Responsive horizontal patient cards (compact → expand on hover) */
+#profiles-grid .profile-card {
+  flex: 0 1 260px;
+  max-width: 420px;
+  overflow: hidden;
+  transition: flex-basis 0.28s ease, transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+#profiles-grid .profile-card:focus {
+  outline: none;
+}
+
+#profiles-grid .profile-card:focus-visible {
+  border-color: var(--primary);
+}
+
+#profiles-grid .profile-card-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#profiles-grid .profile-card-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--action-pill-bg);
+  color: var(--muted);
+  border: 1px solid var(--border-soft);
+  flex: 0 0 auto;
+}
+
+#profiles-grid .profile-card-meta {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#profiles-grid .profile-card-updated {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+#profiles-grid .profile-card-details {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: max-height 0.32s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+
+#profiles-grid .profile-card:hover,
+#profiles-grid .profile-card:focus-visible {
+  flex-basis: 380px;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  z-index: 2;
+}
+
+#profiles-grid .profile-card:hover .profile-card-details,
+#profiles-grid .profile-card:focus-visible .profile-card-details {
+  max-height: 420px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 10px;
+}
+
+.profile-predictions-line {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #profiles-grid .profile-card,
+  #profiles-grid .profile-card-details {
+    transition: none;
+  }
+}
+
 .consultant-card.doctor-card {
+  position: relative;
   padding: 20px;
   gap: 14px;
 }
 
+.doctor-call-link {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--card-bg);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.doctor-call-link:hover,
+.doctor-call-link:focus-visible {
+  border-color: var(--primary);
+  text-decoration: none;
+}
+
 .consultant-card.hospital-card {
+  position: relative;
   padding: 20px;
   gap: 14px;
+}
+
+.hospital-call-link {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--card-bg);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.hospital-call-link:hover,
+.hospital-call-link:focus-visible {
+  border-color: var(--primary);
+  text-decoration: none;
 }
 
 .doctor-card-header {
@@ -2324,8 +2687,12 @@ textarea {
 }
 
 .doctor-avatar {
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  min-height: 76px;
+  flex: 0 0 76px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: color-mix(in srgb, var(--primary) 18%, transparent);
   border: 1px solid var(--border-soft);
@@ -2339,8 +2706,12 @@ textarea {
 }
 
 .hospital-avatar {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  min-height: 72px;
+  flex: 0 0 72px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: color-mix(in srgb, var(--primary) 12%, transparent);
   border: 1px solid var(--border-soft);
@@ -2357,6 +2728,7 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -2364,6 +2736,7 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -2492,6 +2865,10 @@ textarea {
 .consultant-view .grid-cards {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 1fr;
+}
+
+#hospital-view .grid-cards {
+  grid-auto-rows: auto;
 }
 
 @media (max-width: 1280px) {

@@ -22,6 +22,9 @@ class DummyProbModel:
     def predict_proba(self, arr):
         return np.array([[1 - self.prob, self.prob]])
 
+    def predict(self, arr, verbose=0):
+        return np.array([[self.prob]])
+
 
 class DummyPredictModel:
     def __init__(self, label: int):
@@ -29,6 +32,46 @@ class DummyPredictModel:
 
     def predict(self, arr):
         return np.array([self.label])
+
+
+class DummyTensorOutput:
+    def __init__(self, value: float):
+        self.value = value
+
+    def detach(self):
+        return self
+
+    def cpu(self):
+        return self
+
+    def numpy(self):
+        return np.array([[self.value]], dtype=np.float32)
+
+
+class DummyTBModel:
+    def __init__(self, prob: float):
+        self.prob = prob
+
+    def __call__(self, _tensor):
+        return DummyTensorOutput(self.prob)
+
+
+class DummyNoGrad:
+    def __enter__(self):
+        return None
+
+    def __exit__(self, exc_type, exc, tb):
+        return False
+
+
+class DummyTorch:
+    float32 = "float32"
+
+    def tensor(self, arr, dtype=None):
+        return np.asarray(arr, dtype=np.float32)
+
+    def no_grad(self):
+        return DummyNoGrad()
 
 
 class DummyLabelEncoder:
@@ -57,24 +100,6 @@ def app_client(monkeypatch, tmp_path):
         "diabetes_scaler.pkl": DummyScaler(),
         "heart_model.pkl": DummyProbModel(0.81),
         "heart_scaler.pkl": DummyScaler(),
-        "fever_severity_model.pkl": DummyPredictModel(1),
-        "fever_risk_model.pkl": DummyPredictModel(65),
-        "fever_scaler.pkl": DummyScaler(),
-        "fever_target_encoder.pkl": DummyLabelEncoder({0: "Mild", 1: "Moderate", 2: "Severe"}),
-        "fever_label_encoders.pkl": {
-            "Gender": DummyEncoder(["Male", "Female"]),
-            "Headache": DummyEncoder(["No", "Yes"]),
-            "Body_Ache": DummyEncoder(["No", "Yes"]),
-            "Fatigue": DummyEncoder(["No", "Yes"]),
-            "Chronic_Conditions": DummyEncoder(["No", "Yes"]),
-            "Allergies": DummyEncoder(["No", "Yes"]),
-            "Smoking_History": DummyEncoder(["No", "Yes"]),
-            "Alcohol_Consumption": DummyEncoder(["No", "Yes"]),
-            "Physical_Activity": DummyEncoder(["Sedentary", "Moderate", "Active"]),
-            "Diet_Type": DummyEncoder(["Vegetarian", "Non-Vegetarian"]),
-            "Blood_Pressure": DummyEncoder(["Normal", "High", "Low"]),
-            "Previous_Medication": DummyEncoder(["None", "Ibuprofen", "Other"]),
-        },
         "anemia_risk_model.pkl": DummyProbModel(0.66),
         "anemia_type_model.pkl": DummyPredictModel(0),
         "feature_scaler.pkl": DummyScaler(),
@@ -116,6 +141,12 @@ def app_client(monkeypatch, tmp_path):
 
     monkeypatch.setattr(app_module, "generate_pdf_report", fake_pdf)
     monkeypatch.setattr(app_module, "get_chatbot_response", lambda message: {"message": "ok"})
+    app_module.PNEUMONIA_MODEL = DummyProbModel(0.9)
+    app_module.PNEUMONIA_PREPROCESS_INPUT = lambda arr: arr
+    app_module.PNEUMONIA_LOAD_IMG = lambda file_obj, target_size, color_mode="rgb": np.zeros((target_size[0], target_size[1], 3), dtype=np.float32)
+    app_module.PNEUMONIA_IMG_TO_ARRAY = lambda image: np.asarray(image, dtype=np.float32)
+    app_module.TB_MODEL = DummyTBModel(0.85)
+    app_module.TB_TORCH = DummyTorch()
 
     with app_module.app.test_client() as client:
         yield app_module, client

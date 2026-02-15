@@ -38,26 +38,6 @@ FIELD_ALIASES: Dict[str, Dict[str, Iterable[str]]] = {
         "major_vessels": ["majorvessels", "ca"],
         "thal": ["thal", "thalassemia"],
     },
-    "fever": {
-        "age": ["age", "patientage"],
-        "bmi": ["bmi", "bodymassindex", "body_mass_index"],
-        "temperature": ["temperature", "bodytemperature", "temp"],
-        "humidity": ["humidity", "humiditypercent"],
-        "air_quality": ["airquality", "airqualityindex", "aqi"],
-        "heart_rate": ["heartrate", "pulse"],
-        "gender": ["gender", "sex"],
-        "headache": ["headache"],
-        "body_ache": ["bodyache", "bodypain"],
-        "fatigue": ["fatigue", "tiredness"],
-        "chronic_conditions": ["chronicconditions", "chronic"],
-        "allergies": ["allergies", "allergy"],
-        "smoking_history": ["smokinghistory", "smoker", "smoking"],
-        "alcohol_consumption": ["alcoholconsumption", "alcohol"],
-        "physical_activity": ["physicalactivity", "activitylevel"],
-        "diet_type": ["diettype", "diet"],
-        "blood_pressure": ["bloodpressure", "bp"],
-        "previous_medication": ["previousmedication", "medication"],
-    },
     "anemia": {
         "gender": ["gender", "sex"],
         "rbc": ["rbc", "redbloodcells"],
@@ -99,14 +79,6 @@ NUMERIC_FIELDS = {
         "major_vessels",
         "thal",
     },
-    "fever": {
-        "age",
-        "bmi",
-        "temperature",
-        "humidity",
-        "air_quality",
-        "heart_rate",
-    },
     "anemia": {
         "rbc",
         "hemoglobin",
@@ -135,27 +107,6 @@ INTEGER_FIELDS = {
 BOOLEAN_FIELDS = {
     "fasting_bs",
     "exercise_angina",
-    "headache",
-    "body_ache",
-    "fatigue",
-    "chronic_conditions",
-    "allergies",
-    "smoking_history",
-    "alcohol_consumption",
-}
-
-DIET_CHOICES = {
-    "vegan": "Vegan",
-    "vegetarian": "Vegetarian",
-    "nonvegetarian": "Non-Vegetarian",
-    "nonveg": "Non-Vegetarian",
-    "nonvegeterian": "Non-Vegetarian",
-}
-
-ACTIVITY_CHOICES = {
-    "sedentary": "Sedentary",
-    "moderate": "Moderate",
-    "active": "Active",
 }
 
 BLOOD_PRESSURE_CHOICES = {
@@ -356,18 +307,6 @@ def _normalize_field_value(disease: str, field: str, value: Any) -> Any:
 
     if field in BOOLEAN_FIELDS:
         return _normalize_boolean(value)
-
-    if field == "diet_type":
-        return _normalize_choice(value, DIET_CHOICES)
-
-    if field == "physical_activity":
-        return _normalize_choice(value, ACTIVITY_CHOICES)
-
-    if disease == "fever" and field == "blood_pressure":
-        return _normalize_choice(value, BLOOD_PRESSURE_CHOICES)
-
-    if disease == "fever" and field == "previous_medication":
-        return _normalize_choice(value, MEDICATION_CHOICES)
 
     if field in {"chest_pain_type", "resting_ecg", "slope", "thal"}:
         numeric = _coerce_numeric(value)

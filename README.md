@@ -13,229 +13,301 @@
 
 ## 🌟 Overview
 
-CureHelp+ is a Flask-based healthcare analytics platform for multi-disease risk prediction, medical chatbot guidance, consultant discovery, and PDF medical reporting. It now includes medical report autofill (CSV/PDF/XLS/XLSX), JSON-backed profile storage with session sync, and an admin console for operational visibility.
+CureHelp+ is a Flask-based healthcare analytics platform that combines classical ML risk prediction, chest X-ray screening, medical report parsing, chatbot support, consultant discovery, and downloadable PDF reporting in one workflow.
 
-- **Live Link** https://www.curehelplus.me
-- **Auze Container Link** https://curehelplus-app.lemonmoss-d3a1a3a9.centralindia.azurecontainerapps.io/
-- **Docker Image Link** https://hub.decker.com/r/asimhusain/curehelplus
+It supports:
 
----
+- **Patient profile management** with persistent storage and session sync
+- **Multi-disease risk prediction** for tabular clinical inputs
+- **Pneumonia & Tuberculosis X-ray analysis** via image upload endpoints
+- **Medical report autofill** from uploaded CSV/PDF/XLS/XLSX files
+- **Rule-based healthcare chatbot** powered by curated datasets
+- **Consultant directory search** (hospitals + doctors)
+- **Admin dashboard** for operational visibility and patient management
 
-## ✅ What’s New (Recent Updates)
+## 🔗 Project Links (Legacy)
 
-- 🛡️ **Admin Panel** with login, dashboard metrics, and patient management
-- 📥 **Medical Report Upload & Autofill** (CSV/PDF/XLS/XLSX) with size validation (200 MB)
-- 📄 **Enhanced PDF Reporting** with risk gauges and clinical protocols
-- 🗂️ **Profile Management** with JSON-backed storage and session sync
-- 🔎 **Consultant Directory Search** (hospitals + doctors)
+- **Live Link:** https://www.curehelplus.me
+- **Azure Container Link:** https://curehelplus-app.lemonmoss-d3a1a3a9.centralindia.azurecontainerapps.io/
+- **Docker Image Link:** https://hub.decker.com/r/asimhusain/curehelplus
 
----
+## ✅ What’s New / Current Highlights
 
-### Key Features
+- Admin panel with login, dashboard metrics, and patient deletion actions
+- Medical report upload with format validation and 200 MB size limit
+- Enhanced PDF reports with risk gauges and detailed protocols
+- Profile persistence layer with **JSON** and optional **PostgreSQL** backend
+- Chest X-ray endpoints for pneumonia and tuberculosis risk scoring
 
-- 🩺 **Multi-Disease Risk Prediction** for Diabetes, Heart Disease, Fever, and Anemia
-- 🤖 **AI Medical Assistant** using curated datasets in bot_data/
-- 📊 **Interactive Results** with risk scores, severity, and clinical guidance
-- 👨‍⚕️ **Consultant Directory** with hospitals and doctors + map links
-- 🗂️ **Patient Profile Management** with JSON-backed storage and session sync
-- 📄 **PDF Report Generation** with risk gauges and protocols
-- 📥 **Medical Report Autofill** (CSV/PDF/XLS/XLSX)
-- 🔐 **Admin Panel** with monitoring and patient management
+## 🧠 Machine Learning Modules
 
+| Disease / Task | Input Type | Model/Approach | Output |
+|---|---|---|---|
+| Type-2 Diabetes | Tabular | Serialized sklearn pipeline | Probability (%) |
+| Coronary Artery Disease | Tabular | Serialized sklearn pipeline | Probability (%) |
+| Anemia | Tabular | Risk + type model stack | Probability (%) + severity/type |
+| Pneumonia | X-ray Image | TensorFlow/Keras model (`.keras`) | Probability + Normal/Pneumonia |
+| Tuberculosis | X-ray Image | PyTorch model (`.pth`) | Probability + Normal/Tuberculosis + confidence band |
 
----
+## 🧩 Core Features
 
-## 🧠 Machine Learning Models
+### 1) Patient Profile Workflow
 
-| Disease | Algorithm | Notes |
-|---------|-----------|-------|
-| Diabetes | XGBoost | Gender-aware pregnancy handling |
-| Heart Disease | Random Forest | Encoded categorical fields |
-| Fever | Dual Random Forest | Severity + risk prediction |
-| Anemia | Multi-output RF | Risk + type classification |
+- Create profile using JSON or multipart form data
+- Optional medical report upload during profile creation
+- Session tracks active profile and disease predictions
+- Search, list, and delete stored profiles
 
----
+### 2) Prediction Workflow
 
-## Usage
+- Tabular predictions:
+  - Type-2 Diabetes
+  - Coronary Artery Disease
+  - Anemia
+- Image predictions:
+  - Pneumonia (`multipart/form-data` with `image`)
+  - Tuberculosis (`multipart/form-data` with `image`)
 
-1.  **Landing Page:** Upon launching the application, you will be greeted by the landing page. Click on "Get Started" to proceed.
-2.  **Patient Details:** Fill in your personal details to create a profile. This information will be used to personalize the predictions and reports.
-3.  **Input Health Metrics:** Navigate through the different tabs for each disease (Diabetes, Heart Disease, Fever, Anemia) and enter your health metrics.
-4.  **Predict Risk:** Click on the "Predict" button to get your risk assessment.
-5.  **View Results:** Review interactive gauges, comparator cards, and AI-powered recommendations.
-6.  **Generate Report:** Download a consolidated PDF report with risk protocols and clinical interventions.
-7.  **Explore Directory:** Browse nearby hospitals and doctors, or use search to filter specialists.
+### 3) Reports and Guidance
 
----
+- Session prediction summary endpoint
+- Filterable PDF export by selected diseases
+- Risk-sensitive recommendation text generation
 
-## 🔐 Admin Panel
+### 4) Chatbot and Consultant Directory
 
-- **URL:** /admin
-- **Default credentials:** admin / curehelp
-- **Override with environment variables:**
-   - CUREHELP_ADMIN_USER
-   - CUREHELP_ADMIN_PASS
+- Rule-based chatbot using `bot_data/` datasets
+- Cached responses (TTL controlled by environment variable)
+- Consultant directory with hospitals/doctors and search support
 
-The admin console includes:
-- Total profiles, predictions, high-risk alerts
-- Disease and gender distribution charts
-- Recent patient activity with delete actions
+### 5) Admin Panel
 
----
-
-## 🧾 Reports & Medical Uploads
-
-- **Upload formats:** CSV, PDF, XLS, XLSX
-- **Max size:** 200 MB
-- **Autofill** supported across diabetes, heart, fever, and anemia fields
-- **PDF reports** include gauges, risk protocols, and interventions
-
----
-
-## 🔗 API Endpoints (Core)
-
-- POST /api/profile → create profile (+ optional report upload)
-- GET /api/profile → current profile
-- GET /api/profiles → list/search profiles
-- DELETE /api/profiles/<profile_id>
-- POST /api/diabetes
-- POST /api/heart
-- POST /api/fever
-- POST /api/anemia
-- GET /api/report
-- GET /api/report/pdf?disease=Diabetes,Heart Disease
-- POST /api/chat
-- GET /api/consultants?q=search
-- POST /api/reset
-
----
+- Admin login/logout and protected routes
+- Dashboard metrics: profile counts, prediction counts, high-risk indicators
+- Disease and gender breakdowns
+- Recent patient activity with delete operation
 
 ## 📁 Project Structure (High Level)
 
-- app.py → Flask entry point + API routes
-- admin/ → Admin blueprint + dashboard templates
-- chatbot.py → Rule-based medical assistant
-- report_parser.py → Medical report extraction & mapping
-- profile_manager.py → JSON-backed patient storage
-- makepdf.py → PDF report generation
-- static/ + templates/ → UI assets
-- models/ → Trained ML artifacts
-- bot_data/ → Chatbot datasets
-
-## 🌟 Contributing
-
-I welcome contributions from the community!
-
----
+- `app.py` → Flask entry point, route definitions, model inference orchestration
+- `profile_manager.py` → profile persistence manager (JSON/PostgreSQL + fallback)
+- `report_parser.py` → extraction + field mapping for CSV/PDF/XLS/XLSX reports
+- `chatbot.py` → dataset loading, query processing, response formatting, cache
+- `consultant.py` → hospitals/doctors catalog and provider search
+- `makepdf.py` → PDF generation with gauge visualization and recommendations
+- `admin/` → admin blueprint, auth flow, templates, dashboard logic
+- `models/` → trained model artifacts used at runtime
+- `bot_data/` → chatbot knowledge datasets
+- `templates/`, `static/` → frontend templates and static assets
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.9 or higher
-- pip (Python package manager)
+- pip
 - Git
+- Optional: Docker
+- Optional: PostgreSQL (only if using DB-backed profile storage)
 
 ### Installation
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/asimhusain-ai/CureHelpPlus.git
-   cd CureHelpPlus
-   ```
+1. **Clone the repository**
 
-2. **Create and Activate a Virtual Environment**
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate      # Windows
-   source .venv/bin/activate     # macOS / Linux
-   ```
+```bash
+git clone https://github.com/asimhusain-ai/CureHelpPlus.git
+cd CureHelpPlus
+```
 
-3. **Install Dependencies**
-   ```bash
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
+2. **Create and activate a virtual environment**
 
-4. **Prepare Datasets and Models**
-   - Place chatbot CSVs inside `bot_data/`
-   - Ensure trained model artifacts exist in `models/`
-   - Optional: keep sample medical reports in `Sample_inputs/`
+```bash
+python -m venv .venv
+.venv\Scripts\activate      # Windows
+source .venv/bin/activate    # macOS / Linux
+```
 
-5. **Set Environment Variables (optional but recommended)**
-   ```bash
-   set CUREHELP_SECRET_KEY=change-me      # Windows PowerShell
-   set CUREHELP_ADMIN_USER=admin          # Windows PowerShell
-   set CUREHELP_ADMIN_PASS=change-me      # Windows PowerShell
-   export CUREHELP_SECRET_KEY=change-me   # macOS / Linux
-   export CUREHELP_ADMIN_USER=admin       # macOS / Linux
-   export CUREHELP_ADMIN_PASS=change-me   # macOS / Linux
-   ```
+3. **Install dependencies**
 
-6. **Run the Flask Server**
-   ```bash
-   flask --app app run
-   ```
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-7. **Access the Dashboard**
-   - http://127.0.0.1:5000
+4. **Run the application**
 
----
+```bash
+flask --app app run
+```
+
+5. **Open in browser**
+
+- http://127.0.0.1:5000
 
 ## ⚙️ Environment Variables
 
+### Core App
+
 | Variable | Description | Default |
-|----------|-------------|---------|
-| CUREHELP_SECRET_KEY | Flask session secret | curehelp-secret-key |
-| CUREHELP_ADMIN_USER | Admin username | admin |
-| CUREHELP_ADMIN_PASS | Admin password | curehelp |
+|---|---|---|
+| `CUREHELP_SECRET_KEY` | Flask session secret key | `curehelp-secret-key` |
+| `TB_THRESHOLD` | Tuberculosis decision threshold (0-1) | `0.50` |
+| `MODEL_WARMUP_ENABLED` | Enable startup model warmup thread | `true` |
+| `MODEL_HEALTH_CHECK_INTERVAL_SECONDS` | Periodic model health-check interval | `300` |
 
----
+### Admin Authentication
 
-## 🧪 Tests
+| Variable | Description | Default |
+|---|---|---|
+| `CUREHELP_ADMIN_USER` | Admin username | `admin` |
+| `CUREHELP_ADMIN_PASS` | Admin password | `curehelp` |
+
+### Chatbot
+
+| Variable | Description | Default |
+|---|---|---|
+| `CHAT_CACHE_TTL_SECONDS` | Chat response cache TTL in seconds | `300` |
+
+### Profile Storage Backend
+
+| Variable | Description | Default |
+|---|---|---|
+| `PROFILE_STORAGE_BACKEND` | Force backend (`json` / `postgres`) | auto-detect |
+| `DATABASE_URL` | PostgreSQL connection URL | empty |
+| `PROFILE_STORAGE_STRICT` | Fail if postgres requested but unavailable | `false` |
+| `PROFILE_RUNTIME_JSON_FALLBACK` | Enable runtime fallback to JSON on DB errors | `true` |
+| `PROFILE_AUTO_MIGRATE_JSON` | Migrate JSON profiles into postgres on startup | `true` |
+| `PROFILE_DB_CONNECT_TIMEOUT` | PostgreSQL connect timeout in seconds | `2` |
+| `PROFILE_DB_STATEMENT_TIMEOUT_MS` | PostgreSQL statement timeout in milliseconds | `3000` |
+| `PROFILE_SYNC_QUEUE_MAXSIZE` | Max queued async postgres sync operations | `2000` |
+
+These timeout controls help reduce login/reload delays when PostgreSQL is slow or temporarily unavailable by failing fast and allowing JSON fallback behavior.
+
+## 🧾 Upload/Input Constraints
+
+### Medical Report Upload (`POST /api/profile`)
+
+- Allowed formats: `.csv`, `.pdf`, `.xls`, `.xlsx`
+- Maximum size: **200 MB**
+
+### X-ray Upload (`POST /api/pneumonia`, `POST /api/tuberculosis`)
+
+- Allowed formats: `.jpg`, `.jpeg`, `.png`
+- Maximum size: **10 MB**
+- Request type: `multipart/form-data`
+
+## 🔌 API Endpoints (Current)
+
+### General
+
+- `GET /` → frontend landing page
+- `GET /api/config` → baseline normal values for selected diseases
+
+### Profile and Session
+
+- `POST /api/profile` → create profile (+ optional report upload)
+- `GET /api/profile` → get currently active profile from session
+- `GET /api/profiles?q=<name>` → list/search profiles
+- `DELETE /api/profiles/<profile_id>` → delete profile (if not active)
+- `POST /api/reset` → clear session profile and predictions
+
+### Predictions
+
+- `POST /api/diabetes`
+- `POST /api/heart`
+- `POST /api/anemia`
+- `POST /api/pneumonia` (image upload)
+- `POST /api/tuberculosis` (image upload)
+
+### Reporting, Chat, and Directory
+
+- `GET /api/report` → prediction summary for active session
+- `GET /api/report/pdf?disease=Type-2 Diabetes,Coronary Artery Disease`
+- `POST /api/chat` → chatbot response
+- `GET /api/consultants?q=<text>` → provider search
+- `GET /api/metrics/latency` → p50/p95/p99 latency summary + model health snapshot
+
+### Admin
+
+- `GET/POST /admin/login`
+- `POST /admin/logout`
+- `GET /admin/`
+- `POST /admin/patients/<profile_id>/delete`
+
+## 📦 Required Runtime Artifacts
+
+Ensure these model files are available under `models/`:
+
+- `diabetes_model.pkl`
+- `diabetes_scaler.pkl`
+- `heart_model.pkl`
+- `heart_scaler.pkl`
+- `anemia_risk_model.pkl`
+- `anemia_type_model.pkl`
+- `feature_scaler.pkl`
+- `label_encoder.pkl`
+- `pneumonia_model.keras`
+- `tb_model.pth`
+
+Chatbot dataset files expected in `bot_data/`:
+
+- `Disease precaution.csv`
+- `DiseaseAndSymptoms.csv`
+- `medquad.csv`
+- `humanqa.csv`
+- Optional: `Final_Augmented.csv`
+
+## 🧪 Testing
+
+Run all tests:
 
 ```bash
 pytest
 ```
 
----
+## 🐳 Docker
 
-## Deployment
+Build and run locally:
 
-### Container Deployment (Azure Container Apps)
+```bash
+docker build -t curehelplus:latest .
+docker run -p 5000:5000 curehelplus:latest
+```
 
-1. **Build the Docker Image**
-   ```bash
-   docker build -t curehelplus:latest .
-   ```
+## ☁️ Deployment (Azure Container Apps - Legacy Flow)
 
-2. **Tag and Push to Azure Container Registry**
-   ```bash
-   az acr login --name cureacr
-   docker tag curehelplus:latest cureacr.azurecr.io/curehelplus:latest
-   docker push cureacr.azurecr.io/curehelplus:latest
-   ```
+1. Build image
 
-3. **Deploy to Azure Container Apps**
-   ```bash
-   az containerapp up --name curehelplus --resource-group curehelplus --location central-india --image cureacr.azurecr.io/curehelplus:latest --target-port 5000 --ingress external --environment managedEnvironment-curehelplus-ade7
-   ```
+```bash
+docker build -t curehelplus:latest .
+```
 
-4. **Configure Secrets and Storage**
-   - Set `CUREHELP_SECRET_KEY` and other env vars with `az containerapp secret set`
-   - Mount persistent storage if the container needs to retain `user_profiles.json`
+2. Push to Azure Container Registry
 
-5. **Verify Deployment**
-   - Use `az containerapp show --name curehelp-plus --resource-group curehelplus` to fetch the HTTPS endpoint
-   - Confirm health with the `/` route and exercise prediction + chatbot flows
+```bash
+az acr login --name cureacr
+docker tag curehelplus:latest cureacr.azurecr.io/curehelplus:latest
+docker push cureacr.azurecr.io/curehelplus:latest
+```
 
----
+3. Deploy
+
+```bash
+az containerapp up --name curehelplus --resource-group curehelplus --location central-india --image cureacr.azurecr.io/curehelplus:latest --target-port 5000 --ingress external --environment managedEnvironment-curehelplus-ade7
+```
+
+## 🌟 Contributing
+
+Contributions are welcome.
+
+- Fork the repository
+- Create a feature branch
+- Add/modify tests where relevant
+- Open a pull request with a clear description
 
 ## ⚠️ Medical Disclaimer
 
-CureHelp+ is intended for informational purposes only and does not provide medical diagnosis. Always consult qualified healthcare professionals for medical advice or treatment.
-
----
+CureHelp+ is intended for informational and educational support only. It does not provide a medical diagnosis and is not a substitute for professional healthcare advice.
 
 ## Author
 

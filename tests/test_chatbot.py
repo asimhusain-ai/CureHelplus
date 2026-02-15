@@ -55,7 +55,7 @@ def sample_datasets():
 
 def test_classify_input_type_detection():
     assert classify_input_type("What are the symptoms?") == "question"
-    assert classify_input_type("fever, cough") == "symptoms"
+    assert classify_input_type("cough, headache") == "symptoms"
     assert classify_input_type("malaria") == "disease"
 
 

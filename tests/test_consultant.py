@@ -28,10 +28,22 @@ def test_get_consultant_directory_combines_sources():
     directory = get_consultant_directory()
     assert set(directory.keys()) == {"hospitals", "doctors"}
     assert directory["hospitals"][0]["name"] == HOSPITALS_DATA[0]["name"]
+    assert directory["doctors"]
     assert directory["doctors"][0]["name"] == DOCTORS_DATA[0]["name"]
+    assert directory["doctors"][0]["image_url"].startswith("/static/assets/doctors/")
 
 
 def test_search_providers_matches_case_insensitive():
-    results = search_providers("apollo")
-    assert any("apollo" in hospital["name"].lower() for hospital in results["hospitals"])
-    assert any("apollo" in doctor["name"].lower() for doctor in results["doctors"]) is False
+    results = search_providers("tmu")
+    assert any("tmu" in hospital["name"].lower() for hospital in results["hospitals"])
+    assert any("tmu" in doctor["name"].lower() for doctor in results["doctors"]) is False
+
+
+def test_doctors_loaded_from_images_have_core_fields():
+    doctors = get_doctors_data()
+    assert doctors
+    sample = doctors[0]
+    assert sample["name"].lower().startswith("dr")
+    assert sample["contact"]
+    assert sample["specialization"]
+    assert sample["image_url"].startswith("/static/assets/doctors/")

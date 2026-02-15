@@ -60,6 +60,8 @@ def generate_pdf_report(predictions, selected_diseases):
 
     with PdfPages(pdf_buffer) as pdf:
         for disease, data in selected_predictions.items():
+            disease_lower = str(disease).strip().lower()
+            display_disease = "Type-2 Diabetes" if disease_lower in {"diabetes", "type-2 diabetes", "type 2 diabetes", "type-2 diabetes mellitus", "type 2 diabetes mellitus"} else disease
             inputs = data.get("inputs", {})
             prob_candidates = (
                 data.get("prob"),
@@ -82,7 +84,7 @@ def generate_pdf_report(predictions, selected_diseases):
             risk = probability_value
             severity = data.get("severity", "N/A")
 
-            recommendations = fetch_gemini_recommendations(disease, risk)
+            recommendations = fetch_gemini_recommendations(display_disease, risk)
             prevention_text = _format_section(recommendations.get("prevention_measures", []))
             intervention_text = _format_section(recommendations.get("medicine_suggestions", []))
 
@@ -118,7 +120,7 @@ def generate_pdf_report(predictions, selected_diseases):
 
             ax_disease = fig.add_subplot(gs[1, :])
             ax_disease.axis('off')
-            disease_title = f"{disease} Risk"
+            disease_title = f"{display_disease} Risk"
             if severity != "N/A":
                 disease_title += f" ({severity})"
             ax_disease.text(0.5, 0.5, disease_title, ha='center', va='center', fontsize=16, fontweight='bold', color=COLORS['accent'])

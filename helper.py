@@ -18,6 +18,8 @@ def fetch_gemini_recommendations(disease: str, risk: float):
     """
 
     disease = disease.lower()
+    if disease in {"type-2 diabetes", "type 2 diabetes", "type-2 diabetes mellitus", "type 2 diabetes mellitus"}:
+        disease = "diabetes"
 
     recommendations = {
         "diabetes": {
@@ -76,7 +78,7 @@ def fetch_gemini_recommendations(disease: str, risk: float):
                 ]
             }
         },
-        "heart disease": {
+        "coronary artery disease": {
             "low": {
                 "preventions": [
                     "Eat a heart-healthy diet rich in fruits, vegetables, whole grains, and lean proteins to support cardiovascular health.",
@@ -129,62 +131,6 @@ def fetch_gemini_recommendations(disease: str, risk: float):
                     "Adjust medication regimens promptly if side effects or abnormal readings occur.",
                     "Maintain detailed records of medications, doses, and schedules for emergencies.",
                     "Ensure family and caregivers are informed about warning signs and intervention plans."
-                ]
-            }
-        },
-        "fever": {
-            "low": {
-                "preventions": [
-                    "Stay hydrated by drinking water, herbal teas, and broths to support immune function.",
-                    "Get sufficient rest and sleep to reduce stress on your immune system.",
-                    "Eat light, balanced meals including fruits, vegetables, and soups to maintain energy.",
-                    "Wash hands regularly and avoid contact with sick individuals to prevent infections."
-                ],
-                "medications": [
-                    "Use paracetamol only if necessary to relieve mild fever, following recommended doses.",
-                    "Monitor temperature daily and record patterns for healthcare guidance.",
-                    "Consult a doctor if fever persists beyond three days or worsens.",
-                    "Avoid unnecessary antibiotics to prevent resistance and side effects."
-                ]
-            },
-            "medium": {
-                "preventions": [
-                    "Maintain hydration with electrolyte drinks to prevent imbalances during fever.",
-                    "Avoid strenuous activity to reduce fatigue and support recovery.",
-                    "Monitor temperature closely and note rapid rises or persistent high fever.",
-                    "Seek medical consultation promptly to rule out bacterial or viral infections.",
-                    "Practice good hygiene and avoid crowded places to prevent spread.",
-                    "Rest in a comfortable environment to help the immune system fight infection."
-                ],
-                "medications": [
-                    "Take paracetamol or acetaminophen at proper intervals to reduce fever safely.",
-                    "Use NSAIDs like ibuprofen under medical supervision to manage inflammation and fever.",
-                    "Start antibiotics or antivirals only if prescribed based on diagnostic testing.",
-                    "Monitor vital signs including pulse and oxygen saturation frequently to catch complications.",
-                    "Follow physician instructions on fluid and nutrition intake for recovery.",
-                    "Track symptom progression to report accurately to healthcare providers."
-                ]
-            },
-            "high": {
-                "preventions": [
-                    "Seek immediate hospital care for severe or potentially life-threatening infections.",
-                    "Follow isolation protocols if fever is due to a contagious pathogen to protect others.",
-                    "Ensure strict hydration with IV fluids if dehydration occurs from high fever.",
-                    "Monitor temperature, pulse, and oxygen saturation continuously in a hospital setting.",
-                    "Follow dietary and activity recommendations strictly as per medical instructions.",
-                    "Implement supportive care such as cooling blankets or oxygen therapy as advised.",
-                    "Avoid self-medication beyond prescribed treatments to prevent complications.",
-                    "Maintain detailed records of symptoms, medications, and interventions for physicians."
-                ],
-                "medications": [
-                    "Administer IV fluids for hydration and electrolyte balance under supervision.",
-                    "Use paracetamol or antipyretics as prescribed to control temperature safely.",
-                    "Follow antibiotics or antivirals exactly as instructed for infection treatment.",
-                    "Ensure continuous monitoring in hospital for early detection of deterioration.",
-                    "Implement oxygen therapy if oxygen saturation drops below safe limits.",
-                    "Use additional supportive treatments like anti-inflammatory medications as directed.",
-                    "Follow physician guidance on nutrition and rest to optimize recovery.",
-                    "Avoid overuse of medications to reduce risk of side effects or resistance."
                 ]
             }
         },
@@ -243,8 +189,122 @@ def fetch_gemini_recommendations(disease: str, risk: float):
                     "Consult your hematologist regularly for treatment adjustments and preventive strategies."
                 ]
             }
+        },
+        "pneumonia": {
+            "low": {
+                "preventions": [
+                    "Practice regular hand hygiene and avoid close contact with people showing active respiratory infections.",
+                    "Keep vaccinations updated, including influenza and pneumococcal vaccines according to clinician advice.",
+                    "Maintain good hydration, balanced nutrition, and adequate sleep to support immune resilience.",
+                    "Use masks in crowded or high-risk settings if you develop cough, fever, or throat irritation."
+                ],
+                "medications": [
+                    "Mild respiratory symptoms usually require supportive care unless a doctor advises targeted treatment.",
+                    "Use antipyretics such as paracetamol for fever relief only as recommended by your clinician.",
+                    "Seek early clinical evaluation if cough persists, breathing worsens, or oxygen levels drop.",
+                    "Avoid self-starting antibiotics; treatment choice depends on confirmed cause and examination findings."
+                ]
+            },
+            "medium": {
+                "preventions": [
+                    "Monitor temperature, cough severity, breathing rate, and oxygen saturation to detect deterioration early.",
+                    "Prioritize rest, hydration, and protein-rich meals to support recovery from lower respiratory infection.",
+                    "Limit exposure to smoke, dust, and pollutants that may worsen airway inflammation and breathlessness.",
+                    "Follow strict respiratory etiquette and isolate when symptomatic to reduce disease transmission.",
+                    "Arrange timely follow-up with a physician and repeat imaging if symptoms do not improve.",
+                    "Use prescribed breathing exercises and positional strategies to improve ventilation and sputum clearance."
+                ],
+                "medications": [
+                    "Take physician-prescribed oral antibiotics or antivirals only when indicated by clinical diagnosis.",
+                    "Use bronchodilators or nebulization if advised for wheeze, airway narrowing, or dyspnea.",
+                    "Continue fever and pain control medicines as directed while monitoring response.",
+                    "Track all doses and timing to improve adherence and reduce partial treatment failure.",
+                    "Review treatment within 48-72 hours if symptoms persist, worsen, or new signs appear.",
+                    "Seek urgent care for low oxygen saturation, chest pain, confusion, or severe fatigue."
+                ]
+            },
+            "high": {
+                "preventions": [
+                    "Maintain close medical supervision with frequent reassessment of oxygen, breathing effort, and systemic status.",
+                    "Use strict infection-control precautions, including masking and minimal contact until clinically stable.",
+                    "Ensure adequate fluid-electrolyte balance and nutritional support during acute respiratory illness.",
+                    "Monitor warning signs continuously: cyanosis, persistent high fever, altered consciousness, and rapid breathing.",
+                    "Escalate immediately to emergency care if oxygen saturation declines or respiratory distress increases.",
+                    "Avoid strenuous activity and maintain recovery-focused rest to reduce cardiopulmonary burden.",
+                    "Coordinate care with pulmonology or internal medicine for severe or recurrent pneumonia episodes.",
+                    "Plan follow-up chest imaging and lab monitoring to confirm infection resolution and prevent relapse."
+                ],
+                "medications": [
+                    "Administer clinician-directed combination therapy, including intravenous antibiotics when severity requires admission.",
+                    "Use supplemental oxygen therapy promptly to maintain target oxygen saturation ranges.",
+                    "Consider hospital-based respiratory support, including high-flow oxygen or ventilation, if indicated.",
+                    "Continue antipyretics and supportive medication protocols under strict clinical monitoring.",
+                    "Adjust antimicrobials based on culture results, response trend, and antimicrobial stewardship guidance.",
+                    "Monitor renal and hepatic function during intensive therapy to prevent medication-related complications.",
+                    "Document adverse effects and update treatment plans rapidly with supervising specialists.",
+                    "Follow discharge medication and review schedule strictly to avoid rebound infection or complications."
+                ]
+            }
+        },
+        "tuberculosis": {
+            "low": {
+                "preventions": [
+                    "Ensure good room ventilation and avoid prolonged close contact in crowded indoor spaces.",
+                    "Use a mask consistently when cough or respiratory symptoms are present.",
+                    "Maintain balanced nutrition and hydration to support immune response during recovery.",
+                    "Seek early clinical review if cough persists beyond two weeks or worsens."
+                ],
+                "medications": [
+                    "Do not self-medicate with antibiotics; anti-TB therapy requires clinician-confirmed diagnosis.",
+                    "Complete all ordered diagnostic tests, including chest imaging and sputum evaluation.",
+                    "Use physician-directed symptomatic care while waiting for definitive diagnosis.",
+                    "Attend follow-up promptly if fever, night sweats, or weight loss continue."
+                ]
+            },
+            "medium": {
+                "preventions": [
+                    "Follow strict cough etiquette and mask use to reduce transmission risk to family members.",
+                    "Improve indoor airflow and reduce exposure in shared enclosed spaces whenever possible.",
+                    "Track symptoms daily including cough duration, sputum, fever pattern, and fatigue severity.",
+                    "Prioritize calorie-dense, protein-rich meals to prevent further weight loss during illness.",
+                    "Coordinate regular follow-up visits to assess treatment response and side effects.",
+                    "Screen close contacts according to local TB program guidance and physician advice."
+                ],
+                "medications": [
+                    "Start physician-prescribed first-line anti-tubercular therapy only after appropriate diagnostic confirmation.",
+                    "Take every dose on schedule to reduce treatment failure and drug resistance risk.",
+                    "Monitor liver function and other labs when advised during ongoing anti-TB therapy.",
+                    "Report medication adverse effects such as jaundice, severe nausea, or visual changes immediately.",
+                    "Continue treatment under directly observed or supervised protocols where available.",
+                    "Review regimen adherence frequently with your clinician to optimize outcomes."
+                ]
+            },
+            "high": {
+                "preventions": [
+                    "Maintain strict infection-control measures with masking, isolation guidance, and household risk reduction protocols.",
+                    "Arrange urgent specialist evaluation for severe respiratory symptoms, hypoxia, or systemic deterioration.",
+                    "Ensure frequent reassessment of nutrition, hydration, and functional status during active disease.",
+                    "Use close clinical monitoring to detect complications such as hemoptysis or progressive breathlessness.",
+                    "Coordinate comprehensive contact tracing and screening with public health support where applicable.",
+                    "Avoid missed doses completely to reduce multidrug-resistant tuberculosis emergence risk.",
+                    "Plan structured follow-up imaging and microbiological testing to confirm response trajectory.",
+                    "Seek emergency care immediately for chest pain, confusion, or worsening oxygenation."
+                ],
+                "medications": [
+                    "Continue full anti-TB combination regimen exactly as prescribed for the complete treatment duration.",
+                    "Escalate to specialist-led protocols rapidly if drug resistance is suspected or confirmed.",
+                    "Use inpatient care when severe disease, adherence barriers, or complications require close supervision.",
+                    "Monitor treatment toxicity with scheduled laboratory testing and timely regimen adjustments.",
+                    "Add supportive therapies, including oxygen or adjunctive treatment, when clinically indicated.",
+                    "Document every dose and adverse effect to guide safe continuation of therapy.",
+                    "Review susceptibility results and update medications promptly according to resistance patterns.",
+                    "Coordinate multidisciplinary follow-up to reduce relapse and long-term pulmonary impairment."
+                ]
+            }
         }
     }
+
+    recommendations["heart disease"] = recommendations["coronary artery disease"]
 
     # Determine risk tier thresholds
     if risk < 35:
@@ -263,7 +323,7 @@ def fetch_gemini_recommendations(disease: str, risk: float):
 
 # Test Run
 if __name__ == "__main__":
-    diseases = ["Diabetes", "Heart Disease", "Fever", "Anemia"]
+    diseases = ["Type-2 Diabetes", "Coronary Artery Disease", "Anemia", "Pneumonia"]
     risks = [10, 40, 70, 100]
 
     for disease in diseases:

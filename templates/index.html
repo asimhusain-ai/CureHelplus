@@ -52,7 +52,7 @@
                         </div>
                         <div class="highlight-card">
                             <h3>AI Risk Screening</h3>
-                            <p>Detects diabetes, heart, fever, and anemia risks.</p>
+                            <p>Detects Type-2 diabetes, coronary artery disease, and anemia risks.</p>
                         </div>
                         <div class="highlight-card">
                             <h3>Decision-Ready Insights</h3>
@@ -100,8 +100,16 @@
                         <input type="text" name="name" required placeholder="Enter full name" />
                     </label>
                     <label>
-                        Age*
-                        <input type="number" name="age" min="1" max="120" required />
+                        DOB*
+                        <input
+                            type="text"
+                            name="dob"
+                            required
+                            inputmode="numeric"
+                            placeholder="dd/mm/yyyy"
+                            pattern="(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)[0-9]{2}"
+                            autocomplete="bday"
+                        />
                     </label>
                     <div class="contact-status-row span-two">
                         <label class="contact-field">
@@ -152,24 +160,30 @@
             <header class="dashboard-header">
                 <div class="dashboard-title-group">
                     <h2 class="dashboard-title">CureHelp<span class="accent">+</span> Dashboard</h2>
-                    <p id="patient-summary" class="muted">No patient selected.</p>
+                    <div class="patient-summary-row">
+                        <p id="patient-summary" class="muted">No patient selected.</p>
+                        <button id="logout-button" type="button" class="ghost" hidden>Logout</button>
+                    </div>
                 </div>
                 <nav class="tab-navigation">
                     <div class="relative">
                         <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="goo-button inline-flex items-center justify-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="button">
-                            <span class="goo-button-label">Diseases</span>
+                            <span class="goo-button-label">Type-2 Diabetes</span>
                             <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
                         </button>
                         <div id="dropdown" class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
                             <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownDefaultButton">
                                 <li>
-                                    <a href="#" data-tab="diabetes" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Diabetes</a>
+                                    <a href="#" data-tab="diabetes" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Type-2 Diabetes</a>
                                 </li>
                                 <li>
-                                    <a href="#" data-tab="heart" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Heart Disease</a>
+                                    <a href="#" data-tab="pneumonia" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Pneumonia</a>
                                 </li>
                                 <li>
-                                    <a href="#" data-tab="fever" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Fever</a>
+                                    <a href="#" data-tab="heart" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Coronary Artery Disease</a>
+                                </li>
+                                <li>
+                                    <a href="#" data-tab="tuberculosis" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Tuberculosis(TB)</a>
                                 </li>
                                 <li>
                                     <a href="#" data-tab="anemia" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Anemia</a>
@@ -192,46 +206,46 @@
             <div class="tab-wrapper tab-wrapper-flat">
                 <div class="tab-panel active" id="diabetes-panel">
                     <div class="panel-header-row">
-                        <h3 class="panel-title">Diabetes Risk </h3>
+                        <h3 class="panel-title">Type-2 Diabetes Risk </h3>
                         <button type="button" class="primary prediction-button test-inputs-button" data-disease="diabetes">TEST-INPUTS</button>
                     </div>
                     <form id="diabetes-form" class="grid-three">
-                        <label>
+                        <label data-help="Gender: Biological classification of an individual, typically categorized as male or female, influencing hormonal profiles, disease risk patterns, physiological parameters, and reference ranges used in clinical assessment and predictive medical modeling.">
                             Gender
                             <select name="gender">
                                 <option value="Female">Female</option>
                                 <option value="Male">Male</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Age: Chronological measurement of time lived, expressed in years, strongly associated with physiological decline, metabolic changes, immune function variation, and increased risk of chronic diseases including cardiovascular disorders and diabetes.">
                             Age
                             <input type="number" name="age" value="40" min="1" max="120" />
                         </label>
-                        <label>
+                        <label data-help="BMI (Body Mass Index): Numerical value calculated from weight and height, used to classify underweight, normal weight, overweight, and obesity categories, associated with metabolic risk, cardiovascular disease probability, and insulin resistance.">
                             BMI
                             <input type="number" step="0.1" name="bmi" value="25" />
                         </label>
-                        <label>
+                        <label data-help="Glucose: Concentration of sugar in the bloodstream, representing primary energy source for cells, used clinically to diagnose diabetes, assess metabolic function, and monitor glycemic control and insulin response efficiency.">
                             Glucose
                             <input type="number" name="glucose" value="100" />
                         </label>
-                        <label>
+                        <label data-help="Blood Pressure: Force exerted by circulating blood against arterial walls, measured as systolic and diastolic values, serving as a major indicator of cardiovascular health and hypertension-related disease risk.">
                             Blood Pressure
                             <input type="number" name="blood_pressure" value="120" />
                         </label>
-                        <label>
+                        <label data-help="Pregnancies: Total number of times an individual has carried a pregnancy, used as a reproductive health indicator and associated with hormonal changes influencing metabolic and diabetes risk assessment.">
                             Pregnancies
                             <input type="number" name="pregnancies" value="0" min="0" max="20" />
                         </label>
-                        <label>
+                        <label data-help="Skin Thickness: Measurement of subcutaneous fat layer typically assessed at standardized body sites, serving as an indirect indicator of body fat distribution and insulin resistance in metabolic evaluations.">
                             Skin Thickness
                             <input type="number" name="skin_thickness" value="20" />
                         </label>
-                        <label>
+                        <label data-help="Insulin: Hormone produced by the pancreas regulating blood glucose uptake into cells, essential for metabolic balance, with abnormal levels indicating insulin resistance, diabetes progression, or endocrine dysfunction.">
                             Insulin
                             <input type="number" name="insulin" value="79" />
                         </label>
-                        <label>
+                        <label data-help="Diabetes Pedigree Function: Quantitative score estimating genetic predisposition to diabetes based on family history, integrating hereditary influence into predictive modeling of metabolic disorder susceptibility.">
                             Diabetes Pedigree Function
                             <input type="number" step="0.01" name="diabetes_pedigree_function" value="0.5" />
                         </label>
@@ -244,30 +258,30 @@
 
                 <div class="tab-panel" id="heart-panel">
                     <div class="panel-header-row">
-                        <h3 class="panel-title">Heart Disease Risk </h3>
+                        <h3 class="panel-title">Coronary Artery Disease Risk </h3>
                         <button type="button" class="primary prediction-button test-inputs-button" data-disease="heart">TEST-INPUTS</button>
                     </div>
                     <form id="heart-form" class="grid-three">
-                        <label>
+                        <label data-help="Gender: Biological classification of an individual, typically categorized as male or female, influencing hormonal profiles, disease risk patterns, physiological parameters, and reference ranges used in clinical assessment and predictive medical modeling.">
                             Gender
                             <select name="gender">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Age: Chronological measurement of time lived, expressed in years, strongly associated with physiological decline, metabolic changes, immune function variation, and increased risk of chronic diseases including cardiovascular disorders and diabetes.">
                             Age
                             <input type="number" name="age" value="40" />
                         </label>
-                        <label>
+                        <label data-help="Resting BP: Blood pressure measured under calm, inactive conditions, reflecting baseline cardiovascular function and serving as a reference indicator for hypertension risk and coronary artery disease evaluation.">
                             Resting BP
                             <input type="number" name="resting_bp" value="130" />
                         </label>
-                        <label>
+                        <label data-help="Cholesterol: Lipid molecule present in blood, essential for cell membrane structure and hormone synthesis, with elevated levels contributing to atherosclerosis and increased cardiovascular disease risk.">
                             Cholesterol
                             <input type="number" name="cholesterol" value="220" />
                         </label>
-                        <label>
+                        <label data-help="Chest Pain Type: Clinical categorization of chest discomfort patterns, including typical angina, atypical angina, non-anginal pain, or asymptomatic presentation, aiding in assessment of coronary artery disease probability.">
                             Chest Pain Type
                             <select name="chest_pain_type">
                                 <option value="1">1 - typical angina</option>
@@ -276,14 +290,14 @@
                                 <option value="4">4 - asymptomatic</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Fasting BS: Blood sugar level measured after prolonged fasting, used to evaluate glucose metabolism efficiency and diagnose diabetes or impaired fasting glucose conditions.">
                             Fasting BS &gt; 120
                             <select name="fasting_bs">
                                 <option value="No">No</option>
                                 <option value="Yes">Yes</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Resting ECG: Electrical recording of cardiac activity at rest, detecting arrhythmias, ischemia, conduction abnormalities, and structural coronary artery disease indicators.">
                             Resting ECG
                             <select name="resting_ecg">
                                 <option value="0">0 - normal</option>
@@ -291,22 +305,22 @@
                                 <option value="2">2 - LV hypertrophy</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Max Heart Rate: Highest achievable heart rate during intense physical exertion, reflecting cardiovascular fitness and cardiac functional capacity.">
                             Max Heart Rate
                             <input type="number" name="max_heart_rate" value="150" />
                         </label>
-                        <label>
+                        <label data-help="Exercise Angina: Presence of chest pain triggered by physical exertion, indicating reduced coronary blood flow and potential myocardial ischemia.">
                             Exercise Angina
                             <select name="exercise_angina">
                                 <option value="No">No</option>
                                 <option value="Yes">Yes</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="ST Depression: Measured deviation in the ST segment on an electrocardiogram, indicating myocardial ischemia or reduced oxygen supply to heart muscle tissue.">
                             ST Depression
                             <input type="number" step="0.1" name="st_depression" value="1.0" />
                         </label>
-                        <label>
+                        <label data-help="Slope: Characteristic pattern of ST segment response during stress testing, classified as upsloping, flat, or downsloping, associated with varying degrees of ischemic risk.">
                             Slope of ST
                             <select name="slope">
                                 <option value="1">1 - upsloping</option>
@@ -314,11 +328,11 @@
                                 <option value="3">3 - downsloping</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="Major Vessels: Number of major coronary arteries exhibiting significant narrowing or blockage detected through imaging, reflecting severity of coronary artery disease.">
                             Major Vessels (ca)
                             <input type="number" name="major_vessels" value="0" min="0" max="3" />
                         </label>
-                        <label>
+                        <label data-help="Thal: Thallium stress test result or thalassemia-related categorization used in cardiac evaluation datasets, indicating normal perfusion, fixed defect, or reversible defect patterns.">
                             Thalassemia
                             <select name="thal">
                                 <option value="3">3 - normal</option>
@@ -333,198 +347,72 @@
                     <div id="heart-result" class="result-container"></div>
                 </div>
 
-                <div class="tab-panel" id="fever-panel">
-                    <div class="panel-header-row">
-                        <h3 class="panel-title">Fever Risk &amp; Severity </h3>
-                        <button type="button" class="primary prediction-button test-inputs-button" data-disease="fever">TEST-INPUTS</button>
-                    </div>
-                    <form id="fever-form" class="grid-three">
-                        <label>
-                            Age
-                            <input type="number" name="age" value="40" />
-                        </label>
-                        <label>
-                            BMI
-                            <input type="number" step="0.1" name="bmi" value="25" />
-                        </label>
-                        <label>
-                            Temperature (°C)
-                            <input type="number" step="0.1" name="temperature" value="36.5" />
-                        </label>
-                        <label>
-                            Humidity (%)
-                            <input type="number" name="humidity" value="50" />
-                        </label>
-                        <label>
-                            Air Quality Index
-                            <input type="number" name="air_quality" value="50" />
-                        </label>
-                        <label>
-                            Heart Rate
-                            <input type="number" name="heart_rate" value="70" />
-                        </label>
-                        <label>
-                            Gender
-                            <select name="gender">
-                                <option value="Female">Female</option>
-                                <option value="Male">Male</option>
-                            </select>
-                        </label>
-                        <label>
-                            Headache
-                            <select name="headache">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Body Ache
-                            <select name="body_ache">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Fatigue
-                            <select name="fatigue">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Chronic Conditions
-                            <select name="chronic_conditions">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Allergies
-                            <select name="allergies">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Smoking History
-                            <select name="smoking_history">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Alcohol Consumption
-                            <select name="alcohol_consumption">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </label>
-                        <label>
-                            Physical Activity
-                            <select name="physical_activity">
-                                <option value="Sedentary">Sedentary</option>
-                                <option value="Moderate">Moderate</option>
-                                <option value="Active">Active</option>
-                            </select>
-                        </label>
-                        <label>
-                            Diet Type
-                            <select name="diet_type">
-                                <option value="Vegan">Vegan</option>
-                                <option value="Vegetarian">Vegetarian</option>
-                                <option value="Non-Vegetarian">Non-Vegetarian</option>
-                            </select>
-                        </label>
-                        <label>
-                            Blood Pressure
-                            <select name="blood_pressure">
-                                <option value="Normal">Normal</option>
-                                <option value="Low">Low</option>
-                                <option value="High">High</option>
-                            </select>
-                        </label>
-                        <label>
-                            Previous Medication
-                            <select name="previous_medication">
-                                <option value="None">None</option>
-                                <option value="Ibuprofen">Ibuprofen</option>
-                                <option value="Paracetamol">Paracetamol</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </label>
-                        <div class="prediction-actions">
-                            <button type="submit" class="primary prediction-button">PREDICTION</button>
-                        </div>
-                    </form>
-                    <div id="fever-result" class="result-container"></div>
-                </div>
-
                 <div class="tab-panel" id="anemia-panel">
                     <div class="panel-header-row">
                         <h3 class="panel-title">Anemia Risk </h3>
                         <button type="button" class="primary prediction-button test-inputs-button" data-disease="anemia">TEST-INPUTS</button>
                     </div>
                     <form id="anemia-form" class="grid-three">
-                        <label>
+                        <label data-help="Gender: Biological classification of an individual, typically categorized as male or female, influencing hormonal profiles, disease risk patterns, physiological parameters, and reference ranges used in clinical assessment and predictive medical modeling.">
                             Gender
                             <select name="gender">
                                 <option value="Female">Female</option>
                                 <option value="Male">Male</option>
                             </select>
                         </label>
-                        <label>
+                        <label data-help="RBC: Red blood cell count measuring oxygen-carrying cells in circulation, used to evaluate anemia, blood loss, and hematological disorders.">
                             RBC (10^6/µL)
                             <input type="number" step="0.01" name="rbc" value="5" />
                         </label>
-                        <label>
+                        <label data-help="Hemoglobin: Iron-containing protein in red blood cells responsible for oxygen transport, serving as primary indicator for anemia and oxygen delivery capacity.">
                             Hemoglobin (g/dL)
                             <input type="number" step="0.1" name="hemoglobin" value="14" />
                         </label>
-                        <label>
+                        <label data-help="Hematocrit: Percentage of blood volume occupied by red blood cells, reflecting oxygen transport potential and hydration status.">
                             Hematocrit
                             <input type="number" step="0.1" name="hematocrit" value="42" />
                         </label>
-                        <label>
+                        <label data-help="MCV: Mean corpuscular volume representing average red blood cell size, used to classify types of anemia and detect morphological abnormalities.">
                             MCV (fL)
                             <input type="number" step="0.1" name="mcv" value="90" />
                         </label>
-                        <label>
+                        <label data-help="MCH: Mean corpuscular hemoglobin indicating average hemoglobin content per red blood cell, aiding anemia classification.">
                             MCH (pg)
                             <input type="number" step="0.1" name="mch" value="30" />
                         </label>
-                        <label>
+                        <label data-help="MCHC: Mean corpuscular hemoglobin concentration representing average hemoglobin concentration within red blood cells, useful in diagnosing hypochromic or normochromic anemia.">
                             MCHC (g/dL)
                             <input type="number" step="0.1" name="mchc" value="34" />
                         </label>
-                        <label>
+                        <label data-help="WBC: White blood cell count measuring immune cells in circulation, indicating infection, inflammation, or immune system disorders.">
                             WBC (10^3/µL)
                             <input type="number" step="0.1" name="wbc" value="7" />
                         </label>
-                        <label>
+                        <label data-help="Platelets: Cell fragments involved in blood clotting and hemostasis, essential for preventing excessive bleeding and detecting clotting disorders.">
                             Platelets (10^3/µL)
                             <input type="number" step="0.1" name="platelets" value="250" />
                         </label>
-                        <label>
+                        <label data-help="RDW: Red cell distribution width measuring variation in red blood cell size, aiding differentiation of anemia types.">
                             RDW
                             <input type="number" step="0.1" name="rdw" value="13.5" />
                         </label>
-                        <label>
+                        <label data-help="PDW: Platelet distribution width indicating variability in platelet size, associated with platelet activation and clotting abnormalities.">
                             PDW
                             <input type="number" step="0.1" name="pdw" value="12" />
                         </label>
-                        <label>
+                        <label data-help="PCT: Plateletcrit representing proportion of blood volume occupied by platelets, reflecting total platelet mass and clotting potential.">
                             PCT
                             <input type="number" step="0.01" name="pct" value="0.22" />
                         </label>
-                        <label>
+                        <label data-help="Lymphocytes: Subtype of white blood cells responsible for adaptive immune response, including antibody production and cellular immunity.">
                             Lymphocytes (%)
                             <input type="number" step="0.1" name="lymphocytes" value="30" />
                         </label>
-                        <label>
+                        <label data-help="Neutrophils_pct: Percentage proportion of neutrophils among total white blood cells, indicating acute infection or inflammatory response.">
                             Neutrophils (%)
                             <input type="number" step="0.1" name="neutrophils_pct" value="60" />
                         </label>
-                        <label>
+                        <label data-help="Neutrophils_num: Absolute count of neutrophils in blood, reflecting innate immune defense status and infection severity.">
                             Neutrophils (#)
                             <input type="number" step="0.1" name="neutrophils_num" value="4.2" />
                         </label>
@@ -533,6 +421,144 @@
                         </div>
                     </form>
                     <div id="anemia-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel" id="pneumonia-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Pneumonia Detection</h3>
+                    </div>
+                    <form id="pneumonia-form" class="grid-three" enctype="multipart/form-data">
+                        <div class="report-upload-field" data-hs-file-upload>
+                            <input id="pneumonia-image" class="file-upload-native-input" type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required />
+
+                            <template data-hs-file-upload-preview>
+                                <div class="p-3 bg-layer border border-layer-line rounded-xl">
+                                    <div class="mb-1 flex justify-between items-center">
+                                        <div class="flex items-center gap-x-3">
+                                            <span class="size-10 flex justify-center items-center bg-layer border border-layer-line text-muted-foreground-1 rounded-lg" data-hs-file-upload-file-icon>
+                                                <img class="rounded-lg hidden" data-dz-thumbnail />
+                                            </span>
+                                            <div>
+                                                <p class="text-sm font-medium text-foreground">
+                                                    <span class="truncate inline-block max-w-75 align-bottom" data-hs-file-upload-file-name></span>.<span data-hs-file-upload-file-ext></span>
+                                                </p>
+                                                <p class="text-xs text-muted-foreground-1" data-hs-file-upload-file-size></p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-x-2">
+                                            <button type="button" class="text-muted-foreground-1 hover:text-foreground focus:outline-hidden focus:text-foreground" data-hs-file-upload-remove>
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-x-3 whitespace-nowrap">
+                                        <div class="flex w-full h-2 bg-surface-1 rounded-full overflow-hidden" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-hs-file-upload-progress-bar>
+                                            <div class="flex flex-col justify-center rounded-full overflow-hidden bg-primary text-xs text-primary-foreground text-center whitespace-nowrap transition-all duration-500 hs-file-upload-complete:bg-green-500" style="width: 0" data-hs-file-upload-progress-bar-pane></div>
+                                        </div>
+                                        <div class="w-10 text-end">
+                                            <span class="text-sm text-foreground">
+                                                <span data-hs-file-upload-progress-bar-value>0</span>%
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="cursor-pointer p-12 flex justify-center bg-layer border border-dashed border-line-3 rounded-xl" data-hs-file-upload-trigger>
+                                <div class="text-center">
+                                    <span class="inline-flex justify-center items-center size-16">
+                                        <svg class="shrink-0 w-16 text-primary mx-auto" width="73" height="47" viewBox="0 0 73 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M54.519 40.4773V6.76876C54.519 3.92686 52.2121 1.62305 49.3664 1.62305H22.7076C19.8619 1.62305 17.555 3.92686 17.555 6.76876V40.4773M54.519 40.4773C54.519 43.3192 52.2121 45.6231 49.3664 45.6231H22.7076C19.8619 45.6231 17.555 43.3192 17.555 40.4773M54.519 40.4773L54.5189 34.6563L48.6564 28.3566L43.2612 34.6373C42.4421 35.5908 40.9662 35.5955 40.141 34.6472L30.3406 23.3844L17.555 36.9154V40.4773M6.20483 9.59424L17.707 7.6798V42.5188L12.6457 43.5828C9.25658 44.2954 5.94238 42.0892 5.29702 38.691L1.14643 16.8357C0.500082 13.4322 2.78322 10.1637 6.20483 9.59424ZM65.8691 9.59424L54.3669 7.6798V42.5188L59.4282 43.5828C62.8173 44.2954 66.1316 42.0892 66.7769 38.691L70.9274 16.8357C71.5738 13.4322 69.2907 10.1637 65.8691 9.59424ZM45.0584 15.3561C45.0584 17.7228 43.1372 19.6413 40.7673 19.6413C38.3974 19.6413 36.4762 17.7228 36.4762 15.3561C36.4762 12.9894 38.3974 11.0708 40.7673 11.0708C43.1372 11.0708 45.0584 12.9894 45.0584 15.3561Z" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    </span>
+
+                                    <div class="mt-4 flex flex-wrap justify-center text-sm/6 text-muted-foreground-2">
+                                        <span class="pe-1 font-medium text-foreground file-upload-prompt">Drop your file here or</span>
+                                        <span class="bg-layer font-semibold text-primary hover:text-primary-hover rounded-lg decoration-2 hover:underline focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary-focus focus-within:ring-offset-2 file-upload-browse" role="button" tabindex="0">browse</span>
+                                    </div>
+
+                                    <p class="mt-1 text-xs text-muted-foreground file-upload-meta">Pick a file up to 10MB.</p>
+                                    <p class="mt-1 text-xs text-muted-foreground file-upload-supported">Supported files: JPG, JPEG, PNG</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 space-y-2 empty:mt-0" data-hs-file-upload-previews></div>
+                        </div>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="pneumonia-result" class="result-container"></div>
+                </div>
+
+                <div class="tab-panel" id="tuberculosis-panel">
+                    <div class="panel-header-row">
+                        <h3 class="panel-title">Tuberculosis Detection</h3>
+                    </div>
+                    <form id="tuberculosis-form" class="grid-three" enctype="multipart/form-data">
+                        <div class="report-upload-field" data-hs-file-upload>
+                            <input id="tuberculosis-image" class="file-upload-native-input" type="file" name="image" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required />
+
+                            <template data-hs-file-upload-preview>
+                                <div class="p-3 bg-layer border border-layer-line rounded-xl">
+                                    <div class="mb-1 flex justify-between items-center">
+                                        <div class="flex items-center gap-x-3">
+                                            <span class="size-10 flex justify-center items-center bg-layer border border-layer-line text-muted-foreground-1 rounded-lg" data-hs-file-upload-file-icon>
+                                                <img class="rounded-lg hidden" data-dz-thumbnail />
+                                            </span>
+                                            <div>
+                                                <p class="text-sm font-medium text-foreground">
+                                                    <span class="truncate inline-block max-w-75 align-bottom" data-hs-file-upload-file-name></span>.<span data-hs-file-upload-file-ext></span>
+                                                </p>
+                                                <p class="text-xs text-muted-foreground-1" data-hs-file-upload-file-size></p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-x-2">
+                                            <button type="button" class="text-muted-foreground-1 hover:text-foreground focus:outline-hidden focus:text-foreground" data-hs-file-upload-remove>
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-x-3 whitespace-nowrap">
+                                        <div class="flex w-full h-2 bg-surface-1 rounded-full overflow-hidden" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-hs-file-upload-progress-bar>
+                                            <div class="flex flex-col justify-center rounded-full overflow-hidden bg-primary text-xs text-primary-foreground text-center whitespace-nowrap transition-all duration-500 hs-file-upload-complete:bg-green-500" style="width: 0" data-hs-file-upload-progress-bar-pane></div>
+                                        </div>
+                                        <div class="w-10 text-end">
+                                            <span class="text-sm text-foreground">
+                                                <span data-hs-file-upload-progress-bar-value>0</span>%
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="cursor-pointer p-12 flex justify-center bg-layer border border-dashed border-line-3 rounded-xl" data-hs-file-upload-trigger>
+                                <div class="text-center">
+                                    <span class="inline-flex justify-center items-center size-16">
+                                        <svg class="shrink-0 w-16 text-primary mx-auto" width="73" height="47" viewBox="0 0 73 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M54.519 40.4773V6.76876C54.519 3.92686 52.2121 1.62305 49.3664 1.62305H22.7076C19.8619 1.62305 17.555 3.92686 17.555 6.76876V40.4773M54.519 40.4773C54.519 43.3192 52.2121 45.6231 49.3664 45.6231H22.7076C19.8619 45.6231 17.555 43.3192 17.555 40.4773M54.519 40.4773L54.5189 34.6563L48.6564 28.3566L43.2612 34.6373C42.4421 35.5908 40.9662 35.5955 40.141 34.6472L30.3406 23.3844L17.555 36.9154V40.4773M6.20483 9.59424L17.707 7.6798V42.5188L12.6457 43.5828C9.25658 44.2954 5.94238 42.0892 5.29702 38.691L1.14643 16.8357C0.500082 13.4322 2.78322 10.1637 6.20483 9.59424ZM65.8691 9.59424L54.3669 7.6798V42.5188L59.4282 43.5828C62.8173 44.2954 66.1316 42.0892 66.7769 38.691L70.9274 16.8357C71.5738 13.4322 69.2907 10.1637 65.8691 9.59424ZM45.0584 15.3561C45.0584 17.7228 43.1372 19.6413 40.7673 19.6413C38.3974 19.6413 36.4762 17.7228 36.4762 15.3561C36.4762 12.9894 38.3974 11.0708 40.7673 11.0708C43.1372 11.0708 45.0584 12.9894 45.0584 15.3561Z" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    </span>
+
+                                    <div class="mt-4 flex flex-wrap justify-center text-sm/6 text-muted-foreground-2">
+                                        <span class="pe-1 font-medium text-foreground file-upload-prompt">Drop your file here or</span>
+                                        <span class="bg-layer font-semibold text-primary hover:text-primary-hover rounded-lg decoration-2 hover:underline focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary-focus focus-within:ring-offset-2 file-upload-browse" role="button" tabindex="0">browse</span>
+                                    </div>
+
+                                    <p class="mt-1 text-xs text-muted-foreground file-upload-meta">Pick a file up to 10MB.</p>
+                                    <p class="mt-1 text-xs text-muted-foreground file-upload-supported">Supported files: JPG, JPEG, PNG</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 space-y-2 empty:mt-0" data-hs-file-upload-previews></div>
+                        </div>
+                        <div class="prediction-actions">
+                            <button type="submit" class="primary prediction-button">PREDICTION</button>
+                        </div>
+                    </form>
+                    <div id="tuberculosis-result" class="result-container"></div>
                 </div>
 
                 <div class="tab-panel assistant-panel-hidden" id="assistant-panel" aria-hidden="true">
@@ -553,8 +579,8 @@
                     <h3 class="panel-title">Nearest Healthcare </h3>
                     <div class="toolbar consultant-toolbar">
                         <div class="consultant-tabs" role="tablist" aria-label="Provider type">
-                            <button type="button" id="hospital-tab" class="consultant-tab active" data-target="hospital-view" role="tab" aria-controls="hospital-view" aria-selected="true">Hospitals</button>
-                            <button type="button" id="doctor-tab" class="consultant-tab" data-target="doctor-view" role="tab" aria-controls="doctor-view" aria-selected="false">Doctors</button>
+                            <button type="button" id="doctor-tab" class="consultant-tab active" data-target="doctor-view" role="tab" aria-controls="doctor-view" aria-selected="true">Doctors</button>
+                            <button type="button" id="hospital-tab" class="consultant-tab" data-target="hospital-view" role="tab" aria-controls="hospital-view" aria-selected="false">Hospitals</button>
                         </div>
                         <div class="consultant-controls">
                             <input type="search" id="consultant-search" placeholder="Search hospitals or doctors" />
@@ -562,11 +588,11 @@
                         </div>
                     </div>
                     <div class="consultant-views">
-                        <section id="hospital-view" class="consultant-view active" role="tabpanel" aria-labelledby="hospital-tab" aria-hidden="false">
+                        <section id="hospital-view" class="consultant-view" role="tabpanel" aria-labelledby="hospital-tab" aria-hidden="true" hidden>
                             <h4 class="column-title">Hospitals Nearby</h4>
                             <div id="hospital-list" class="grid-cards"></div>
                         </section>
-                        <section id="doctor-view" class="consultant-view" role="tabpanel" aria-labelledby="doctor-tab" aria-hidden="true" hidden>
+                        <section id="doctor-view" class="consultant-view active" role="tabpanel" aria-labelledby="doctor-tab" aria-hidden="false">
                             <h4 class="column-title">Doctors Nearby</h4>
                             <div id="doctor-list" class="grid-cards"></div>
                         </section>
@@ -604,6 +630,16 @@
             <div class="test-inputs-actions">
                 <button type="button" id="test-inputs-normal" class="test-inputs-action">Normal</button>
                 <button type="button" id="test-inputs-abnormal" class="test-inputs-action">Abnormal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="logout-confirm-modal" class="modal-overlay" hidden>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
+            <h3 id="logout-confirm-title">Logged out</h3>
+            <p id="logout-confirm-message" class="modal-message">You are logged out. Please login again.</p>
+            <div class="modal-actions">
+                <button type="button" id="logout-confirm-ok" class="primary">OK</button>
             </div>
         </div>
     </div>

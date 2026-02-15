@@ -7,8 +7,9 @@ from helper import fetch_gemini_recommendations
     "disease,risk,expected_level",
     [
         ("Diabetes", 10, "low"),
-        ("heart disease", 55, "medium"),
-        ("FEVER", 90, "high"),
+        ("coronary artery disease", 55, "medium"),
+        ("Anemia", 90, "high"),
+        ("Tuberculosis", 42, "medium"),
     ],
 )
 def test_fetch_gemini_recommendations_levels(disease, risk, expected_level):

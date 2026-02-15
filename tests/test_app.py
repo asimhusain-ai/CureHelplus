@@ -1,6 +1,15 @@
 import json
+import io
 
 import pytest
+from PIL import Image
+
+
+def _valid_png_bytes() -> bytes:
+    image = Image.new("RGB", (2, 2), color=(128, 128, 128))
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    return buffer.getvalue()
 
 
 def _post_json(client, url, payload):
@@ -43,7 +52,7 @@ def test_create_profile_and_report_flow(app_client):
     report_resp = client.get("/api/report")
     assert report_resp.status_code == 200
     report_data = report_resp.get_json()
-    assert "Diabetes" in report_data["predictions"]
+    assert "Type-2 Diabetes" in report_data["predictions"]
 
     pdf_resp = client.get("/api/report/pdf")
     assert pdf_resp.status_code == 200
@@ -54,7 +63,7 @@ def test_create_profile_and_report_flow(app_client):
     assert client.get("/api/report").get_json()["predictions"] == {}
 
 
-def test_heart_and_fever_predictions(app_client):
+def test_heart_prediction(app_client):
     app_module, client = app_client
 
     _post_json(
@@ -89,32 +98,6 @@ def test_heart_and_fever_predictions(app_client):
     assert heart_resp.status_code == 200
     heart_data = heart_resp.get_json()
     assert heart_data["probability"] == pytest.approx(81.0)
-
-    fever_payload = {
-        "temperature": 38.5,
-        "age": 28,
-        "bmi": 24.0,
-        "humidity": 60,
-        "air_quality": 80,
-        "heart_rate": 90,
-        "gender": "Male",
-        "headache": "Yes",
-        "body_ache": "No",
-        "fatigue": "Yes",
-        "chronic_conditions": "No",
-        "allergies": "No",
-        "smoking_history": "No",
-        "alcohol_consumption": "No",
-        "physical_activity": "Active",
-        "diet_type": "Vegetarian",
-        "blood_pressure": "Normal",
-        "previous_medication": "None",
-    }
-    fever_resp = _post_json(client, "/api/fever", fever_payload)
-    assert fever_resp.status_code == 200
-    fever_data = fever_resp.get_json()
-    assert fever_data["probability"] == pytest.approx(65.0)
-    assert fever_data["severity"] == "Moderate"
 
 
 def test_anemia_prediction_and_misc_endpoints(app_client):
@@ -180,3 +163,67 @@ def test_chat_requires_message(app_client):
     resp = _post_json(client, "/api/chat", {"message": ""})
     assert resp.status_code == 400
     assert resp.get_json()["success"] is False
+
+
+def test_pneumonia_prediction(app_client):
+    app_module, client = app_client
+
+    resp = client.post(
+        "/api/pneumonia",
+        data={"image": (io.BytesIO(_valid_png_bytes()), "scan.png")},
+        content_type="multipart/form-data",
+    )
+
+    assert resp.status_code == 200
+    payload = resp.get_json()
+    assert payload["success"] is True
+    assert payload["disease"] == "Pneumonia"
+    assert payload["result"] == "Pneumonia"
+    assert payload["probability"] == pytest.approx(0.9)
+
+
+def test_pneumonia_rejects_invalid_extension(app_client):
+    app_module, client = app_client
+
+    resp = client.post(
+        "/api/pneumonia",
+        data={"image": (io.BytesIO(b"fake-xray"), "scan.gif")},
+        content_type="multipart/form-data",
+    )
+
+    assert resp.status_code == 400
+    payload = resp.get_json()
+    assert payload["success"] is False
+
+
+def test_tuberculosis_prediction(app_client):
+    app_module, client = app_client
+
+    resp = client.post(
+        "/api/tuberculosis",
+        data={"image": (io.BytesIO(_valid_png_bytes()), "scan.png")},
+        content_type="multipart/form-data",
+    )
+
+    assert resp.status_code == 200
+    payload = resp.get_json()
+    assert payload["success"] is True
+    assert payload["disease"] == "Tuberculosis"
+    assert payload["prediction"] == "Tuberculosis"
+    assert payload["result"] == "Tuberculosis"
+    assert payload["confidence"] == "Very High Risk"
+    assert payload["probability"] == pytest.approx(0.85)
+
+
+def test_tuberculosis_rejects_invalid_extension(app_client):
+    app_module, client = app_client
+
+    resp = client.post(
+        "/api/tuberculosis",
+        data={"image": (io.BytesIO(b"fake-xray"), "scan.gif")},
+        content_type="multipart/form-data",
+    )
+
+    assert resp.status_code == 400
+    payload = resp.get_json()
+    assert payload["success"] is False
