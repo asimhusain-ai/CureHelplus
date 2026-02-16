@@ -19,6 +19,24 @@ const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
 const diseasesDropdownToggle = document.getElementById("dropdownDefaultButton");
 const diseasesDropdownMenu = document.getElementById("dropdown");
 const diseasesDropdownLabel = diseasesDropdownToggle?.querySelector(".goo-button-label");
+const resourcesDropdownContainer = document.getElementById("landing-resources");
+const resourcesDropdownToggle = document.getElementById("resources-toggle");
+const resourcesDropdownMenu = document.getElementById("resources-menu");
+const researchPopupTrigger = document.querySelector("[data-research-popup='open']");
+const researchPopup = document.getElementById("research-popup");
+const researchPopupClose = document.getElementById("research-popup-close");
+const contactFormTrigger = document.querySelector("[data-contact-popup='open']");
+const contactFormMenu = document.getElementById("contact-form-menu");
+const resourceContactForm = document.getElementById("resource-contact-form");
+const contactFormCloseButton = document.getElementById("contact-form-close");
+const resourceContactStatus = document.getElementById("resource-contact-status");
+const docsSectionTriggers = Array.from(document.querySelectorAll("[data-docs-section]"));
+const docsPopup = document.getElementById("docs-popup");
+const docsPopupClose = document.getElementById("docs-popup-close");
+const docsPopupBody = document.getElementById("docs-popup-body");
+const docsPopupMain = document.getElementById("docs-popup-main");
+const docsPopupSections = Array.from(document.querySelectorAll(".docs-popup-section"));
+const footerTip = document.getElementById("footer-tip");
 const medicalReportInput = document.getElementById("medical-report");
 const reportLoadingModal = document.getElementById("report-loading-modal");
 const loaderWrapper = document.getElementById("css3-spinner-svg-pulse-wrapper");
@@ -249,6 +267,11 @@ let pendingTestInputsDisease = null;
 let historyInitialized = false;
 let isRestoringHistory = false;
 let isDiseasesDropdownOpen = false;
+let isResourcesDropdownOpen = false;
+let isResearchPopupOpen = false;
+let isContactFormPopupOpen = false;
+let isDocsPopupOpen = false;
+let isLoginPopupOpen = false;
 const diseaseTabKeys = new Set(["pneumonia", "tuberculosis", "diabetes", "heart", "anemia"]);
 const diseaseTabLabels = {
   pneumonia: "Pneumonia",
@@ -1117,6 +1140,180 @@ function toggleDiseasesDropdown() {
   }
 }
 
+function openResourcesDropdown() {
+  if (!resourcesDropdownMenu) return;
+  resourcesDropdownMenu.classList.remove("hidden");
+  resourcesDropdownToggle?.setAttribute("aria-expanded", "true");
+  resourcesDropdownToggle?.classList.add("open");
+  isResourcesDropdownOpen = true;
+}
+
+function closeResourcesDropdown() {
+  if (!resourcesDropdownMenu) return;
+  resourcesDropdownMenu.classList.add("hidden");
+  resourcesDropdownToggle?.setAttribute("aria-expanded", "false");
+  resourcesDropdownToggle?.classList.remove("open");
+  isResourcesDropdownOpen = false;
+}
+
+function toggleResourcesDropdown() {
+  if (!resourcesDropdownMenu) return;
+  if (isResourcesDropdownOpen) {
+    closeResourcesDropdown();
+  } else {
+    openResourcesDropdown();
+  }
+}
+
+function openContactFormPopup() {
+  if (!contactFormMenu) return;
+  closeResourcesDropdown();
+  contactFormMenu.classList.remove("hidden");
+  isContactFormPopupOpen = true;
+}
+
+function closeContactFormPopup() {
+  if (!contactFormMenu) return;
+  contactFormMenu.classList.add("hidden");
+  isContactFormPopupOpen = false;
+}
+
+function toggleContactFormPopup() {
+  if (!contactFormMenu) return;
+  if (isContactFormPopupOpen) {
+    closeContactFormPopup();
+  } else {
+    openContactFormPopup();
+  }
+}
+
+function openLoginPopup() {
+  if (!pages.patient || isLoginPopupOpen) return;
+  closeResourcesDropdown();
+  closeResearchPopup();
+  closeContactFormPopup();
+  closeDocsPopup({ returnFocus: false });
+  lockBodyScroll();
+  pages.patient.hidden = false;
+  pages.patient.classList.remove("hidden");
+  pages.patient.classList.add("active");
+  document.body.classList.add("login-popup-open");
+  isLoginPopupOpen = true;
+  patientForm?.querySelector("input[name='name']")?.focus?.({ preventScroll: true });
+  updateThemeToggleVisibility("landing");
+  updateFooterTipVisibility("landing");
+}
+
+function closeLoginPopup({ returnFocus = false } = {}) {
+  if (!pages.patient || !isLoginPopupOpen) {
+    if (pages.patient) {
+      pages.patient.classList.remove("active");
+      pages.patient.classList.add("hidden");
+      pages.patient.hidden = true;
+    }
+    document.body.classList.remove("login-popup-open");
+    return;
+  }
+  pages.patient.classList.remove("active");
+  pages.patient.classList.add("hidden");
+  pages.patient.hidden = true;
+  document.body.classList.remove("login-popup-open");
+  isLoginPopupOpen = false;
+  unlockBodyScroll();
+  updateThemeToggleVisibility("landing");
+  updateFooterTipVisibility("landing");
+  if (returnFocus) {
+    startButton?.focus?.({ preventScroll: true });
+  }
+}
+
+function openResearchPopup() {
+  if (!researchPopup) return;
+  closeResourcesDropdown();
+  closeContactFormPopup();
+  closeDocsPopup();
+  lockBodyScroll();
+  researchPopup.hidden = false;
+  researchPopup.classList.add("open");
+  isResearchPopupOpen = true;
+  updateThemeToggleVisibility(getCurrentAppState().page);
+  updateFooterTipVisibility(getCurrentAppState().page);
+}
+
+function closeResearchPopup() {
+  if (!researchPopup || !isResearchPopupOpen) return;
+  researchPopup.classList.remove("open");
+  researchPopup.hidden = true;
+  isResearchPopupOpen = false;
+  updateThemeToggleVisibility(getCurrentAppState().page);
+  updateFooterTipVisibility(getCurrentAppState().page);
+  unlockBodyScroll();
+}
+
+function openDocsPopup(sectionKey = "overview") {
+  if (!docsPopup) return;
+  lockBodyScroll();
+  docsPopup.hidden = false;
+  docsPopup.classList.add("open");
+  isDocsPopupOpen = true;
+  updateThemeToggleVisibility(getCurrentAppState().page);
+  updateFooterTipVisibility(getCurrentAppState().page);
+
+  if (docsPopupMain) {
+    docsPopupMain.scrollTop = 0;
+  }
+
+  const section = docsPopup.querySelector(`#docs-${sectionKey}`) || docsPopup.querySelector("#docs-overview");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveDocsSection(sectionKey);
+  } else if (docsPopupMain) {
+    docsPopupMain.scrollTop = 0;
+    setActiveDocsSection("overview");
+  }
+}
+
+function closeDocsPopup({ returnFocus = false } = {}) {
+  if (!docsPopup || !isDocsPopupOpen) return;
+  docsPopup.classList.remove("open");
+  docsPopup.hidden = true;
+  isDocsPopupOpen = false;
+  updateThemeToggleVisibility(getCurrentAppState().page);
+  updateFooterTipVisibility(getCurrentAppState().page);
+  unlockBodyScroll();
+
+  if (returnFocus) {
+    docsSectionTriggers[0]?.focus?.({ preventScroll: true });
+  }
+}
+
+function setActiveDocsSection(sectionKey) {
+  if (!docsPopup) return;
+  const key = sectionKey || "overview";
+  const jumpButtons = docsPopup.querySelectorAll("[data-docs-jump]");
+  jumpButtons.forEach((button) => {
+    const isActive = button.dataset.docsJump === key;
+    button.classList.toggle("active", isActive);
+  });
+}
+
+function syncDocsActiveFromScroll() {
+  if (!docsPopupMain || !docsPopupSections.length) return;
+  const scrollTop = docsPopupMain.scrollTop;
+  let nearestSectionKey = "overview";
+  let smallestDistance = Number.POSITIVE_INFINITY;
+
+  docsPopupSections.forEach((section) => {
+    const distance = Math.abs(section.offsetTop - scrollTop - 30);
+    if (distance < smallestDistance) {
+      smallestDistance = distance;
+      nearestSectionKey = section.id.replace("docs-", "");
+    }
+  });
+
+  setActiveDocsSection(nearestSectionKey);
+}
+
 function getFileExtension(filename = "") {
   const index = filename.lastIndexOf(".");
   return index === -1 ? "" : filename.slice(index).toLowerCase();
@@ -1234,7 +1431,7 @@ function updateThemeToggleVisibility(activePage) {
   if (!themeToggle) {
     return;
   }
-  const isLanding = activePage === "landing";
+  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isResearchPopupOpen && !isLoginPopupOpen;
   if (!isLanding) {
     closeThemeMenu();
   }
@@ -1250,6 +1447,16 @@ function updateThemeToggleVisibility(activePage) {
   }
 }
 
+function updateFooterTipVisibility(activePage) {
+  if (!footerTip) {
+    return;
+  }
+  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isResearchPopupOpen && !isLoginPopupOpen;
+  footerTip.hidden = !isLanding;
+  footerTip.style.display = isLanding ? "" : "none";
+  footerTip.setAttribute("aria-hidden", isLanding ? "false" : "true");
+}
+
 function showPage(key, { recordHistory = true } = {}) {
   Object.entries(pages).forEach(([name, element]) => {
     const isActive = name === key;
@@ -1261,6 +1468,12 @@ function showPage(key, { recordHistory = true } = {}) {
   if (!isDashboard) {
     closeChatbotModal({ returnFocus: false });
   }
+  if (key !== "landing") {
+    closeResourcesDropdown();
+    closeResearchPopup();
+    closeContactFormPopup();
+    closeLoginPopup();
+  }
   if (chatbotLauncher) {
     chatbotLauncher.hidden = !isDashboard;
     chatbotLauncher.classList.toggle("visible", isDashboard);
@@ -1270,6 +1483,7 @@ function showPage(key, { recordHistory = true } = {}) {
     }
   }
   updateThemeToggleVisibility(key);
+  updateFooterTipVisibility(key);
   setSessionValue("currentPage", key);
   if (recordHistory) {
     const { tab } = getCurrentAppState();
@@ -2272,7 +2486,7 @@ async function createProfile(event) {
   }
   formData.delete("dob");
   const multipart = createMultipartRequest(formData);
-  const loaderDelay = startLoaderDelay();
+  const loaderDelay = startLoaderDelay(300);
   patientCard?.classList.add("loader-hidden");
 
   try {
@@ -2357,7 +2571,8 @@ async function restorePageState() {
   const profile = await fetchCurrentProfile();
 
   if (storedPage === "patient") {
-    showPage("patient", { recordHistory: false });
+    showPage("landing", { recordHistory: false });
+    openLoginPopup();
     return;
   }
 
@@ -2427,8 +2642,8 @@ function setupGooButton(button) {
 }
 
 function bindEvents() {
-  startButton?.addEventListener("click", () => showPage("patient"));
-  backButton?.addEventListener("click", () => showPage("landing"));
+  startButton?.addEventListener("click", () => openLoginPopup());
+  backButton?.addEventListener("click", () => closeLoginPopup({ returnFocus: true }));
   resetSessionButton?.addEventListener("click", resetSession);
   logoutButton?.addEventListener("click", logoutUser);
   logoutConfirmOk?.addEventListener("click", () => {
@@ -2484,6 +2699,99 @@ function bindEvents() {
       closeDiseasesDropdown();
     });
   }
+
+  if (resourcesDropdownToggle && resourcesDropdownMenu) {
+    resourcesDropdownToggle.setAttribute("aria-expanded", "false");
+    resourcesDropdownToggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleResourcesDropdown();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!isResourcesDropdownOpen) return;
+      if (resourcesDropdownContainer?.contains(event.target)) return;
+      closeResourcesDropdown();
+    });
+  }
+
+  contactFormTrigger?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleContactFormPopup();
+  });
+
+  researchPopupTrigger?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openResearchPopup();
+  });
+
+  researchPopupClose?.addEventListener("click", () => {
+    closeResearchPopup();
+  });
+
+  contactFormCloseButton?.addEventListener("click", () => {
+    closeContactFormPopup();
+  });
+
+  resourceContactForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const submitButton = resourceContactForm.querySelector(".resource-contact-submit");
+    if (submitButton instanceof HTMLButtonElement) {
+      const defaultLabel = submitButton.dataset.defaultLabel || submitButton.textContent || "Send Request";
+      submitButton.dataset.defaultLabel = defaultLabel;
+      submitButton.textContent = "✓";
+      submitButton.disabled = true;
+
+      window.setTimeout(() => {
+        resourceContactForm.reset();
+        resourceContactStatus.textContent = "";
+        closeContactFormPopup();
+        submitButton.textContent = defaultLabel;
+        submitButton.disabled = false;
+      }, 700);
+      return;
+    }
+
+    resourceContactForm.reset();
+    resourceContactStatus.textContent = "";
+    closeContactFormPopup();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!isContactFormPopupOpen) return;
+    if (contactFormTrigger?.contains(event.target)) return;
+    if (contactFormMenu?.contains(event.target)) return;
+    closeContactFormPopup();
+  });
+
+  docsSectionTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      const sectionKey = trigger.dataset.docsSection || "overview";
+      closeResourcesDropdown();
+      openDocsPopup(sectionKey);
+    });
+  });
+
+  docsPopupClose?.addEventListener("click", () => closeDocsPopup({ returnFocus: true }));
+  docsPopup?.addEventListener("click", (event) => {
+    const jumpTrigger = event.target.closest("[data-docs-jump]");
+    if (!jumpTrigger) return;
+    const sectionKey = jumpTrigger.dataset.docsJump || "overview";
+    const section = docsPopup.querySelector(`#docs-${sectionKey}`) || docsPopup.querySelector("#docs-overview");
+    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveDocsSection(sectionKey);
+  });
+
+  docsPopupMain?.addEventListener("scroll", syncDocsActiveFromScroll, { passive: true });
+
+  pages.patient?.addEventListener("click", (event) => {
+    if (event.target === pages.patient) {
+      closeLoginPopup({ returnFocus: true });
+    }
+  });
 
   bindFileDropZone(medicalReportInput, isValidReportFile);
   bindFileDropZone(pneumoniaImageInput, isValidPneumoniaImage);
@@ -2568,6 +2876,31 @@ function bindEvents() {
       handled = true;
     }
 
+    if (isResourcesDropdownOpen) {
+      closeResourcesDropdown();
+      handled = true;
+    }
+
+    if (isContactFormPopupOpen) {
+      closeContactFormPopup();
+      handled = true;
+    }
+
+    if (isResearchPopupOpen) {
+      closeResearchPopup();
+      handled = true;
+    }
+
+    if (isDocsPopupOpen) {
+      closeDocsPopup({ returnFocus: true });
+      handled = true;
+    }
+
+    if (isLoginPopupOpen) {
+      closeLoginPopup({ returnFocus: true });
+      handled = true;
+    }
+
     if (isChatbotModalOpen()) {
       closeChatbotModal({ returnFocus: true });
       handled = true;
@@ -2603,6 +2936,11 @@ function bindEvents() {
     if (isRestoringHistory) return;
 
     closeDiseasesDropdown();
+    closeResourcesDropdown();
+    closeResearchPopup();
+    closeContactFormPopup();
+    closeDocsPopup();
+    closeLoginPopup();
 
     const stateData = event.state || {};
     const targetPage = stateData.page || "landing";
@@ -2628,7 +2966,8 @@ function bindEvents() {
     isRestoringHistory = true;
     try {
       if (targetPage === "patient") {
-        showPage("patient", { recordHistory: false });
+        showPage("landing", { recordHistory: false });
+        openLoginPopup();
         return;
       }
 
@@ -2655,24 +2994,28 @@ function bindEvents() {
 
 (async function init() {
   initializeTheme();
-  await fetchConfig();
-  bindEvents();
-  initializeFormConstraints();
-  setupGooButton(startButton);
-  setupGooButton(patientForm?.querySelector(".goo-button"));
-  tabButtons.forEach((button) => setupGooButton(button));
-  if (diseasesDropdownToggle) {
-    setupGooButton(diseasesDropdownToggle);
+  try {
+    await fetchConfig();
+    bindEvents();
+    initializeFormConstraints();
+    setupGooButton(startButton);
+    setupGooButton(patientForm?.querySelector(".goo-button"));
+    tabButtons.forEach((button) => setupGooButton(button));
+    if (diseasesDropdownToggle) {
+      setupGooButton(diseasesDropdownToggle);
+    }
+    const storedConsultantTab = getSessionValue("consultantTab");
+    const defaultConsultantTab = storedConsultantTab && consultantViews.some((view) => view.id === storedConsultantTab)
+      ? storedConsultantTab
+      : consultantTabButtons[0]?.dataset.target;
+    if (defaultConsultantTab) {
+      activateConsultantView(defaultConsultantTab);
+    }
+    await restorePageState();
+    updateHistoryState(getCurrentAppState(), { replace: true });
+  } finally {
+    document.body?.classList.remove("app-booting");
   }
-  const storedConsultantTab = getSessionValue("consultantTab");
-  const defaultConsultantTab = storedConsultantTab && consultantViews.some((view) => view.id === storedConsultantTab)
-    ? storedConsultantTab
-    : consultantTabButtons[0]?.dataset.target;
-  if (defaultConsultantTab) {
-    activateConsultantView(defaultConsultantTab);
-  }
-  await restorePageState();
-  updateHistoryState(getCurrentAppState(), { replace: true });
 })();
 
 const footerTypingText = document.getElementById("footer-typing-text");

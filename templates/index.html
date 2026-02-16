@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
-<body>
+<body class="app-booting">
     <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" aria-haspopup="menu" aria-expanded="false">
         <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 14.25A8.76 8.76 0 0 1 11.75 5 6.75 6.75 0 1 0 21 14.25Z"></path>
@@ -30,6 +30,67 @@
     <div id="theme-menu" class="theme-menu" role="menu" aria-labelledby="theme-toggle">
         <button type="button" data-theme-action="system" role="menuitem">Reset to System Theme</button>
     </div>
+    <header class="landing-header" aria-label="Primary">
+        <nav class="landing-nav" aria-label="Landing Navigation">
+            <a href="#" class="landing-nav-link" data-research-popup="open">Research Paper</a>
+            <a href="/blog" class="landing-nav-link">Blog</a>
+            <div id="landing-resources" class="landing-resources">
+                <button
+                    id="resources-toggle"
+                    class="landing-nav-link resources-toggle"
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                    aria-controls="resources-menu"
+                >
+                    Resources
+                    <span class="landing-nav-caret" aria-hidden="true">▾</span>
+                </button>
+                <div id="resources-menu" class="resources-menu hidden" role="menu" aria-labelledby="resources-toggle">
+                    <div class="resources-menu-content">
+                        <div class="resources-menu-copy">
+                            <p class="resources-menu-title">Everything you need to stay up-to-date and get help</p>
+                        </div>
+                        <ul class="resources-menu-list" aria-label="CureHelp+ Resources">
+                            <li><a href="#" data-docs-section="overview" role="menuitem">Documentation <span aria-hidden="true">›</span></a></li>
+                            <li><a href="#" data-docs-section="model-details" role="menuitem">Clinical Guidance <span aria-hidden="true">›</span></a></li>
+                            <li><a href="/admin/" role="menuitem">Admin Dashboard <span aria-hidden="true">›</span></a></li>
+                            <li><a href="#" data-contact-popup="open" role="menuitem">Contact Form <span aria-hidden="true">›</span></a></li>
+                            <li><a href="#" data-docs-section="data-source" role="menuitem">FAQs <span aria-hidden="true">›</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="contact-form-menu" class="resources-menu hidden" role="dialog" aria-modal="true" aria-labelledby="contact-form-title">
+                    <div class="resources-menu-content contact-form-menu-content">
+                        <div class="resources-menu-copy">
+                            <p class="resources-menu-title" id="contact-form-title">Contact the CureHelp+ Team</p>
+                            <p class="contact-form-subtitle">Share your query, feedback, or support request. We will review and respond as soon as possible.</p>
+                        </div>
+                        <form id="resource-contact-form" class="resource-contact-form">
+                            <label>
+                                Name
+                                <input type="text" name="full_name" required placeholder="Enter your full name" />
+                            </label>
+                            <label>
+                                Email
+                                <input type="email" name="email" required placeholder="Enter your email" />
+                            </label>
+                            <label>
+                                Message
+                                <textarea name="message" rows="4" required placeholder="Write your message"></textarea>
+                            </label>
+                            <div class="resource-contact-actions">
+                                <button type="button" id="contact-form-close" class="resource-contact-cancel">Cancel</button>
+                                <button type="submit" class="resource-contact-submit">Send</button>
+                            </div>
+                            <p id="resource-contact-status" class="resource-contact-status" aria-live="polite"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
     <div id="app-root">
         <section id="landing-page" class="page active">
             <div class="landing-shell">
@@ -38,7 +99,7 @@
                         <span class="hero-logo-letter">
                             <img src="{{ url_for('static', filename='assets/c.png') }}" alt="C" class="hero-logo-image" />
                         </span><span class="hero-title-outline">ureHelp<span class="accent accent-sup">+</span></span>
-                        <span class="hero-subtitle">Triage symptoms and deliver clinician-ready summaries in minutes.</span>
+                        <span class="hero-subtitle">Triage&nbsp;&nbsp;&nbsp;symptoms&nbsp;&nbsp;&nbsp;and&nbsp;&nbsp;&nbsp;deliver&nbsp;&nbsp;&nbsp;clinician-ready&nbsp;&nbsp;&nbsp;summaries&nbsp;&nbsp;&nbsp;in&nbsp;&nbsp;&nbsp;minutes.</span>
                     </h1>
                     <p class="hero-body">
                         Transform patient data into actionable insights with AI-assisted screening,
@@ -91,9 +152,10 @@
             <span class="footer-typing-caret" aria-hidden="true"></span>
         </div>
 
-        <section id="patient-page" class="page hidden">
+        <section id="patient-page" class="page hidden login-popup" role="dialog" aria-modal="true" aria-labelledby="patient-login-title" hidden>
             <div class="card card-lg">
-                <h2 class="section-title">Enter Patient Details</h2>
+            <button id="back-to-landing" class="login-popup-close" type="button" aria-label="Close login form">&times;</button>
+            <h2 id="patient-login-title" class="section-title">Enter Patient Details</h2>
                 <form id="patient-form" class="grid-two" enctype="multipart/form-data">
                     <label>
                         Full Name*
@@ -648,6 +710,383 @@
         <div class="processing-modal-card">
             <div class="processing-spinner" aria-hidden="true"></div>
             <p class="processing-modal-message">Parsing medical report…</p>
+        </div>
+    </div>
+
+    <div id="research-popup" class="docs-popup" role="dialog" aria-modal="true" aria-labelledby="research-popup-title" hidden>
+        <div class="docs-popup-panel">
+            <div class="docs-popup-header">
+                <div class="docs-popup-header-copy">
+                    <h2 id="research-popup-title">Research Paper</h2>
+                </div>
+                <button type="button" id="research-popup-close" class="docs-popup-close" aria-label="Close research paper popup">&times;</button>
+            </div>
+            <div class="docs-popup-body">
+                <div class="docs-layout">
+                    <aside class="docs-sidebar" aria-label="Research summary navigation">
+                        <p class="docs-sidebar-title">Sections</p>
+                        <button type="button" class="docs-nav-link active">Overview</button>
+                        <button type="button" class="docs-nav-link">Motivation</button>
+                        <button type="button" class="docs-nav-link">Approach</button>
+                        <button type="button" class="docs-nav-link">Key Findings</button>
+                        <button type="button" class="docs-nav-link">Limitations</button>
+                        <button type="button" class="docs-nav-link">Future Scope</button>
+                        <button type="button" class="docs-nav-link">References</button>
+                    </aside>
+
+                    <main class="docs-main" aria-label="Research summary details">
+                        <p class="docs-main-breadcrumb">Home <span aria-hidden="true">&gt;</span> Research Paper</p>
+
+                        <section class="docs-popup-section">
+                            <h3>Overview</h3>
+                            <p>
+                                CureHelp+ combines tabular clinical risk prediction and chest X-ray image analysis in a unified decision-support workflow.
+                                The research direction focuses on early risk stratification, improved triage consistency, and clinician-friendly reporting.
+                            </p>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Motivation</h3>
+                            <ul>
+                                <li>Enable faster screening support for common high-impact conditions.</li>
+                                <li>Reduce fragmentation by combining profile intake, model inference, and reporting in one interface.</li>
+                                <li>Improve interpretation clarity by pairing probability outputs with actionable guidance.</li>
+                            </ul>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Approach Summary</h3>
+                            <ul>
+                                <li>Tabular ML pipelines for Type-2 Diabetes, CAD, and Anemia risk scoring.</li>
+                                <li>Deep learning inference for Pneumonia and Tuberculosis chest X-ray classification.</li>
+                                <li>Structured output presentation through dashboard visualizations and PDF-ready summaries.</li>
+                            </ul>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Key Findings</h3>
+                            <ul>
+                                <li>Unified multimodal flow improves screening consistency compared to isolated tooling.</li>
+                                <li>Clear probability + recommendation outputs improve clinical readability for fast triage.</li>
+                                <li>Session-linked profile persistence supports continuity across repeated patient assessments.</li>
+                            </ul>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Current Limitations</h3>
+                            <ul>
+                                <li>Model quality is dependent on dataset representativeness and clinical data quality.</li>
+                                <li>Threshold-driven classification may require local calibration for different populations.</li>
+                                <li>X-ray inference can be affected by acquisition variability and image artifacts.</li>
+                            </ul>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Future Scope</h3>
+                            <ul>
+                                <li>Prospective clinical validation studies with institution-specific calibration.</li>
+                                <li>Explainability overlays for image predictions and richer feature attribution for tabular models.</li>
+                                <li>Integration with EMR workflows and audit-ready longitudinal outcome tracking.</li>
+                            </ul>
+                        </section>
+
+                        <section class="docs-popup-section">
+                            <h3>Reference Links</h3>
+                            <ul>
+                                <li><a href="https://scikit-learn.org/stable/" target="_blank" rel="noopener noreferrer">scikit-learn Documentation</a></li>
+                                <li><a href="https://www.tensorflow.org/guide/keras" target="_blank" rel="noopener noreferrer">TensorFlow / Keras Guide</a></li>
+                                <li><a href="https://pytorch.org/docs/stable/" target="_blank" rel="noopener noreferrer">PyTorch Documentation</a></li>
+                            </ul>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="docs-popup" class="docs-popup" role="dialog" aria-modal="true" aria-labelledby="docs-popup-title" hidden>
+        <div class="docs-popup-panel">
+            <div class="docs-popup-header">
+                <div class="docs-popup-header-copy">
+                    <h2 id="docs-popup-title">Documentation</h2>
+                </div>
+                <button type="button" id="docs-popup-close" class="docs-popup-close" aria-label="Close documentation">&times;</button>
+            </div>
+            <div id="docs-popup-body" class="docs-popup-body">
+                <div class="docs-layout">
+                    <aside class="docs-sidebar" aria-label="Documentation content list">
+                        <p class="docs-sidebar-title">Content</p>
+                        <button type="button" class="docs-nav-link active" data-docs-jump="overview">Overview</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="architecture">System Architecture</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="model-details">Clinical Guidance</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="api">API Reference</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="data-source">FAQs</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="workflow">Workflow Guide</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="config">Configuration</button>
+                        <button type="button" class="docs-nav-link" data-docs-jump="safety">Safety & Limitations</button>
+                    </aside>
+
+                    <main id="docs-popup-main" class="docs-main" aria-label="Documentation details">
+                        <p class="docs-main-breadcrumb">Home <span aria-hidden="true">&gt;</span> Documentation</p>
+
+                <section id="docs-overview" class="docs-popup-section">
+                    <h3>Overview</h3>
+                    <p>
+                        CureHelp+ is an AI-assisted healthcare risk analysis and decision-support application built with Flask,
+                        combining patient profile management, disease risk prediction, chest X-ray screening, report parsing,
+                        consultant discovery, chatbot guidance, and downloadable PDF reporting in one continuous workflow.
+                    </p>
+                    <p>
+                        The product is designed to reduce triage friction by converting raw patient intake and lab/imaging input
+                        into structured, clinician-friendly output with probabilities, interpretation cues, and next-step guidance.
+                        It supports Type-2 Diabetes, Coronary Artery Disease, Anemia, Pneumonia, and Tuberculosis use-cases.
+                    </p>
+                    <h4>Primary Objectives</h4>
+                    <ul>
+                        <li>Standardize patient intake and prediction flow across multiple disease modules.</li>
+                        <li>Enable rapid screening using both tabular biomarkers and chest X-ray image classification.</li>
+                        <li>Provide transparent result summaries with baseline normal references and recommendations.</li>
+                        <li>Support continuity of care through saved profiles, consultant lookup, and PDF exports.</li>
+                    </ul>
+                </section>
+
+                <section id="docs-architecture" class="docs-popup-section">
+                    <h3>System Architecture</h3>
+                    <p>
+                        CureHelp+ uses a layered architecture: frontend UI (HTML/CSS/JS), Flask API orchestration, model inference
+                        engines, profile persistence, report parsing services, and optional admin analytics views.
+                    </p>
+                    <h4>Core Runtime Layers</h4>
+                    <ul>
+                        <li><strong>Presentation Layer:</strong> `templates/index.html` + `static/css/style.css` + `static/js/app.js`.</li>
+                        <li><strong>API Layer:</strong> `app.py` routes handling profile, prediction, reporting, chat, and consultant endpoints.</li>
+                        <li><strong>Inference Layer:</strong> scikit-learn tabular models, Keras pneumonia model, PyTorch TB model.</li>
+                        <li><strong>Data/Utility Layer:</strong> `profile_manager.py`, `report_parser.py`, `makepdf.py`, `chatbot.py`, `consultant.py`.</li>
+                    </ul>
+                    <h4>High-Level Request Flow</h4>
+                    <ol>
+                        <li>User submits profile and optional report file.</li>
+                        <li>Server validates input, stores profile, and optionally auto-fills medical fields.</li>
+                        <li>User runs disease-specific predictions.</li>
+                        <li>Inference results are persisted to session/profile and rendered in dashboard panels.</li>
+                        <li>User can export PDF summary or consult chatbot/provider search for follow-up support.</li>
+                    </ol>
+                    <h4>Key Project Files</h4>
+                    <ul>
+                        <li><strong>Application Entry:</strong> `app.py`</li>
+                        <li><strong>Admin Module:</strong> `admin/`</li>
+                        <li><strong>Model Artifacts:</strong> `models/`</li>
+                        <li><strong>Training Scripts:</strong> `model_scripts/`</li>
+                        <li><strong>Datasets:</strong> `datasets/` and `bot_data/`</li>
+                        <li><strong>Frontend Assets:</strong> `templates/` and `static/`</li>
+                    </ul>
+                </section>
+
+                <section id="docs-model-details" class="docs-popup-section">
+                    <h3>Clinical Guidance</h3>
+                    <p>
+                        The platform uses multiple specialized models based on input modality. Tabular models output calibrated
+                        probabilities, while image models output classification risk from chest X-ray inputs after preprocessing.
+                    </p>
+                    <h4>Type-2 Diabetes Model</h4>
+                    <ul>
+                        <li><strong>Input Type:</strong> Tabular clinical features (glucose, BMI, blood pressure, insulin, age, etc.).</li>
+                        <li><strong>Artifacts:</strong> `models/diabetes_model.pkl`, `models/diabetes_scaler.pkl`.</li>
+                        <li><strong>Output:</strong> Probability (%) and mapped input summary.</li>
+                        <li><strong>Usage:</strong> Rapid diabetes risk screening, not diagnostic confirmation.</li>
+                    </ul>
+                    <h4>Coronary Artery Disease Model</h4>
+                    <ul>
+                        <li><strong>Input Type:</strong> Tabular cardiovascular indicators (CP, cholesterol, ECG, ST metrics, etc.).</li>
+                        <li><strong>Artifacts:</strong> `models/heart_model.pkl`, `models/heart_scaler.pkl`.</li>
+                        <li><strong>Output:</strong> Probability (%) and transformed categorical feature values.</li>
+                        <li><strong>Usage:</strong> CAD risk triage for early preventive referral pathways.</li>
+                    </ul>
+                    <h4>Anemia Pipeline</h4>
+                    <ul>
+                        <li><strong>Input Type:</strong> Blood panel values (Hb, RBC, MCV, MCH, MCHC, RDW, platelets, WBC, etc.).</li>
+                        <li><strong>Artifacts:</strong> `models/anemia_risk_model.pkl`, `models/anemia_type_model.pkl`, `models/feature_scaler.pkl`, `models/label_encoder.pkl`.</li>
+                        <li><strong>Output:</strong> Risk probability + predicted anemia severity/type label.</li>
+                        <li><strong>Usage:</strong> Supports quick hematology pattern screening with contextual interpretation.</li>
+                    </ul>
+                    <h4>Pneumonia X-ray Model</h4>
+                    <ul>
+                        <li><strong>Input Type:</strong> Chest X-ray image (`.jpg`, `.jpeg`, `.png`) resized to 224x224.</li>
+                        <li><strong>Artifact:</strong> `models/pneumonia_model.keras`.</li>
+                        <li><strong>Framework:</strong> TensorFlow/Keras inference pipeline.</li>
+                        <li><strong>Threshold:</strong> 0.82 decision threshold (configured in app logic).</li>
+                        <li><strong>Output:</strong> Probability + Normal/Pneumonia classification.</li>
+                    </ul>
+                    <h4>Tuberculosis X-ray Model</h4>
+                    <ul>
+                        <li><strong>Input Type:</strong> Chest X-ray image (`.jpg`, `.jpeg`, `.png`) with lung-region preprocessing.</li>
+                        <li><strong>Artifact:</strong> `models/tb_model.pth`.</li>
+                        <li><strong>Framework:</strong> PyTorch EfficientNet-B0 based binary classifier.</li>
+                        <li><strong>Threshold:</strong> `TB_THRESHOLD` env variable (default 0.50).</li>
+                        <li><strong>Output:</strong> Probability + prediction class + confidence band.</li>
+                    </ul>
+                    <h4>Model Reference Links</h4>
+                    <ul>
+                        <li>scikit-learn documentation: <a href="https://scikit-learn.org/stable/" target="_blank" rel="noopener noreferrer">https://scikit-learn.org/stable/</a></li>
+                        <li>TensorFlow Keras documentation: <a href="https://www.tensorflow.org/guide/keras" target="_blank" rel="noopener noreferrer">https://www.tensorflow.org/guide/keras</a></li>
+                        <li>PyTorch documentation: <a href="https://pytorch.org/docs/stable/" target="_blank" rel="noopener noreferrer">https://pytorch.org/docs/stable/</a></li>
+                        <li>EfficientNet reference: <a href="https://arxiv.org/abs/1905.11946" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/1905.11946</a></li>
+                    </ul>
+                </section>
+
+                <section id="docs-api" class="docs-popup-section">
+                    <h3>API Reference (Detailed)</h3>
+                    <h4>General</h4>
+                    <ul>
+                        <li><strong>GET /</strong> – Main application UI.</li>
+                        <li><strong>GET /api/config</strong> – Returns baseline normal values used in result comparison.</li>
+                    </ul>
+                    <h4>Profile and Session</h4>
+                    <ul>
+                        <li><strong>POST /api/profile</strong> – Creates profile; supports optional report upload (`multipart/form-data`).</li>
+                        <li><strong>GET /api/profile</strong> – Fetches currently active profile from session.</li>
+                        <li><strong>GET /api/profiles?q=</strong> – Lists/searches profiles.</li>
+                        <li><strong>DELETE /api/profiles/&lt;profile_id&gt;</strong> – Deletes non-active profile.</li>
+                        <li><strong>POST /api/reset</strong> – Clears active session profile and predictions.</li>
+                    </ul>
+                    <h4>Prediction Endpoints</h4>
+                    <ul>
+                        <li><strong>POST /api/diabetes</strong> – Diabetes risk probability.</li>
+                        <li><strong>POST /api/heart</strong> – Coronary artery disease risk probability.</li>
+                        <li><strong>POST /api/anemia</strong> – Anemia risk + type/severity.</li>
+                        <li><strong>POST /api/pneumonia</strong> – Pneumonia X-ray classification.</li>
+                        <li><strong>POST /api/tuberculosis</strong> – Tuberculosis X-ray classification.</li>
+                    </ul>
+                    <h4>Reports, Chat, and Directory</h4>
+                    <ul>
+                        <li><strong>GET /api/report</strong> – Consolidated prediction data for active session.</li>
+                        <li><strong>GET /api/report/pdf</strong> – PDF export for selected disease predictions.</li>
+                        <li><strong>POST /api/chat</strong> – Chatbot answer for user prompts.</li>
+                        <li><strong>GET /api/consultants</strong> – Hospitals and doctors directory search.</li>
+                        <li><strong>GET /api/metrics/latency</strong> – Latency and model-health telemetry snapshot.</li>
+                    </ul>
+                    <h4>Admin Routes</h4>
+                    <ul>
+                        <li><strong>GET/POST /admin/login</strong> – Admin authentication.</li>
+                        <li><strong>GET /admin/</strong> – Admin dashboard.</li>
+                        <li><strong>POST /admin/logout</strong> – Admin session end.</li>
+                        <li><strong>POST /admin/patients/&lt;profile_id&gt;/delete</strong> – Admin-side profile deletion.</li>
+                    </ul>
+                </section>
+
+                <section id="docs-data-source" class="docs-popup-section">
+                    <h3>FAQs</h3>
+                    <p>
+                        Data inputs are maintained as local repository assets for reproducibility of training/testing workflows.
+                        Below are dataset categories with direct reference links where available.
+                    </p>
+                    <h4>Tabular Clinical Datasets</h4>
+                    <ul>
+                        <li><strong>Diabetes:</strong> `datasets/diabetes.csv`</li>
+                        <li><strong>Heart:</strong> `datasets/heart.csv`</li>
+                        <li><strong>Anemia:</strong> `datasets/anemia.csv`</li>
+                    </ul>
+                    <h4>Chest X-ray Datasets</h4>
+                    <ul>
+                        <li><strong>Pneumonia Dataset Folder:</strong> `datasets/pneumonia/`</li>
+                        <li><strong>Pneumonia Reference Link:</strong> <a href="https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia" target="_blank" rel="noopener noreferrer">https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia</a></li>
+                        <li><strong>Tuberculosis Dataset Folder:</strong> `datasets/Tuberculosis/`</li>
+                        <li><strong>Tuberculosis Reference Link:</strong> <a href="https://www.kaggle.com/datasets/tawsifurrahman/tuberculosis-tb-chest-xray-dataset" target="_blank" rel="noopener noreferrer">https://www.kaggle.com/datasets/tawsifurrahman/tuberculosis-tb-chest-xray-dataset</a></li>
+                    </ul>
+                    <h4>Chatbot Knowledge Data</h4>
+                    <ul>
+                        <li>`bot_data/Disease precaution.csv`</li>
+                        <li>`bot_data/DiseaseAndSymptoms.csv`</li>
+                        <li>`bot_data/medquad.csv`</li>
+                        <li>`bot_data/humanqa.csv`</li>
+                    </ul>
+                    <h4>Model and Artifact References</h4>
+                    <ul>
+                        <li>Model binaries are stored in local `models/` for runtime inference.</li>
+                        <li>Decision thresholds are configured in `models/decision_thresholds.json` and environment variables.</li>
+                    </ul>
+                </section>
+
+                <section id="docs-workflow" class="docs-popup-section">
+                    <h3>Workflow Guide</h3>
+                    <h4>Step-by-Step Usage</h4>
+                    <ol>
+                        <li><strong>Open Landing:</strong> Start from home page and click <strong>Get Started</strong>.</li>
+                        <li><strong>Create Profile:</strong> Fill identity/demographic fields and optional medical report upload.</li>
+                        <li><strong>Auto-fill Review:</strong> If report parsing succeeds, verify pre-filled medical values before prediction.</li>
+                        <li><strong>Select Disease Module:</strong> Choose diabetes, CAD, anemia, pneumonia, or tuberculosis tab.</li>
+                        <li><strong>Submit Inputs:</strong> Provide tabular biomarkers or upload chest X-ray where applicable.</li>
+                        <li><strong>Interpret Output:</strong> Review probability, label, normal baseline comparison, and recommendations.</li>
+                        <li><strong>Export PDF:</strong> Download report for one or more selected disease predictions.</li>
+                        <li><strong>Consult Next Steps:</strong> Use assistant chatbot and consultant directory for support.</li>
+                    </ol>
+                    <h4>Upload Validation Rules</h4>
+                    <ul>
+                        <li><strong>Medical reports:</strong> `.csv`, `.pdf`, `.xls`, `.xlsx` up to 200 MB.</li>
+                        <li><strong>X-ray images:</strong> `.jpg`, `.jpeg`, `.png` up to 10 MB.</li>
+                    </ul>
+                    <h4>Operational Tips</h4>
+                    <ul>
+                        <li>Use clinically verified values for all biomarkers before submitting prediction requests.</li>
+                        <li>Treat probabilities as supportive risk indicators, not definitive diagnosis.</li>
+                        <li>Preserve historical profiles to compare progression over multiple visits.</li>
+                        <li>Escalate high-risk findings for immediate clinician review and confirmatory testing.</li>
+                    </ul>
+                </section>
+
+                <section id="docs-config" class="docs-popup-section">
+                    <h3>Configuration and Deployment</h3>
+                    <h4>Quick Start</h4>
+                    <ol>
+                        <li>Install dependencies from `requirements.txt`.</li>
+                        <li>Run server using `flask --app app run`.</li>
+                        <li>Open `http://127.0.0.1:5000` in browser.</li>
+                    </ol>
+                    <h4>Important Environment Variables</h4>
+                    <ul>
+                        <li><strong>CUREHELP_SECRET_KEY:</strong> Session signing key for Flask.</li>
+                        <li><strong>TB_THRESHOLD:</strong> TB classifier decision threshold (default `0.50`).</li>
+                        <li><strong>MODEL_WARMUP_ENABLED:</strong> Enables startup model warmup routine.</li>
+                        <li><strong>MODEL_HEALTH_CHECK_INTERVAL_SECONDS:</strong> Periodic health verification cadence.</li>
+                        <li><strong>PROFILE_STORAGE_BACKEND:</strong> Force `json` or `postgres` profile persistence.</li>
+                        <li><strong>DATABASE_URL:</strong> PostgreSQL connection string when DB backend is enabled.</li>
+                        <li><strong>CUREHELP_ADMIN_USER / CUREHELP_ADMIN_PASS:</strong> Admin portal credentials.</li>
+                    </ul>
+                    <h4>Testing and Quality</h4>
+                    <ul>
+                        <li>Unit/integration style tests are available under `tests/`.</li>
+                        <li>Main app behavior tests are in `tests/test_app.py`.</li>
+                        <li>Additional modules include parser, chatbot, helper, PDF, and profile manager tests.</li>
+                    </ul>
+                </section>
+
+                <section id="docs-safety" class="docs-popup-section">
+                    <h3>Safety, Limitations, and Clinical Notes</h3>
+                    <h4>Intended Use</h4>
+                    <ul>
+                        <li>CureHelp+ is intended as clinical decision support and triage assistance software.</li>
+                        <li>It should assist, not replace, qualified medical judgment and formal diagnostic pathways.</li>
+                    </ul>
+                    <h4>Limitations</h4>
+                    <ul>
+                        <li>Model outputs depend on data quality, population representativeness, and preprocessing consistency.</li>
+                        <li>Threshold-based classification can produce false positives/false negatives.</li>
+                        <li>X-ray prediction quality is sensitive to image acquisition and input artifacts.</li>
+                        <li>Chatbot responses are informational and not emergency medical advice.</li>
+                    </ul>
+                    <h4>Recommended Clinical Practice</h4>
+                    <ul>
+                        <li>Always verify high-risk outputs with additional clinical tests and specialist review.</li>
+                        <li>Cross-check patient history, co-morbidities, and treatment context before decisions.</li>
+                        <li>Document rationale for decisions made from model-assisted risk output.</li>
+                        <li>Use consultant referral for urgent and ambiguous cases.</li>
+                    </ul>
+                </section>
+
+                    </main>
+
+                </div>
+            </div>
         </div>
     </div>
 

@@ -473,6 +473,11 @@ def index() -> str:
     return render_template("index.html")
 
 
+@app.route("/blog")
+def blog_page() -> str:
+    return render_template("blog.html")
+
+
 @app.route("/api/config", methods=["GET"])
 def get_config():
     return jsonify(

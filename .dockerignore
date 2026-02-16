@@ -1,0 +1,30 @@
+# VCS and editor
+.git
+.vscode/
+.idea/
+
+# Python cache and local envs
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Test and dev-only content
+tests/
+model_scripts/
+*.ipynb
+
+# Large exploratory/training datasets (not needed for runtime inference)
+datasets/
+Input X-ray/
+Input_Reports/
+
+# Local/generated artifacts
+*.log
+*.tmp
+*.bak

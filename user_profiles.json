@@ -7,60 +7,36 @@
         "address": "Shahpur Sirpura",
         "gender": "Male",
         "marital_status": "Married",
-        "predictions": {},
-        "created_at": "15-Feb-2026 13:25",
-        "last_updated": "2026-02-15 14:44:49"
+        "predictions": {
+            "Type-2 Diabetes": {
+                "prob": 86.5,
+                "inputs": {
+                    "Gender": "Female",
+                    "Age": "48",
+                    "BMI": "34.2",
+                    "Glucose": "185",
+                    "Blood Pressure": "145",
+                    "Pregnancies": 4.0,
+                    "Skin Thickness": "35",
+                    "Insulin": "210",
+                    "Diabetes Pedigree Function": "0.92"
+                }
+            }
+        },
+        "created_at": "16-Feb-2026 17:28",
+        "last_updated": "2026-02-16 20:25:02"
     },
     {
         "id": "user_002",
         "name": "Asim Husain",
-        "age": 33,
+        "age": 23,
         "contact": "07310647227",
         "address": "Shahpur Sirpura",
-        "gender": "Female",
-        "marital_status": "Divorced",
-        "predictions": {
-            "Pneumonia": {
-                "inputs": {
-                    "Pneumonia Score": 47.74
-                },
-                "normal_values": {
-                    "Pneumonia Score": 82.0
-                },
-                "prob": 47.73557484149933,
-                "probability": 0.4773557484149933,
-                "result": "Normal"
-            },
-            "Tuberculosis": {
-                "prob": 80.20285367965698,
-                "probability": 0.8020285367965698,
-                "result": "Tuberculosis",
-                "prediction": "Tuberculosis",
-                "confidence": "Very High Risk",
-                "inputs": {
-                    "Tuberculosis Score": 80.2
-                },
-                "normal_values": {
-                    "Tuberculosis Score": 50.0
-                }
-            },
-            "Type-2 Diabetes": {
-                "inputs": {
-                    "Age": "33",
-                    "BMI": "25",
-                    "Blood Pressure": "120",
-                    "Diabetes Pedigree Function": "0.5",
-                    "Gender": "Female",
-                    "Glucose": "100",
-                    "Insulin": "79",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "20"
-                },
-                "prob": 1.5731974122756194
-            }
-        },
-        "created_at": "15-Feb-2026 13:36",
-        "last_updated": "2026-02-15 14:44:49"
+        "gender": "Male",
+        "marital_status": "Married",
+        "predictions": {},
+        "created_at": "16-Feb-2026 20:06",
+        "last_updated": "2026-02-16 20:25:02"
     },
     {
         "id": "user_003",
@@ -68,75 +44,22 @@
         "age": 23,
         "contact": "07310647227",
         "address": "Shahpur Sirpura",
-        "gender": "Female",
+        "gender": "Male",
         "marital_status": "Married",
-        "predictions": {
-            "Type-2 Diabetes": {
-                "prob": 15.25,
-                "inputs": {
-                    "Gender": "Female",
-                    "Age": "23",
-                    "BMI": "25",
-                    "Glucose": "100",
-                    "Blood Pressure": "120",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "20",
-                    "Insulin": "79",
-                    "Diabetes Pedigree Function": "0.5"
-                }
-            }
-        },
-        "created_at": "15-Feb-2026 13:49",
-        "last_updated": "2026-02-15 14:44:49"
+        "predictions": {},
+        "created_at": "16-Feb-2026 20:27",
+        "last_updated": "16-Feb-2026 20:27"
     },
     {
         "id": "user_004",
         "name": "Asim Husain",
-        "age": 22,
+        "age": 23,
         "contact": "07310647227",
         "address": "Shahpur Sirpura",
         "gender": "Male",
-        "marital_status": "Divorced",
-        "predictions": {
-            "Pneumonia": {
-                "prob": 99.97405409812927,
-                "probability": 0.9997405409812927,
-                "result": "Pneumonia",
-                "inputs": {
-                    "Pneumonia Score": 99.97
-                },
-                "normal_values": {
-                    "Pneumonia Score": 82.0
-                }
-            },
-            "Type-2 Diabetes": {
-                "inputs": {
-                    "Age": "22",
-                    "BMI": "25",
-                    "Blood Pressure": "120",
-                    "Diabetes Pedigree Function": "0.5",
-                    "Gender": "Male",
-                    "Glucose": "100",
-                    "Insulin": "79",
-                    "Pregnancies": 0.0,
-                    "Skin Thickness": "20"
-                },
-                "prob": 15.5
-            }
-        },
-        "created_at": "15-Feb-2026 13:51",
-        "last_updated": "2026-02-15 14:44:49"
-    },
-    {
-        "id": "user_005",
-        "name": "Asim Husain",
-        "age": 22,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Female",
-        "marital_status": "Single",
+        "marital_status": "Married",
         "predictions": {},
-        "created_at": "15-Feb-2026 14:44",
-        "last_updated": "2026-02-15 14:44:49"
+        "created_at": "16-Feb-2026 20:35",
+        "last_updated": "16-Feb-2026 20:35"
     }
 ]

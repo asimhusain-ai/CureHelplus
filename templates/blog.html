@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CureHelp+ Blog Portal</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='assets/curehelp.png') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}" />
+</head>
+<body class="blog-page-body">
+    <main class="blog-screen" aria-label="Medical blog full-screen experience">
+        <section id="blog-reader-panel" class="blog-reader-panel" aria-live="polite">
+            <header class="blog-reader-header">
+                <h1 id="blog-reader-title" class="blog-reader-title">Loading article...</h1>
+                <div class="blog-reader-meta">
+                    <span id="blog-reader-author"></span>
+                    <span id="blog-reader-date"></span>
+                    <span id="blog-reader-category"></span>
+                </div>
+            </header>
+            <div id="blog-reader-content" class="blog-reader-content"></div>
+        </section>
+
+        <div class="blog-vertical-divider" aria-hidden="true"></div>
+
+        <section class="blog-wheel-panel" aria-label="Curved 3D Blog Navigator">
+            <a href="/" class="blog-back-link" aria-label="Back to home">Back to Home</a>
+            <h2 id="blog-active-title" class="blog-active-title">Medical Blog</h2>
+            <div id="blog-wheel" class="blog-wheel" role="region" aria-label="Rotating blog wheel">
+                <div id="blog-wheel-track" class="blog-wheel-track"></div>
+            </div>
+        </section>
+    </main>
+
+    <script defer src="{{ url_for('static', filename='js/blog_data.js') }}"></script>
+</body>
+</html>

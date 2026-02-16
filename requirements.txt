@@ -7,13 +7,11 @@ PyPDF2
 scikit-learn
 werkzeug
 python-dotenv
-tensorflow
+tensorflow-cpu
 Pillow
-torch
-torchvision
+torch==2.0.0+cpu
+torchvision==0.15.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
 psycopg2-binary
-opencv-python
 openpyxl
-pytest
 xlrd
-xgboost

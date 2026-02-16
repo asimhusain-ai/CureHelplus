@@ -45,19 +45,22 @@ def login():
         return redirect(url_for("admin.dashboard"))
 
     error = None
+    form_values = {"username": "", "password": ""}
     if request.method == "POST":
         credentials = _admin_credentials()
         username = (request.form.get("username") or "").strip()
         password = request.form.get("password") or ""
+        form_values["username"] = username
+        form_values["password"] = password
         if username == credentials["username"] and password == credentials["password"]:
             session["is_admin"] = True
             session["admin_username"] = username
             next_url = session.pop("admin_next", None)
             session.modified = True
             return redirect(next_url or url_for("admin.dashboard"))
-        error = "Invalid username or password"
+        error = "Incorrect Password"
 
-    return render_template("admin/login.html", error=error)
+    return render_template("admin/login.html", error=error, form_values=form_values)
 
 
 @admin_bp.route("/logout", methods=["POST"])
