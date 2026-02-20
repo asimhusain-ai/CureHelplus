@@ -18,6 +18,60 @@
         <p class="value">{{ metrics.high_risk }}</p>
         <p class="hint">Probability ≥ 70% across cohorts</p>
     </article>
+    <article class="stat-card">
+        <p class="label">Authenticated Users</p>
+        <p class="value">{{ metrics.auth_users_count or 0 }}</p>
+        <p class="hint">Email-based user accounts</p>
+    </article>
+</section>
+
+<section id="users" class="panel">
+    <div class="panel-header">
+        <h2>User Management</h2>
+        <span class="eyebrow">Search · Activate · Deactivate · Reset · Delete</span>
+    </div>
+    <form method="get" class="user-search-form">
+        <input type="search" name="user_q" value="{{ metrics.auth_search }}" placeholder="Search by email" />
+        <button type="submit" class="ghost-btn">Search</button>
+    </form>
+    <div class="table">
+        <div class="table-head table-head-users">
+            <span>Email</span>
+            <span>Status</span>
+            <span>Verification</span>
+            <span>Actions</span>
+        </div>
+        {% for user in metrics.auth_users %}
+        <div class="table-row table-row-users">
+            <div>
+                <p class="table-title">{{ user.email }}</p>
+                <p class="table-subtitle">{{ user.id }}</p>
+            </div>
+            <div>
+                <span class="badge {{ 'stable' if user.is_active else 'critical' }}">{{ 'Active' if user.is_active else 'Inactive' }}</span>
+            </div>
+            <div>
+                <span class="badge {{ 'stable' if user.is_verified else 'elevated' }}">{{ 'Verified' if user.is_verified else 'Pending' }}</span>
+            </div>
+            <div class="table-actions user-actions">
+                <form method="post" action="{{ url_for('admin.activate_user', user_id=user.id, user_q=metrics.auth_search) }}">
+                    <button type="submit" class="ghost-btn">Activate</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.deactivate_user', user_id=user.id, user_q=metrics.auth_search) }}">
+                    <button type="submit" class="ghost-btn">Deactivate</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.force_reset_user', user_id=user.id, user_q=metrics.auth_search) }}">
+                    <button type="submit" class="ghost-btn">Force Reset</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id, user_q=metrics.auth_search) }}">
+                    <button type="submit" class="danger-btn">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p class="empty">No users found.</p>
+        {% endfor %}
+    </div>
 </section>
 
 <section id="insights" class="insights-grid">

@@ -13,16 +13,19 @@
 
 ## 🌟 Overview
 
-CureHelp+ is a Flask-based healthcare analytics platform that combines classical ML risk prediction, chest X-ray screening, medical report parsing, chatbot support, consultant discovery, and downloadable PDF reporting in one workflow.
+CureHelp+ is a Flask-based healthcare analytics platform that combines classical ML risk prediction, chest X-ray screening, medical report parsing, chatbot support, consultant discovery, a full-screen medical blog portal, and downloadable PDF reporting in one workflow.
 
 It supports:
 
 - **Patient profile management** with persistent storage and session sync
+- **Account authentication** (OTP email verification + Google sign-in)
 - **Multi-disease risk prediction** for tabular clinical inputs
 - **Pneumonia & Tuberculosis X-ray analysis** via image upload endpoints
 - **Medical report autofill** from uploaded CSV/PDF/XLS/XLSX files
+- **User dashboard overview** with prediction/report/history aggregates
 - **Rule-based healthcare chatbot** powered by curated datasets
 - **Consultant directory search** (hospitals + doctors)
+- **Curated medical blog experience** with interactive curved article navigator
 - **Admin dashboard** for operational visibility and patient management
 
 ## 🔗 Project Links (Legacy)
@@ -37,6 +40,9 @@ It supports:
 - Medical report upload with format validation and 200 MB size limit
 - Enhanced PDF reports with risk gauges and detailed protocols
 - Profile persistence layer with **JSON** and optional **PostgreSQL** backend
+- OTP-based signup/login flows, password reset, and Google OAuth sign-in
+- User profile photo upload and authenticated report/history tracking
+- Dedicated `/blog` page with interactive 3D wheel article navigation UI
 - Chest X-ray endpoints for pneumonia and tuberculosis risk scoring
 
 ## 🧠 Machine Learning Modules
@@ -155,6 +161,15 @@ flask --app app run
 | `MODEL_WARMUP_ENABLED` | Enable startup model warmup thread | `true` |
 | `MODEL_HEALTH_CHECK_INTERVAL_SECONDS` | Periodic model health-check interval | `300` |
 
+### Google OAuth
+
+| Variable | Description | Default |
+|---|---|---|
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | empty |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | empty |
+| `GOOGLE_REDIRECT_URI` | Explicit callback URL override | empty |
+| `APP_BASE_URL` | Base URL used to compose callback when redirect URI is not set | empty |
+
 ### Admin Authentication
 
 | Variable | Description | Default |
@@ -183,6 +198,20 @@ flask --app app run
 
 These timeout controls help reduce login/reload delays when PostgreSQL is slow or temporarily unavailable by failing fast and allowing JSON fallback behavior.
 
+### Auth Email / OTP Delivery
+
+| Variable | Description | Default |
+|---|---|---|
+| `SMTP_EMAIL_ADDRESS` | Sender email/login for SMTP auth | empty |
+| `SMTP_APP_PASSWORD` | SMTP app password / auth token | empty |
+| `SMTP_HOST` | SMTP server host | `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP server port | `465` |
+| `SMTP_USE_SSL` | Use implicit SSL SMTP connection | `true` |
+| `SMTP_USE_TLS` | Upgrade plain SMTP with STARTTLS | `false` |
+| `SMTP_TIMEOUT_SECONDS` | SMTP connect/send timeout | `20` |
+
+For Gmail, keep `SMTP_USE_SSL=true` and `SMTP_PORT=465` with an app password. If OTP emails fail, auth APIs now return explicit SMTP errors.
+
 ## 🧾 Upload/Input Constraints
 
 ### Medical Report Upload (`POST /api/profile`)
@@ -201,7 +230,26 @@ These timeout controls help reduce login/reload delays when PostgreSQL is slow o
 ### General
 
 - `GET /` → frontend landing page
+- `GET /blog` → medical blog portal with interactive wheel navigator
 - `GET /api/config` → baseline normal values for selected diseases
+- `GET /uploads/<path:subpath>` → serve uploaded report/photo assets
+
+### Authentication
+
+- `GET /api/auth/status`
+- `POST /api/auth/signup`
+- `POST /api/auth/verify-otp`
+- `POST /api/auth/login`
+- `GET /verify-email`
+- `POST /api/auth/resend-verification`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+- `POST /api/auth/logout`
+- `POST /api/auth/logout-all`
+- `GET /api/auth/profile`
+- `PATCH /api/auth/profile`
+- `GET /api/auth/google/start`
+- `GET /api/auth/google/callback`
 
 ### Profile and Session
 
@@ -210,6 +258,11 @@ These timeout controls help reduce login/reload delays when PostgreSQL is slow o
 - `GET /api/profiles?q=<name>` → list/search profiles
 - `DELETE /api/profiles/<profile_id>` → delete profile (if not active)
 - `POST /api/reset` → clear session profile and predictions
+- `POST /api/profile/upload-photo` → upload/update authenticated user profile photo
+- `POST /api/auth/reports` → upload authenticated medical report
+- `DELETE /api/auth/reports/<report_id>` → delete authenticated medical report
+- `GET /api/dashboard/overview` → authenticated dashboard summary and charts payload
+- `GET /api/auth/history/export` → export authenticated activity history
 
 ### Predictions
 
@@ -231,8 +284,13 @@ These timeout controls help reduce login/reload delays when PostgreSQL is slow o
 
 - `GET/POST /admin/login`
 - `POST /admin/logout`
+- `GET /admin/home`
 - `GET /admin/`
 - `POST /admin/patients/<profile_id>/delete`
+- `POST /admin/users/<user_id>/activate`
+- `POST /admin/users/<user_id>/deactivate`
+- `POST /admin/users/<user_id>/force-reset`
+- `POST /admin/users/<user_id>/delete`
 
 ## 📦 Required Runtime Artifacts
 

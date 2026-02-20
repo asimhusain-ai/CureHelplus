@@ -152,6 +152,36 @@ a {
   gap: 24px;
 }
 
+.admin-topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.home-text-btn,
+.admin-home-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.home-text-btn:hover,
+.home-text-btn:focus-visible,
+.admin-home-link:hover,
+.admin-home-link:focus-visible {
+  color: #f8fafc;
+  text-decoration: underline;
+}
+
+.admin-home-link {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 5;
+}
+
 .admin-topbar h1 {
   margin: 8px 0 0;
   font-size: 32px;
@@ -523,6 +553,42 @@ a {
 .table-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.user-search-form {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.user-search-form input {
+  flex: 1;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--admin-text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.table-head-users,
+.table-row-users {
+  grid-template-columns: 1.3fr 0.7fr 0.7fr 1.3fr;
+}
+
+.user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.user-actions .ghost-btn,
+.user-actions .danger-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 .danger-btn {

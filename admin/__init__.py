@@ -7,11 +7,52 @@ from datetime import datetime
 from functools import wraps
 from typing import Any, Dict, List
 
-from flask import Blueprint, current_app, redirect, render_template, request, session, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 
+from auth_manager import auth_manager
 from profile_manager import profile_manager
+from user_data_store import user_data_store
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
+
+_RETURN_TO_KEY = "admin_return_to"
+_ALLOWED_DASHBOARD_TABS = {
+    "user-dashboard",
+    "diabetes",
+    "heart",
+    "anemia",
+    "pneumonia",
+    "tuberculosis",
+    "consultants",
+    "profiles",
+}
+
+
+def _normalise_return_to(value: str | None) -> str | None:
+    token = str(value or "").strip().lower()
+    if not token:
+        return None
+    if token in {"landing", "resources"}:
+        return token
+    if token.startswith("dashboard:"):
+        _, tab = token.split(":", 1)
+        if tab in _ALLOWED_DASHBOARD_TABS:
+            return f"dashboard:{tab}"
+    return None
+
+
+def _capture_return_to_from_request() -> None:
+    token = _normalise_return_to(request.args.get("from"))
+    if token:
+        session[_RETURN_TO_KEY] = token
+        session.modified = True
+
+
+def _home_redirect_url() -> str:
+    token = _normalise_return_to(session.get(_RETURN_TO_KEY))
+    if not token:
+        return url_for("index")
+    return url_for("index", return_to=token)
 
 
 def _admin_credentials() -> Dict[str, str]:
@@ -31,7 +72,8 @@ def admin_required(view):
     @wraps(view)
     def wrapped(*args: Any, **kwargs: Any):
         if not _is_admin_authenticated():
-            session["admin_next"] = request.path
+            session["admin_next"] = request.full_path if request.query_string else request.path
+            _capture_return_to_from_request()
             session.modified = True
             return redirect(url_for("admin.login"))
         return view(*args, **kwargs)
@@ -41,6 +83,7 @@ def admin_required(view):
 
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login():
+    _capture_return_to_from_request()
     if _is_admin_authenticated():
         return redirect(url_for("admin.dashboard"))
 
@@ -72,6 +115,11 @@ def logout():
     return redirect(url_for("admin.login"))
 
 
+@admin_bp.route("/home", methods=["GET"])
+def go_home():
+    return redirect(_home_redirect_url())
+
+
 def _parse_timestamp(ts: str | None) -> datetime:
     if not ts:
         return datetime.min
@@ -93,7 +141,7 @@ def _risk_level(probability: float | None) -> str:
     return "stable"
 
 
-def _collect_dashboard_metrics() -> Dict[str, Any]:
+def _collect_dashboard_metrics(user_search: str = "") -> Dict[str, Any]:
     profiles = profile_manager.list_profiles()
     total_profiles = len(profiles)
     gender_counter = Counter()
@@ -158,13 +206,27 @@ def _collect_dashboard_metrics() -> Dict[str, Any]:
         "last_refresh": datetime.now().strftime("%d %b %Y, %H:%M"),
     }
 
+    auth_users: List[Dict[str, Any]] = []
+    try:
+        if auth_manager.available:
+            auth_manager.ensure_schema()
+            auth_users = auth_manager.list_users(user_search)
+    except Exception:
+        auth_users = []
+
+    metrics["auth_users"] = auth_users
+    metrics["auth_users_count"] = len(auth_users)
+    metrics["auth_search"] = user_search
+
     return metrics
 
 
 @admin_bp.route("/")
 @admin_required
 def dashboard():
-    metrics = _collect_dashboard_metrics()
+    _capture_return_to_from_request()
+    user_search = (request.args.get("user_q") or "").strip()
+    metrics = _collect_dashboard_metrics(user_search)
     return render_template(
         "admin/dashboard.html",
         metrics=metrics,
@@ -177,3 +239,57 @@ def dashboard():
 def delete_patient(profile_id: str):
     profile_manager.delete_profile(profile_id)
     return redirect(url_for("admin.dashboard"))
+
+
+@admin_bp.route("/users/<user_id>/activate", methods=["POST"])
+@admin_required
+def activate_user(user_id: str):
+    try:
+        if auth_manager.set_user_active(user_id, True):
+            flash("User activated.", "success")
+        else:
+            flash("User not found.", "error")
+    except Exception as exc:
+        flash(f"Unable to activate user: {exc}", "error")
+    return redirect(url_for("admin.dashboard", user_q=request.args.get("user_q", "")))
+
+
+@admin_bp.route("/users/<user_id>/deactivate", methods=["POST"])
+@admin_required
+def deactivate_user(user_id: str):
+    try:
+        if auth_manager.set_user_active(user_id, False):
+            flash("User deactivated.", "success")
+        else:
+            flash("User not found.", "error")
+    except Exception as exc:
+        flash(f"Unable to deactivate user: {exc}", "error")
+    return redirect(url_for("admin.dashboard", user_q=request.args.get("user_q", "")))
+
+
+@admin_bp.route("/users/<user_id>/force-reset", methods=["POST"])
+@admin_required
+def force_reset_user(user_id: str):
+    try:
+        if auth_manager.force_password_reset(user_id):
+            flash("Password reset email sent.", "success")
+        else:
+            flash("User not found.", "error")
+    except Exception as exc:
+        flash(f"Unable to force reset: {exc}", "error")
+    return redirect(url_for("admin.dashboard", user_q=request.args.get("user_q", "")))
+
+
+@admin_bp.route("/users/<user_id>/delete", methods=["POST"])
+@admin_required
+def delete_user(user_id: str):
+    try:
+        deleted = auth_manager.delete_user(user_id)
+        if deleted:
+            user_data_store.remove_user(user_id)
+            flash("User and related data deleted.", "success")
+        else:
+            flash("User not found.", "error")
+    except Exception as exc:
+        flash(f"Unable to delete user: {exc}", "error")
+    return redirect(url_for("admin.dashboard", user_q=request.args.get("user_q", "")))

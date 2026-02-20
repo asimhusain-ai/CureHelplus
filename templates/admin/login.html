@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
 </head>
 <body class="admin-login-shell">
+    <a href="{{ url_for('admin.go_home') }}" class="admin-home-link" aria-label="Go back to app home">Home</a>
     <section class="login-panel">
         <div class="login-panel__form">
             <form class="login-form" method="post" novalidate>
@@ -21,9 +22,20 @@
                     <input type="password" name="password" required autocomplete="current-password" placeholder="Enter password" value="{{ form_values.password if form_values else '' }}" />
                     {% if error %}<span class="login-error">{{ error }}</span>{% endif %}
                 </label>
-                <button type="submit" class="goo-button">Access console</button>
+                <button type="submit" class="goo-button" id="admin-access-console">Access console</button>
             </form>
         </div>
     </section>
+    <script>
+        (function () {
+            const form = document.querySelector('.login-form');
+            const button = document.getElementById('admin-access-console');
+            if (!form || !button) return;
+            form.addEventListener('submit', function () {
+                button.disabled = true;
+                button.textContent = 'Accessing...';
+            });
+        })();
+    </script>
 </body>
 </html>

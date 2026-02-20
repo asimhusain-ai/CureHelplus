@@ -39,7 +39,10 @@
                 <p class="eyebrow">{{ metrics.last_refresh if metrics else '' }}</p>
                 <h1>{% block header %}Admin Control Center{% endblock %}</h1>
             </div>
-            <form method="post" action="{{ url_for('admin.logout') }}"><button type="submit" class="ghost-btn">Log out</button></form>
+            <div class="admin-topbar-actions">
+                <a href="{{ url_for('admin.go_home') }}" class="home-text-btn">Home</a>
+                <form method="post" action="{{ url_for('admin.logout') }}"><button type="submit" class="ghost-btn">Log out</button></form>
+            </div>
         </header>
 
         <main>

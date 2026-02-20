@@ -6,12 +6,33 @@ const pages = {
   dashboard: document.getElementById("dashboard"),
 };
 
-const patientForm = document.getElementById("patient-form");
-const patientDobInput = patientForm?.querySelector("input[name='dob']") || null;
+const authForm = document.getElementById("auth-form");
+const authEmailInput = document.getElementById("auth-email");
+const authPasswordInput = document.getElementById("auth-password");
+const authNameInput = document.getElementById("auth-name");
+const authNewPasswordInput = document.getElementById("auth-new-password");
+const authResetTokenInput = document.getElementById("auth-reset-token");
+const authOtpInput = document.getElementById("auth-otp");
+const authEmailLabel = document.getElementById("auth-email-label");
+const authPasswordEyeButton = document.getElementById("auth-password-eye");
+const authNewPasswordEyeButton = document.getElementById("auth-new-password-eye");
+const authSubmitButton = document.getElementById("auth-submit-button");
+const authInlineStatus = document.getElementById("auth-inline-status");
+const authModeButtons = Array.from(document.querySelectorAll("[data-auth-mode]"));
+const forgotPasswordButton = document.getElementById("forgot-password-button");
+const resendVerificationButton = document.getElementById("resend-verification-button");
+
+const patientForm = null;
+const patientDobInput = null;
 const patientSummary = document.getElementById("patient-summary");
 const logoutButton = document.getElementById("logout-button");
 const startButton = document.getElementById("start-onboarding");
 const backButton = document.getElementById("back-to-landing");
+const landingLoginLink = document.getElementById("landing-login-link");
+const landingSignupLink = document.getElementById("landing-signup-link");
+const landingDashboardLink = document.getElementById("landing-dashboard-link");
+const authGoogleSigninButton = document.getElementById("auth-google-signin");
+const userDashboardTabButton = document.getElementById("user-dashboard-tab-button");
 const resetSessionButton = document.getElementById("reset-session");
 const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
 const tabTriggers = Array.from(document.querySelectorAll("[data-tab]"));
@@ -22,9 +43,6 @@ const diseasesDropdownLabel = diseasesDropdownToggle?.querySelector(".goo-button
 const resourcesDropdownContainer = document.getElementById("landing-resources");
 const resourcesDropdownToggle = document.getElementById("resources-toggle");
 const resourcesDropdownMenu = document.getElementById("resources-menu");
-const researchPopupTrigger = document.querySelector("[data-research-popup='open']");
-const researchPopup = document.getElementById("research-popup");
-const researchPopupClose = document.getElementById("research-popup-close");
 const contactFormTrigger = document.querySelector("[data-contact-popup='open']");
 const contactFormMenu = document.getElementById("contact-form-menu");
 const resourceContactForm = document.getElementById("resource-contact-form");
@@ -49,6 +67,59 @@ const testInputsNormal = document.getElementById("test-inputs-normal");
 const testInputsAbnormal = document.getElementById("test-inputs-abnormal");
 const logoutConfirmModal = document.getElementById("logout-confirm-modal");
 const logoutConfirmOk = document.getElementById("logout-confirm-ok");
+const logoutConfirmCancel = document.getElementById("logout-confirm-cancel");
+const editProfileButton = document.getElementById("edit-profile-button");
+const profileEditPanel = document.getElementById("profile-edit-panel");
+const profileEditForm = document.getElementById("profile-edit-form");
+const profileEditStatus = document.getElementById("profile-edit-status");
+const userProfilePhoto = document.getElementById("user-profile-photo");
+const userNameLine = document.getElementById("user-name");
+const userDobLine = document.getElementById("user-dob");
+const userGenderLine = document.getElementById("user-gender");
+const userAbhaIdLine = document.getElementById("user-abha-id");
+const userAddressLine = document.getElementById("user-address");
+const userMobileLine = document.getElementById("user-mobile");
+const summaryTotalPredictions = document.getElementById("summary-total-predictions");
+const summaryDiseasesCount = document.getElementById("summary-diseases-count");
+const summaryReportsCount = document.getElementById("summary-reports-count");
+const profileCompletenessFill = document.getElementById("profile-completeness-fill");
+const profileCompletenessText = document.getElementById("profile-completeness-text");
+const profileCompletenessPrompts = document.getElementById("profile-completeness-prompts");
+const riskAlertsPanel = document.getElementById("risk-alerts-panel");
+const riskAlertsList = document.getElementById("risk-alerts-list");
+const snapshotLastPrediction = document.getElementById("snapshot-last-prediction");
+const snapshotHighestRisk = document.getElementById("snapshot-highest-risk");
+const snapshotActiveDisease = document.getElementById("snapshot-active-disease");
+const medAdherenceStreak = document.getElementById("med-adherence-streak");
+const medAdherenceToday = document.getElementById("med-adherence-today");
+const medAdherenceYes = document.getElementById("med-adherence-yes");
+const medAdherenceNo = document.getElementById("med-adherence-no");
+const shortcutNearestHospital = document.getElementById("shortcut-nearest-hospital");
+const shortcutFindDoctor = document.getElementById("shortcut-find-doctor");
+const fileSummaryTotal = document.getElementById("file-summary-total");
+const fileSummaryLastFile = document.getElementById("file-summary-last-file");
+const fileSummaryLastDate = document.getElementById("file-summary-last-date");
+const previousMedicationsInput = document.getElementById("previous-medications-input");
+const savePreviousMedicationsButton = document.getElementById("save-previous-medications");
+const previousMedicationsStatus = document.getElementById("previous-medications-status");
+const dataQualityScore = document.getElementById("data-quality-score");
+const dataQualityMissing = document.getElementById("data-quality-missing");
+const dataQualityFixProfile = document.getElementById("data-quality-fix-profile");
+const dataQualityFixHistory = document.getElementById("data-quality-fix-history");
+const downloadLatestReport = document.getElementById("download-latest-report");
+const downloadFullHistory = document.getElementById("download-full-history");
+const reportUploadForm = document.getElementById("report-upload-form");
+const userReportFileInput = document.getElementById("user-report-file");
+const userReportFileName = document.getElementById("user-report-file-name");
+const reportUploadStatus = document.getElementById("report-upload-status");
+const reportHistoryList = document.getElementById("report-history-list");
+const pastHealthInputsList = document.getElementById("past-health-inputs-list");
+const profilePhotoFileInput = document.getElementById("profile-photo-file");
+const profilePhotoPreview = document.getElementById("profile-photo-preview");
+const historyImageModal = document.getElementById("history-image-modal");
+const historyImageClose = document.getElementById("history-image-close");
+const historyImagePreview = document.getElementById("history-image-preview");
+const pastHistoryFilters = Array.from(document.querySelectorAll(".past-history-filter"));
 const themeToggle = document.getElementById("theme-toggle");
 const rootElement = document.documentElement;
 const THEME_STORAGE_KEY = "curehelp-theme";
@@ -232,7 +303,177 @@ const state = {
   predictions: {},
   normals: {},
   chatHistory: [],
+  historyFilter: "all",
+  auth: {
+    authenticated: false,
+    user: null,
+  },
 };
+
+let activeAuthMode = "login";
+let authStatusHideTimeoutId = null;
+let resendOtpTimerId = null;
+let resendOtpSecondsRemaining = 0;
+const RESEND_OTP_COOLDOWN_SECONDS = 30;
+
+function getMedicationStorageKey() {
+  const userId = String(state.auth?.user?.id || state.profile?.id || "guest").trim() || "guest";
+  return `curehelp-medication-adherence-${userId}`;
+}
+
+function getPreviousMedicationsStorageKey() {
+  const userId = String(state.auth?.user?.id || state.profile?.id || "guest").trim() || "guest";
+  return `curehelp-previous-medications-${userId}`;
+}
+
+function getTodayKey() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function getYesterdayKey() {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function loadMedicationAdherenceState() {
+  const key = getMedicationStorageKey();
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return { streak: 0, lastYesDate: "", lastActionDate: "", lastAction: "none" };
+    const parsed = JSON.parse(raw);
+    return {
+      streak: Number(parsed?.streak) || 0,
+      lastYesDate: String(parsed?.lastYesDate || ""),
+      lastActionDate: String(parsed?.lastActionDate || ""),
+      lastAction: String(parsed?.lastAction || "none"),
+    };
+  } catch (_) {
+    return { streak: 0, lastYesDate: "", lastActionDate: "", lastAction: "none" };
+  }
+}
+
+function saveMedicationAdherenceState(payload) {
+  const key = getMedicationStorageKey();
+  localStorage.setItem(key, JSON.stringify(payload || {}));
+}
+
+function loadPreviousMedications() {
+  const key = getPreviousMedicationsStorageKey();
+  try {
+    return String(localStorage.getItem(key) || "");
+  } catch (_) {
+    return "";
+  }
+}
+
+function savePreviousMedications(value) {
+  const key = getPreviousMedicationsStorageKey();
+  localStorage.setItem(key, String(value || ""));
+}
+
+function renderMedicationAdherenceState() {
+  const adherence = loadMedicationAdherenceState();
+  if (medAdherenceStreak) {
+    medAdherenceStreak.textContent = `${adherence.streak || 0} day(s)`;
+  }
+  if (medAdherenceToday) {
+    const today = getTodayKey();
+    if (adherence.lastActionDate === today) {
+      medAdherenceToday.textContent = adherence.lastAction === "yes" ? "Yes" : "No";
+    } else {
+      medAdherenceToday.textContent = "Not marked";
+    }
+  }
+}
+
+function renderPreviousMedications() {
+  if (!previousMedicationsInput) return;
+  previousMedicationsInput.value = loadPreviousMedications();
+}
+
+function clearAuthStatusHideTimer() {
+  if (authStatusHideTimeoutId) {
+    window.clearTimeout(authStatusHideTimeoutId);
+    authStatusHideTimeoutId = null;
+  }
+}
+
+function formatResendOtpCountdown(totalSeconds) {
+  const seconds = Math.max(0, Number(totalSeconds) || 0);
+  const minutesPart = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const secondsPart = String(seconds % 60).padStart(2, "0");
+  return `${minutesPart}:${secondsPart}`;
+}
+
+function updateResendOtpButtonState() {
+  if (!resendVerificationButton) return;
+
+  if (activeAuthMode !== "verify") {
+    resendVerificationButton.disabled = false;
+    resendVerificationButton.textContent = "Resent OTP";
+    return;
+  }
+
+  if (resendOtpSecondsRemaining > 0) {
+    resendVerificationButton.disabled = true;
+    resendVerificationButton.textContent = formatResendOtpCountdown(resendOtpSecondsRemaining);
+    return;
+  }
+
+  resendVerificationButton.disabled = false;
+  resendVerificationButton.textContent = "Resent OTP";
+}
+
+function clearResendOtpTimer() {
+  if (resendOtpTimerId) {
+    window.clearInterval(resendOtpTimerId);
+    resendOtpTimerId = null;
+  }
+}
+
+function startResendOtpTimer(seconds = RESEND_OTP_COOLDOWN_SECONDS) {
+  clearResendOtpTimer();
+  resendOtpSecondsRemaining = Math.max(0, Number(seconds) || 0);
+  updateResendOtpButtonState();
+
+  if (resendOtpSecondsRemaining <= 0) {
+    return;
+  }
+
+  resendOtpTimerId = window.setInterval(() => {
+    resendOtpSecondsRemaining = Math.max(0, resendOtpSecondsRemaining - 1);
+    updateResendOtpButtonState();
+    if (resendOtpSecondsRemaining <= 0) {
+      clearResendOtpTimer();
+    }
+  }, 1000);
+}
+
+function mapAuthErrorMessage(rawMessage = "", mode = "") {
+  const normalized = String(rawMessage || "").trim();
+  const lowered = normalized.toLowerCase();
+  const currentMode = String(mode || activeAuthMode || "").toLowerCase();
+
+  if (currentMode === "verify" && (lowered.includes("otp") || lowered.includes("invalid or expired"))) {
+    return "Incorrect OTP";
+  }
+
+  if (currentMode === "signup" && lowered.includes("already exists")) {
+    return "Email Already Exists";
+  }
+
+  if (currentMode === "login" && (lowered.includes("invalid email or password") || lowered.includes("incorrect password"))) {
+    return "Incorrect Password";
+  }
+
+  return normalized || "Authentication failed";
+}
 
 function isLogoutConfirmModalOpen() {
   return Boolean(logoutConfirmModal?.classList.contains("open"));
@@ -252,6 +493,13 @@ function closeLogoutConfirmModal() {
 function openLogoutConfirmModal() {
   if (!logoutConfirmModal) return;
   if (isLogoutConfirmModalOpen()) return;
+  if (logoutConfirmOk) {
+    logoutConfirmOk.disabled = false;
+    logoutConfirmOk.textContent = "Logout";
+  }
+  if (logoutConfirmCancel) {
+    logoutConfirmCancel.disabled = false;
+  }
   lockBodyScroll();
   logoutConfirmModal.hidden = false;
   logoutConfirmModal.classList.add("open");
@@ -259,7 +507,13 @@ function openLogoutConfirmModal() {
 }
 
 async function logoutUser() {
+  try {
+    await fetch("/api/auth/logout-all", { method: "POST" });
+  } catch (_) {
+    /* noop fallback */
+  }
   await resetSession({ redirect: true, recordHistory: false });
+  closeLogoutConfirmModal();
   updateHistoryState({ page: "landing", tab: "diabetes" }, { replace: true });
 }
 
@@ -268,10 +522,10 @@ let historyInitialized = false;
 let isRestoringHistory = false;
 let isDiseasesDropdownOpen = false;
 let isResourcesDropdownOpen = false;
-let isResearchPopupOpen = false;
 let isContactFormPopupOpen = false;
 let isDocsPopupOpen = false;
 let isLoginPopupOpen = false;
+let shouldReopenResourcesMenu = false;
 const diseaseTabKeys = new Set(["pneumonia", "tuberculosis", "diabetes", "heart", "anemia"]);
 const diseaseTabLabels = {
   pneumonia: "Pneumonia",
@@ -597,7 +851,7 @@ function createMultipartRequest(formData) {
   return { body, contentType: `multipart/form-data; boundary=${boundary}` };
 }
 
-function startLoaderDelay(duration = 3000) {
+function startLoaderDelay(duration = 900) {
   const startTime = (typeof performance !== "undefined" && typeof performance.now === "function")
     ? performance.now()
     : Date.now();
@@ -1117,6 +1371,48 @@ function getCurrentAppState() {
   };
 }
 
+function buildAdminSourceToken() {
+  const appState = getCurrentAppState();
+  const page = String(appState.page || "landing");
+  const tab = String(appState.tab || "diabetes");
+
+  if (page === "landing") {
+    return isResourcesDropdownOpen ? "resources" : "landing";
+  }
+
+  if (page === "dashboard") {
+    return `dashboard:${tab}`;
+  }
+
+  return "landing";
+}
+
+function applyAdminReturnToken(token) {
+  const value = String(token || "").trim().toLowerCase();
+  if (!value) return;
+
+  if (value === "landing") {
+    setSessionValue("currentPage", "landing");
+    setSessionValue("currentTab", "diabetes");
+    shouldReopenResourcesMenu = false;
+    return;
+  }
+
+  if (value === "resources") {
+    setSessionValue("currentPage", "landing");
+    setSessionValue("currentTab", "diabetes");
+    shouldReopenResourcesMenu = true;
+    return;
+  }
+
+  if (value.startsWith("dashboard:")) {
+    const tab = value.split(":")[1] || "diabetes";
+    setSessionValue("currentPage", "dashboard");
+    setSessionValue("currentTab", tab);
+    shouldReopenResourcesMenu = false;
+  }
+}
+
 function openDiseasesDropdown() {
   if (!diseasesDropdownMenu) return;
   diseasesDropdownMenu.classList.remove("hidden");
@@ -1190,7 +1486,6 @@ function toggleContactFormPopup() {
 function openLoginPopup() {
   if (!pages.patient || isLoginPopupOpen) return;
   closeResourcesDropdown();
-  closeResearchPopup();
   closeContactFormPopup();
   closeDocsPopup({ returnFocus: false });
   lockBodyScroll();
@@ -1199,7 +1494,7 @@ function openLoginPopup() {
   pages.patient.classList.add("active");
   document.body.classList.add("login-popup-open");
   isLoginPopupOpen = true;
-  patientForm?.querySelector("input[name='name']")?.focus?.({ preventScroll: true });
+  authEmailInput?.focus?.({ preventScroll: true });
   updateThemeToggleVisibility("landing");
   updateFooterTipVisibility("landing");
 }
@@ -1225,29 +1520,6 @@ function closeLoginPopup({ returnFocus = false } = {}) {
   if (returnFocus) {
     startButton?.focus?.({ preventScroll: true });
   }
-}
-
-function openResearchPopup() {
-  if (!researchPopup) return;
-  closeResourcesDropdown();
-  closeContactFormPopup();
-  closeDocsPopup();
-  lockBodyScroll();
-  researchPopup.hidden = false;
-  researchPopup.classList.add("open");
-  isResearchPopupOpen = true;
-  updateThemeToggleVisibility(getCurrentAppState().page);
-  updateFooterTipVisibility(getCurrentAppState().page);
-}
-
-function closeResearchPopup() {
-  if (!researchPopup || !isResearchPopupOpen) return;
-  researchPopup.classList.remove("open");
-  researchPopup.hidden = true;
-  isResearchPopupOpen = false;
-  updateThemeToggleVisibility(getCurrentAppState().page);
-  updateFooterTipVisibility(getCurrentAppState().page);
-  unlockBodyScroll();
 }
 
 function openDocsPopup(sectionKey = "overview") {
@@ -1431,7 +1703,7 @@ function updateThemeToggleVisibility(activePage) {
   if (!themeToggle) {
     return;
   }
-  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isResearchPopupOpen && !isLoginPopupOpen;
+  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isLoginPopupOpen;
   if (!isLanding) {
     closeThemeMenu();
   }
@@ -1451,13 +1723,16 @@ function updateFooterTipVisibility(activePage) {
   if (!footerTip) {
     return;
   }
-  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isResearchPopupOpen && !isLoginPopupOpen;
+  const isLanding = activePage === "landing" && !isDocsPopupOpen && !isLoginPopupOpen;
   footerTip.hidden = !isLanding;
   footerTip.style.display = isLanding ? "" : "none";
   footerTip.setAttribute("aria-hidden", isLanding ? "false" : "true");
 }
 
 function showPage(key, { recordHistory = true } = {}) {
+  if (key === "landing" && state.auth.authenticated) {
+    key = "dashboard";
+  }
   Object.entries(pages).forEach(([name, element]) => {
     const isActive = name === key;
     element.classList.toggle("active", isActive);
@@ -1470,7 +1745,6 @@ function showPage(key, { recordHistory = true } = {}) {
   }
   if (key !== "landing") {
     closeResourcesDropdown();
-    closeResearchPopup();
     closeContactFormPopup();
     closeLoginPopup();
   }
@@ -1491,15 +1765,47 @@ function showPage(key, { recordHistory = true } = {}) {
   }
 }
 
+function updateAuthUi(isAuthenticated) {
+  const authenticated = Boolean(isAuthenticated);
+
+  if (landingLoginLink) {
+    landingLoginLink.classList.toggle("hidden", authenticated);
+    landingLoginLink.setAttribute("aria-hidden", authenticated ? "true" : "false");
+  }
+  if (landingSignupLink) {
+    landingSignupLink.classList.toggle("hidden", authenticated);
+    landingSignupLink.setAttribute("aria-hidden", authenticated ? "true" : "false");
+  }
+
+  if (landingDashboardLink) {
+    landingDashboardLink.classList.toggle("hidden", !authenticated);
+    landingDashboardLink.setAttribute("aria-hidden", authenticated ? "false" : "true");
+  }
+
+  if (userDashboardTabButton) {
+    userDashboardTabButton.classList.toggle("hidden", !authenticated);
+    userDashboardTabButton.setAttribute("aria-hidden", authenticated ? "false" : "true");
+    userDashboardTabButton.tabIndex = authenticated ? 0 : -1;
+  }
+
+  if (startButton) {
+    const label = startButton.querySelector(".goo-button-label");
+    if (label) {
+      label.textContent = authenticated ? "OPEN DASHBOARD" : "GET STARTED";
+    }
+  }
+}
+
 function setPatientSummary(profile) {
   if (!profile) {
-    patientSummary.textContent = "No patient selected.";
+    patientSummary.textContent = "No active user.";
     if (logoutButton) {
       logoutButton.hidden = true;
     }
     return;
   }
-  patientSummary.textContent = `Current Patient: ${profile.name} • Age ${profile.age} • ${profile.gender}`;
+  const patientName = (profile?.name || "").trim() || "Patient";
+  patientSummary.textContent = `Patient: ${patientName}`;
   if (logoutButton) {
     logoutButton.hidden = false;
   }
@@ -1507,16 +1813,36 @@ function setPatientSummary(profile) {
 
 async function fetchCurrentProfile() {
   try {
-    const response = await fetch("/api/profile");
+    const response = await fetch("/api/auth/status");
     const payload = await response.json();
-    if (!payload.success) throw new Error(payload.error || "Unable to fetch profile");
-    state.profile = payload.profile || null;
+    if (!payload.success) throw new Error(payload.error || "Unable to fetch auth state");
+    const authenticated = Boolean(payload.authenticated);
+    state.auth.authenticated = authenticated;
+    state.auth.user = authenticated ? payload.user : null;
+
+    const profilePayload = authenticated
+      ? {
+          id: payload.user?.id || "",
+          name: payload.user?.full_name || payload.user?.profile?.name || "",
+          age: payload.user?.profile?.age || "",
+          gender: payload.user?.profile?.gender || "",
+          email: payload.user?.email || "",
+          ...payload.user?.profile,
+        }
+      : null;
+
+    state.profile = profilePayload;
     setPatientSummary(state.profile);
     applyProfileDemographics(state.profile);
+    setDashboardProfilePhoto(profilePayload || {});
+    updateAuthUi(authenticated);
     return state.profile;
   } catch (error) {
-    console.warn("Failed to restore profile", error);
+    console.warn("Failed to restore auth status", error);
+    state.auth.authenticated = false;
+    state.auth.user = null;
     state.profile = null;
+    updateAuthUi(false);
     setPatientSummary(null);
     return null;
   }
@@ -1583,7 +1909,9 @@ function activateConsultantView(targetId) {
 }
 
 async function handleTabChange(tabName) {
-  if (tabName === "profiles") {
+  if (tabName === "user-dashboard") {
+    await loadUserDashboardOverview(false, { showLoader: true, minDuration: 350 });
+  } else if (tabName === "profiles") {
     const query = profileSearch ? profileSearch.value.trim() : "";
     await loadProfiles(query);
   } else if (tabName === "consultants") {
@@ -1833,7 +2161,7 @@ async function submitPrediction(form, url, resultId) {
   const data = getFormData(form);
   const panel = form.closest(".tab-panel");
   panel?.classList.add("loader-hidden");
-  const loaderDelay = startLoaderDelay();
+  const loaderDelay = startLoaderDelay(2800);
   try {
     Object.keys(data).forEach((key) => {
       if (data[key] === "") delete data[key];
@@ -1864,18 +2192,19 @@ async function submitPrediction(form, url, resultId) {
     state.predictions = state.predictions || {};
     const diseaseKey = (payload.disease || "").toLowerCase() || resultId;
     state.predictions[diseaseKey] = payload;
-    await loaderDelay.finish();
     renderRiskView(resultId, payload);
     hidePanelInputs(resultId);
-  } catch (error) {
     await loaderDelay.finish();
+    panel?.classList.remove("loader-hidden");
+    loadUserDashboardOverview();
+  } catch (error) {
     const container = document.getElementById(resultId);
     if (container) {
       container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
     }
-    panel?.classList.remove("result-only");
-  } finally {
+    await loaderDelay.finish();
     panel?.classList.remove("loader-hidden");
+    panel?.classList.remove("result-only");
   }
 }
 
@@ -1894,7 +2223,7 @@ async function submitPneumoniaPrediction() {
   const resultId = "pneumonia-result";
   const panel = pneumoniaForm?.closest(".tab-panel");
   panel?.classList.add("loader-hidden");
-  const loaderDelay = startLoaderDelay();
+  const loaderDelay = startLoaderDelay(2800);
 
   try {
     const uploadedImageDataUrl = await fileToDataUrl(imageFile);
@@ -1926,18 +2255,19 @@ async function submitPneumoniaPrediction() {
 
     state.predictions = state.predictions || {};
     state.predictions.pneumonia = payload;
-    await loaderDelay.finish();
     renderRiskView(resultId, payload);
     hidePanelInputs(resultId);
-  } catch (error) {
     await loaderDelay.finish();
+    panel?.classList.remove("loader-hidden");
+    loadUserDashboardOverview();
+  } catch (error) {
     const container = document.getElementById(resultId);
     if (container) {
       container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
     }
-    panel?.classList.remove("result-only");
-  } finally {
+    await loaderDelay.finish();
     panel?.classList.remove("loader-hidden");
+    panel?.classList.remove("result-only");
   }
 }
 
@@ -1956,7 +2286,7 @@ async function submitTuberculosisPrediction() {
   const resultId = "tuberculosis-result";
   const panel = tuberculosisForm?.closest(".tab-panel");
   panel?.classList.add("loader-hidden");
-  const loaderDelay = startLoaderDelay();
+  const loaderDelay = startLoaderDelay(2800);
 
   try {
     const uploadedImageDataUrl = await fileToDataUrl(imageFile);
@@ -1988,18 +2318,19 @@ async function submitTuberculosisPrediction() {
 
     state.predictions = state.predictions || {};
     state.predictions.tuberculosis = payload;
-    await loaderDelay.finish();
     renderRiskView(resultId, payload);
     hidePanelInputs(resultId);
-  } catch (error) {
     await loaderDelay.finish();
+    panel?.classList.remove("loader-hidden");
+    loadUserDashboardOverview();
+  } catch (error) {
     const container = document.getElementById(resultId);
     if (container) {
       container.innerHTML = `<div class="result-card"><p class="muted">${error.message}</p></div>`;
     }
-    panel?.classList.remove("result-only");
-  } finally {
+    await loaderDelay.finish();
     panel?.classList.remove("loader-hidden");
+    panel?.classList.remove("result-only");
   }
 }
 
@@ -2154,13 +2485,22 @@ function renderProfileCard(profile, currentProfileId = state.profile?.id) {
   const ageGender = ageGenderParts.join(" • ") || "Basic details unavailable";
 
   const updatedAt = profile.last_updated || profile.created_at || "-";
+  const rawProfileId = String(profile.id || "").trim();
+  let displayProfileId = rawProfileId || "-";
+  const userIdMatch = rawProfileId.match(/^user_(\d+)$/i);
+  if (userIdMatch) {
+    displayProfileId = `User ${Number(userIdMatch[1])}`;
+  } else if (rawProfileId.toLowerCase().startsWith("auth_")) {
+    const stableShort = rawProfileId.slice(5, 9).toUpperCase();
+    displayProfileId = stableShort ? `User ${stableShort}` : "User";
+  }
 
   return `
     <div class="profile-card${isCurrent ? " current" : ""}" data-profile-id="${profile.id || ""}" tabindex="0">
       <div class="profile-card-summary">
         <div class="profile-card-heading">
           <h4 class="profile-card-name">${profile.name || "Unknown"}</h4>
-          <span class="profile-card-badge">${profile.id || "-"}</span>
+          <span class="profile-card-badge">${displayProfileId}</span>
         </div>
         <p class="profile-card-meta">${ageGender}</p>
         <p class="profile-card-updated muted">Updated: ${updatedAt}</p>
@@ -2458,85 +2798,893 @@ function applyProfileDemographics(profile) {
   }
 }
 
-async function createProfile(event) {
-  event.preventDefault();
+function setAuthInlineStatus(message = "", { isError = false, autoHideMs = 0 } = {}) {
+  if (!authInlineStatus) return;
+  clearAuthStatusHideTimer();
+  authInlineStatus.textContent = message;
+  authInlineStatus.style.color = isError ? "var(--danger)" : "var(--muted)";
 
-  const derivedAge = syncPatientDobDerivedAge({ setInputValidity: true });
-  if (patientDobInput && derivedAge === null) {
-    patientDobInput.reportValidity?.();
-    return;
+  if (message && Number(autoHideMs) > 0) {
+    authStatusHideTimeoutId = window.setTimeout(() => {
+      if (!authInlineStatus) return;
+      authInlineStatus.textContent = "";
+      authStatusHideTimeoutId = null;
+    }, Number(autoHideMs));
+  }
+}
+
+function getAuthSubmitLabel(mode) {
+  const submitMap = {
+    login: "LOGIN",
+    signup: "SIGNUP",
+    verify: "VERIFY OTP",
+    forgot: "SEND RESET LINK",
+    reset: "RESET PASSWORD",
+  };
+  return submitMap[mode] || submitMap.login;
+}
+
+function setAuthSubmitLabel(labelText) {
+  if (!authSubmitButton) return;
+  const label = authSubmitButton.querySelector(".goo-button-label");
+  if (label) {
+    label.textContent = labelText;
+  } else {
+    authSubmitButton.textContent = labelText;
+  }
+}
+
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms || 0)));
+}
+
+function measureButtonTargetWidth(button, nextText) {
+  if (!(button instanceof HTMLButtonElement)) {
+    return 0;
   }
 
-  if (typeof patientForm?.reportValidity === "function" && !patientForm.reportValidity()) {
-    return;
-  }
-  if (!enforceFormConstraints(patientForm, FORM_CONSTRAINTS["patient-form"])) {
-    return;
-  }
-  const reportFile = medicalReportInput?.files?.[0] || null;
-  const validation = isValidReportFile(reportFile);
-  if (!validation.valid) {
-    alert(validation.message);
-    return;
+  const contentTarget = button.querySelector(".goo-button-label") || button;
+  const contentStyles = window.getComputedStyle(contentTarget);
+  const buttonStyles = window.getComputedStyle(button);
+
+  const probe = document.createElement("span");
+  probe.textContent = nextText;
+  probe.style.position = "absolute";
+  probe.style.visibility = "hidden";
+  probe.style.pointerEvents = "none";
+  probe.style.whiteSpace = "nowrap";
+  probe.style.fontFamily = contentStyles.fontFamily;
+  probe.style.fontSize = contentStyles.fontSize;
+  probe.style.fontWeight = contentStyles.fontWeight;
+  probe.style.letterSpacing = contentStyles.letterSpacing;
+  probe.style.textTransform = contentStyles.textTransform;
+  document.body.appendChild(probe);
+  const textWidth = Math.ceil(probe.getBoundingClientRect().width);
+  document.body.removeChild(probe);
+
+  const paddingX =
+    (parseFloat(buttonStyles.paddingLeft) || 0) +
+    (parseFloat(buttonStyles.paddingRight) || 0) +
+    (parseFloat(buttonStyles.borderLeftWidth) || 0) +
+    (parseFloat(buttonStyles.borderRightWidth) || 0);
+
+  const minWidth = parseFloat(buttonStyles.minWidth) || 0;
+  const currentWidth = Math.ceil(button.getBoundingClientRect().width || button.offsetWidth || 0);
+  return Math.ceil(Math.max(textWidth + paddingX + 4, minWidth, currentWidth));
+}
+
+async function runButtonProgress(button, loadingText, action) {
+  if (!(button instanceof HTMLButtonElement)) {
+    return action();
   }
 
-  const formData = new FormData(patientForm);
-  if (derivedAge !== null) {
-    formData.set("age", String(derivedAge));
+  const originalText = button.textContent || "";
+  const startWidth = Math.ceil(button.getBoundingClientRect().width || button.offsetWidth || 0);
+  const targetWidth = measureButtonTargetWidth(button, loadingText);
+  if (startWidth > 0) {
+    button.style.width = `${startWidth}px`;
+    button.style.transition = "width 180ms ease";
   }
-  formData.delete("dob");
-  const multipart = createMultipartRequest(formData);
-  const loaderDelay = startLoaderDelay(300);
-  patientCard?.classList.add("loader-hidden");
+  button.disabled = true;
+  button.classList.add("is-loading");
+  button.textContent = loadingText;
+  if (targetWidth > startWidth) {
+    window.requestAnimationFrame(() => {
+      button.style.width = `${targetWidth}px`;
+    });
+  }
+  const startedAt = performance.now();
 
   try {
-    const response = await fetch("/api/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": multipart.contentType,
-      },
-      body: multipart.body,
-    });
-    let payload;
-    const contentType = response.headers.get("content-type") || "";
-    if (contentType.includes("application/json")) {
-      try {
-        payload = await response.json();
-      } catch (err) {
-        throw new Error("Invalid JSON response from server.");
-      }
-    } else {
-      const responseText = await response.text();
-      throw new Error(responseText || "Unexpected server response.");
-    }
-    if (!response.ok || !payload.success) throw new Error(payload.error || "Unable to create profile");
-    state.profile = payload.profile;
-    setPatientSummary(state.profile);
-    if (payload.autofill) {
-      applyAutofillValues(payload.autofill);
-    }
-    applyProfileDemographics(state.profile);
-    const loadProfilesPromise = loadProfiles();
-    await Promise.all([loaderDelay.finish(), loadProfilesPromise]);
-    await enterDashboard("diabetes");
-  } catch (error) {
-    await loaderDelay.finish();
-    alert(error.message);
+    return await action();
   } finally {
-    patientCard?.classList.remove("loader-hidden");
+    const elapsed = performance.now() - startedAt;
+    if (elapsed < 280) {
+      await delay(280 - elapsed);
+    }
+    button.disabled = false;
+    button.classList.remove("is-loading");
+    button.style.width = "";
+    button.style.transition = "";
+    button.textContent = originalText;
+  }
+}
+
+async function runAuthSubmitProgress(loadingText, action) {
+  if (!authSubmitButton) {
+    return action();
+  }
+
+  const startWidth = Math.ceil(authSubmitButton.getBoundingClientRect().width || authSubmitButton.offsetWidth || 0);
+  const targetWidth = measureButtonTargetWidth(authSubmitButton, loadingText);
+  if (startWidth > 0) {
+    authSubmitButton.style.width = `${startWidth}px`;
+    authSubmitButton.style.transition = "width 180ms ease";
+  }
+  authSubmitButton.disabled = true;
+  authSubmitButton.classList.add("is-loading");
+  setAuthSubmitLabel(loadingText);
+  if (targetWidth > startWidth) {
+    window.requestAnimationFrame(() => {
+      authSubmitButton.style.width = `${targetWidth}px`;
+    });
+  }
+  const startedAt = performance.now();
+
+  try {
+    return await action();
+  } finally {
+    const elapsed = performance.now() - startedAt;
+    if (elapsed < 300) {
+      await delay(300 - elapsed);
+    }
+    authSubmitButton.disabled = false;
+    authSubmitButton.classList.remove("is-loading");
+    authSubmitButton.style.width = "";
+    authSubmitButton.style.transition = "";
+    setAuthSubmitLabel(getAuthSubmitLabel(activeAuthMode));
+  }
+}
+
+function setAuthMode(mode, options = {}) {
+  const { preserveStatus = false, startVerifyTimer = false } = options;
+  const nextMode = ["login", "signup", "verify", "forgot", "reset"].includes(mode) ? mode : "login";
+  activeAuthMode = nextMode;
+
+  authModeButtons.forEach((button) => {
+    const isActive = button.dataset.authMode === nextMode;
+    button.classList.toggle("active", isActive);
+    if (button.hasAttribute("aria-selected")) {
+      button.setAttribute("aria-selected", isActive ? "true" : "false");
+    }
+  });
+
+  const titleMap = {
+    login: "Welcome Back",
+    signup: "Create Your Account",
+    verify: "Verify OTP",
+    forgot: "Forgot Password",
+    reset: "Reset Password",
+  };
+
+  const titleElement = document.getElementById("patient-login-title");
+  if (titleElement) {
+    titleElement.textContent = titleMap[nextMode];
+    titleElement.classList.toggle("auth-title-small", nextMode === "signup");
+  }
+
+  if (authEmailLabel) {
+    authEmailLabel.textContent = nextMode === "login" ? "Email or Username" : "Email";
+  }
+
+  if (authEmailInput) {
+    authEmailInput.placeholder = nextMode === "login" ? "Enter email or username" : "Enter email";
+  }
+
+  setAuthSubmitLabel(getAuthSubmitLabel(nextMode));
+
+  document.querySelectorAll("[data-auth-only]").forEach((element) => {
+    const allowedModes = (element.getAttribute("data-auth-only") || "")
+      .split(" ")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const visible = allowedModes.includes(nextMode);
+    element.classList.toggle("hidden", !visible);
+    if (element instanceof HTMLElement) {
+      element.hidden = !visible;
+    }
+  });
+
+  if (!preserveStatus) {
+    setAuthInlineStatus("");
+  }
+
+  if (nextMode === "verify") {
+    if (startVerifyTimer) {
+      startResendOtpTimer();
+    } else {
+      updateResendOtpButtonState();
+    }
+  } else {
+    updateResendOtpButtonState();
+  }
+}
+
+async function submitAuth(event) {
+  event.preventDefault();
+  const email = authEmailInput?.value?.trim() || "";
+  const password = authPasswordInput?.value || "";
+  const fullName = authNameInput?.value?.trim() || "";
+  const otp = (authOtpInput?.value?.trim() || "").toUpperCase();
+
+  try {
+    if (activeAuthMode === "login") {
+      await runAuthSubmitProgress("LOGGING IN", async () => {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || "Login failed");
+        setAuthInlineStatus("");
+        await fetchCurrentProfile();
+        closeLoginPopup();
+        await enterDashboard("diabetes");
+      });
+      return;
+    }
+
+    if (activeAuthMode === "signup") {
+      await runAuthSubmitProgress("SENDING OTP", async () => {
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name: fullName }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || "Signup failed");
+        setAuthMode("verify", { preserveStatus: true, startVerifyTimer: true });
+        setAuthInlineStatus("");
+      });
+      return;
+    }
+
+    if (activeAuthMode === "verify") {
+      await runAuthSubmitProgress("VERIFYING", async () => {
+        const response = await fetch("/api/auth/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || "OTP verification failed");
+        setAuthMode("login", { preserveStatus: true });
+        setAuthInlineStatus(payload.message || "OTP verified. Please login.");
+      });
+      return;
+    }
+
+    if (activeAuthMode === "forgot") {
+      await runAuthSubmitProgress("SENDING LINK", async () => {
+        const response = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || "Request failed");
+        setAuthInlineStatus(payload.message || "Temporary password sent to email.");
+        setAuthMode("login", { preserveStatus: true });
+      });
+      return;
+    }
+
+    if (activeAuthMode === "reset") {
+      await runAuthSubmitProgress("VERIFYING", async () => {
+        const token = authResetTokenInput?.value?.trim() || "";
+        const newPassword = authNewPasswordInput?.value || "";
+        const response = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, new_password: newPassword }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || "Reset failed");
+        setAuthInlineStatus(payload.message || "Password reset successful. Please login.");
+        setAuthMode("login", { preserveStatus: true });
+      });
+    }
+  } catch (error) {
+    setAuthInlineStatus(mapAuthErrorMessage(error.message || "Authentication failed", activeAuthMode), {
+      isError: true,
+      autoHideMs: 3000,
+    });
+  }
+}
+
+const DEFAULT_PROFILE_AVATAR = userProfilePhoto?.getAttribute("src") || profilePhotoPreview?.getAttribute("src") || "";
+
+function getProfilePhotoSource(profile = {}) {
+  const photoPath = String(profile?.photo_path || "").trim();
+  return photoPath || DEFAULT_PROFILE_AVATAR;
+}
+
+function setDashboardProfilePhoto(profile = {}) {
+  const source = getProfilePhotoSource(profile);
+  if (userProfilePhoto) userProfilePhoto.src = source;
+  if (profilePhotoPreview) profilePhotoPreview.src = source;
+}
+
+function normalizeHistoryDiseaseKey(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function applyDiseaseInputs(formId, inputData = {}) {
+  const form = document.getElementById(formId);
+  if (!form || !inputData || typeof inputData !== "object") return;
+
+  Object.entries(inputData).forEach(([name, value]) => {
+    const field = form.querySelector(`[name="${name}"]`);
+    if (!field) return;
+    field.value = value == null ? "" : String(value);
+  });
+}
+
+function closeHistoryImageModal() {
+  if (historyImageModal) historyImageModal.hidden = true;
+  if (historyImagePreview) historyImagePreview.src = "";
+}
+
+function openHistoryImageModal(imagePath) {
+  if (!historyImageModal || !historyImagePreview || !imagePath) return;
+  historyImagePreview.src = imagePath;
+  historyImageModal.hidden = false;
+}
+
+function parseHistoryDate(value) {
+  const text = String(value || "").trim();
+  if (!text) return null;
+  const normalized = text.endsWith("Z") ? text : `${text}Z`;
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function filterHistoryEntries(entries = [], filterKey = "all") {
+  if (!Array.isArray(entries) || filterKey === "all") return Array.isArray(entries) ? entries : [];
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const ranges = {
+    today: startOfToday,
+    "7d": new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+    "30d": new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+  };
+  const threshold = ranges[filterKey];
+  if (!threshold) return entries;
+
+  return entries.filter((entry) => {
+    const createdAt = parseHistoryDate(entry?.created_at);
+    if (!createdAt) return filterKey === "all";
+    return createdAt >= threshold;
+  });
+}
+
+function renderPastHealthInputs(entries = []) {
+  if (!pastHealthInputsList) return;
+
+  const normalizedEntries = filterHistoryEntries(Array.isArray(entries) ? entries : [], state.historyFilter || "all");
+  const grouped = new Map();
+
+  normalizedEntries.forEach((entry) => {
+    const key = normalizeHistoryDiseaseKey(entry?.disease_type);
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(entry);
+  });
+
+  const topRowCards = [
+    { title: "Coronary Artery Disease", key: "coronary_artery_disease", type: "form", formId: "heart-form" },
+    { title: "Type 2 Diabetes", key: "type_2_diabetes", type: "form", formId: "diabetes-form" },
+    { title: "Anemia", key: "anemia", type: "form", formId: "anemia-form" },
+  ];
+
+  const renderCard = (card) => {
+    const cardEntries = grouped.get(card.key) || [];
+
+    if (card.type === "form") {
+      const latestEntry = cardEntries.find((entry) => entry?.input_data && typeof entry.input_data === "object");
+      const inputData = latestEntry?.input_data || {};
+      const lines = Object.entries(inputData)
+        .slice(0, 8)
+        .map(([k, v]) => `<p class="history-input-line"><strong>${k}</strong>: ${v}</p>`)
+        .join("");
+
+      const encodedPayload = encodeURIComponent(JSON.stringify(inputData));
+      const hasInputs = Object.keys(inputData).length > 0;
+
+      return `
+        <article class="history-disease-card">
+          <h5>${card.title}</h5>
+          <div class="history-input-lines">
+            ${hasInputs ? lines : '<p class="history-input-line">No history available.</p>'}
+          </div>
+          <button type="button" class="history-load-button" data-form-id="${card.formId}" data-inputs="${encodedPayload}" ${hasInputs ? "" : "disabled"}>Load Inputs</button>
+        </article>
+      `;
+    }
+
+    const imageItems = cardEntries
+      .filter((entry) => String(entry?.image_path || "").trim())
+      .slice(0, 12)
+      .map((entry) => `<img src="${entry.image_path}" alt="${card.title} X-ray" class="history-xray-thumb" data-history-image="${entry.image_path}" />`)
+      .join("");
+
+    return `
+      <article class="history-disease-card">
+        <h5>${card.title}</h5>
+        <div class="history-xray-grid">
+          ${imageItems || '<p class="history-input-line">No X-ray history available.</p>'}
+        </div>
+      </article>
+    `;
+  };
+
+  const xrayImages = Array.from(
+    new Set(
+      normalizedEntries
+        .map((entry) => String(entry?.image_path || "").trim())
+        .filter((path) => Boolean(path)),
+    ),
+  );
+
+  const xrayImageMarkup = xrayImages
+    .slice(0, 50)
+    .map((path) => `<img src="${path}" alt="X-ray image" class="history-xray-thumb" data-history-image="${path}" />`)
+    .join("");
+
+  pastHealthInputsList.innerHTML = `
+    <div class="past-history-row past-history-row-top">
+      ${topRowCards.map((card) => renderCard(card)).join("")}
+    </div>
+    <div class="past-history-row past-history-row-bottom">
+      <article class="history-disease-card history-disease-card-xray">
+        <h5>X Ray Images</h5>
+        <div class="history-xray-grid history-xray-strip">
+          ${xrayImageMarkup || '<p class="history-input-line">No X-ray history available.</p>'}
+        </div>
+      </article>
+    </div>
+  `;
+
+  pastHealthInputsList.querySelectorAll(".history-load-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const formId = button.getAttribute("data-form-id") || "";
+      const payload = button.getAttribute("data-inputs") || "";
+      if (!formId || !payload) return;
+      try {
+        const decoded = JSON.parse(decodeURIComponent(payload));
+        applyDiseaseInputs(formId, decoded);
+      } catch (_) {
+        /* ignore malformed payload */
+      }
+    });
+  });
+
+  pastHealthInputsList.querySelectorAll("[data-history-image]").forEach((image) => {
+    image.addEventListener("click", () => {
+      const imagePath = image.getAttribute("data-history-image") || "";
+      openHistoryImageModal(imagePath);
+    });
+  });
+}
+
+function hydrateUserDashboard(overview = {}) {
+  const summary = overview.summary || {};
+  const profile = summary.profile || {};
+  const charts = overview.charts || {};
+  const reports = overview.reports || [];
+  const healthHistory = overview.health_history || [];
+  const profileCompleteness = overview.profile_completeness || {};
+  const riskAlerts = Array.isArray(overview.risk_alerts) ? overview.risk_alerts : [];
+  const quickSnapshot = overview.quick_snapshot || {};
+  const dataQuality = overview.data_quality || {};
+  const timelineSeries = Array.isArray(overview.timeline?.series) ? overview.timeline.series : [];
+
+  if (userNameLine) userNameLine.textContent = `Name: ${profile.name || "-"}`;
+  if (userDobLine) userDobLine.textContent = `DOB: ${profile.dob || "-"}`;
+  if (userGenderLine) userGenderLine.textContent = `Gender: ${profile.gender || "-"}`;
+  if (userAbhaIdLine) userAbhaIdLine.textContent = `ABHA ID: ${profile.abha_id || "-"}`;
+  if (userAddressLine) userAddressLine.textContent = `Address: ${profile.address || "-"}`;
+  if (userMobileLine) userMobileLine.textContent = `Mobile: ${profile.mobile || "-"}`;
+  setDashboardProfilePhoto(profile);
+
+  if (summaryTotalPredictions) summaryTotalPredictions.textContent = String(summary.total_predictions || 0);
+  if (summaryDiseasesCount) summaryDiseasesCount.textContent = String(summary.diseases_tracked || 0);
+  if (summaryReportsCount) summaryReportsCount.textContent = String(reports.length || 0);
+
+  const completenessScore = Math.max(0, Math.min(100, Number(profileCompleteness.score) || 0));
+  const missingItems = Array.isArray(profileCompleteness.missing) ? profileCompleteness.missing : [];
+  if (profileCompletenessFill) {
+    profileCompletenessFill.style.width = `${completenessScore}%`;
+  }
+  if (profileCompletenessText) {
+    profileCompletenessText.textContent = `${completenessScore}% complete`;
+  }
+  if (profileCompletenessPrompts) {
+    profileCompletenessPrompts.textContent = missingItems.length
+      ? `Missing: ${missingItems.join(", ")}`
+      : "Profile context is complete.";
+  }
+
+  if (snapshotLastPrediction) {
+    snapshotLastPrediction.textContent = String(quickSnapshot.last_prediction_at || "-") || "-";
+  }
+  if (snapshotHighestRisk) {
+    const disease = String(quickSnapshot.highest_recent_risk_disease || "-");
+    const riskValue = Number(quickSnapshot.highest_recent_risk) || 0;
+    snapshotHighestRisk.textContent = `${riskValue.toFixed(1)}% (${disease})`;
+  }
+  if (snapshotActiveDisease) {
+    snapshotActiveDisease.textContent = String(quickSnapshot.active_disease || "-");
+  }
+
+  if (fileSummaryTotal) {
+    fileSummaryTotal.textContent = String(reports.length || 0);
+  }
+  const latestReport = reports.length ? reports[reports.length - 1] : null;
+  if (fileSummaryLastFile) {
+    fileSummaryLastFile.textContent = String(latestReport?.name || "-");
+  }
+  if (fileSummaryLastDate) {
+    fileSummaryLastDate.textContent = String(latestReport?.at || "-");
+  }
+
+  const qualityScore = Math.max(0, Math.min(100, Number(dataQuality.score) || 0));
+  const qualityMissing = Array.isArray(dataQuality.missing) ? dataQuality.missing : [];
+  if (dataQualityScore) {
+    dataQualityScore.textContent = `${qualityScore}%`;
+  }
+  if (dataQualityMissing) {
+    dataQualityMissing.textContent = qualityMissing.length
+      ? `Missing: ${qualityMissing.map((item) => item?.label || item?.key || "-").join(", ")}`
+      : "All critical fields available.";
+  }
+
+  if (downloadLatestReport instanceof HTMLButtonElement) {
+    const latestDisease = String(quickSnapshot.active_disease || "").trim();
+    downloadLatestReport.disabled = !latestDisease || latestDisease === "-";
+    downloadLatestReport.dataset.latestDisease = latestDisease;
+  }
+
+  renderMedicationAdherenceState();
+  renderPreviousMedications();
+
+  if (riskAlertsPanel && riskAlertsList) {
+    if (!riskAlerts.length) {
+      riskAlertsPanel.hidden = true;
+      riskAlertsList.innerHTML = "";
+    } else {
+      riskAlertsPanel.hidden = false;
+      riskAlertsList.innerHTML = riskAlerts
+        .map(
+          (alert) => `
+            <article class="risk-alert-item">
+              <h5>${alert.disease || "Risk alert"}</h5>
+              <p>${alert.message || "Risk increased compared to previous result."}</p>
+            </article>
+          `,
+        )
+        .join("");
+    }
+  }
+
+  if (reportHistoryList) {
+    reportHistoryList.innerHTML = reports.length
+      ? reports
+          .slice()
+          .reverse()
+          .slice(0, 10)
+          .map(
+            (entry) => `
+            <div class="profile-card">
+              <button type="button" class="report-remove-button" data-report-id="${entry.id || ""}" aria-label="Remove report">×</button>
+              <h4>${entry.name || "Report"}</h4>
+              <p class="muted">Status: ${entry.status || "-"}</p>
+              <p class="muted">Type: ${entry.type || "-"}</p>
+              <p class="muted">Uploaded: ${entry.at || "-"}</p>
+            </div>
+          `,
+          )
+          .join("")
+      : '<div class="profile-card"><p class="muted">No reports uploaded yet.</p></div>';
+
+    reportHistoryList.querySelectorAll(".report-remove-button").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const reportId = button.getAttribute("data-report-id") || "";
+        if (!reportId) return;
+        try {
+          button.disabled = true;
+          const response = await fetch(`/api/auth/reports/${encodeURIComponent(reportId)}`, { method: "DELETE" });
+          const payload = await response.json();
+          if (!response.ok || !payload.success) {
+            throw new Error(payload.error || "Unable to remove report");
+          }
+          await loadUserDashboardOverview();
+        } catch (error) {
+          if (reportUploadStatus) reportUploadStatus.textContent = error.message || "Unable to remove report.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  }
+
+  renderPastHealthInputs(healthHistory);
+
+  const barData = Array.isArray(charts.bar) ? charts.bar : [];
+  const donutData = Array.isArray(charts.donut) ? charts.donut : [];
+
+  const donutImprovement = donutData.find((item) => String(item?.label || "").toLowerCase() === "improvement");
+  const donutDeterioration = donutData.find((item) => String(item?.label || "").toLowerCase() === "deterioration");
+  const improvementCount = Number(donutImprovement?.value) || 0;
+  const deteriorationCount = Number(donutDeterioration?.value) || 0;
+
+  const stats = barData
+    .filter((item) => String(item?.label || "").trim().toUpperCase() !== "TS")
+    .map((item) => ({
+      short: String(item?.label || "-"),
+      full: String(item?.full_label || item?.label || "-"),
+      value: Number(item?.value) || 0,
+      text: String(item?.display ?? item?.value ?? "0"),
+    }));
+
+  const statLabels = stats.map((item) => item.short);
+  const statValues = stats.map((item) => item.value);
+  const statTexts = stats.map((item) => item.text);
+  const statFullForms = stats.map((item) => item.full);
+
+  if (document.getElementById("user-progress-bar-chart")) {
+    Plotly.purge("user-progress-bar-chart");
+    Plotly.react(
+      "user-progress-bar-chart",
+      [
+        {
+          type: "bar",
+          x: statLabels,
+          y: statValues,
+          text: statTexts,
+          customdata: statFullForms,
+          textposition: "outside",
+          textfont: {
+            color: "#1f2937",
+            size: 14,
+            family: "Inter, system-ui, sans-serif",
+          },
+          marker: {
+            color: "#1d4ed8",
+          },
+          width: 0.72,
+          hovertemplate: "<b>%{customdata}</b><br>%{text}<extra></extra>",
+        },
+      ],
+      {
+        margin: { t: 14, r: 10, b: 70, l: 86 },
+        autosize: true,
+        transition: { duration: 350, easing: "cubic-in-out" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        xaxis: {
+          tickfont: { size: 14, color: "#3f3f46", family: "Inter, system-ui, sans-serif" },
+          showline: true,
+          linecolor: "#334155",
+          linewidth: 2,
+          automargin: true,
+        },
+        yaxis: {
+          range: [0, 100],
+          dtick: 10,
+          tickfont: { size: 12, color: "#1f2937", family: "Inter, system-ui, sans-serif" },
+          showgrid: false,
+          zeroline: false,
+          showline: true,
+          linecolor: "#334155",
+          linewidth: 2,
+          ticks: "outside",
+          ticklen: 5,
+          automargin: true,
+        },
+        hoverlabel: {
+          font: {
+            size: 10,
+            family: "Inter, system-ui, sans-serif",
+          },
+        },
+      },
+      { displayModeBar: false, responsive: true, scrollZoom: false },
+    );
+  }
+
+  if (document.getElementById("user-prediction-donut-chart")) {
+    Plotly.purge("user-prediction-donut-chart");
+    Plotly.react(
+      "user-prediction-donut-chart",
+      [
+        {
+          type: "pie",
+          labels: ["Improvement", "Deterioration"],
+          values: [improvementCount > 0 ? improvementCount : 0.00001, deteriorationCount > 0 ? deteriorationCount : 0.00001],
+          hole: 0.66,
+          sort: false,
+          direction: "clockwise",
+          rotation: 90,
+          textinfo: "none",
+          marker: {
+            colors: ["#fdba74", "#2fa74e"],
+            line: {
+              color: "#f8fafc",
+              width: 6,
+            },
+          },
+          hovertemplate: "%{label}<br>%{value} (%{percent})<extra></extra>",
+          showlegend: true,
+        },
+      ],
+      {
+        margin: { t: 2, r: 10, b: 48, l: 10 },
+        autosize: true,
+        transition: { duration: 350, easing: "cubic-in-out" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        legend: {
+          orientation: "h",
+          x: 0.5,
+          y: -0.04,
+          xanchor: "center",
+          yanchor: "top",
+          font: { size: 20, color: "#1f2937", family: "Inter, system-ui, sans-serif" },
+          entrywidthmode: "fraction",
+          entrywidth: 0.48,
+          traceorder: "normal",
+        },
+        hoverlabel: {
+          font: {
+            size: 10,
+            family: "Inter, system-ui, sans-serif",
+          },
+        },
+      },
+      { displayModeBar: false, responsive: true, scrollZoom: false },
+    );
+  }
+
+  if (document.getElementById("user-prediction-timeline-chart")) {
+    Plotly.purge("user-prediction-timeline-chart");
+    const traces = timelineSeries
+      .filter((series) => Array.isArray(series?.points) && series.points.length > 0)
+      .map((series) => ({
+        type: "scatter",
+        mode: "lines+markers",
+        name: series.disease || "Disease",
+        x: series.points.map((point) => point.date || point.at),
+        y: series.points.map((point) => Number(point.value) || 0),
+        line: { width: 2, shape: "spline", smoothing: 0.75 },
+        marker: { size: 6 },
+        hovertemplate: "%{x}<br>%{y:.1f}%<extra>%{fullData.name}</extra>",
+      }));
+
+    const fallbackTrace = traces.length
+      ? traces
+      : [
+          {
+            type: "scatter",
+            mode: "lines",
+            name: "No data",
+            x: [],
+            y: [],
+          },
+        ];
+
+    Plotly.react(
+      "user-prediction-timeline-chart",
+      fallbackTrace,
+      {
+        margin: { t: 10, r: 12, b: 42, l: 48 },
+        autosize: true,
+        transition: { duration: 320, easing: "cubic-in-out" },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        xaxis: {
+          tickfont: { size: 11, color: "#475569" },
+          automargin: true,
+        },
+        yaxis: {
+          range: [0, 100],
+          dtick: 20,
+          tickfont: { size: 11, color: "#475569" },
+          showgrid: true,
+          gridcolor: "rgba(148, 163, 184, 0.15)",
+          automargin: true,
+        },
+        legend: {
+          orientation: "h",
+          y: -0.2,
+          x: 0,
+        },
+      },
+      { displayModeBar: false, responsive: true, scrollZoom: false },
+    );
+  }
+}
+
+const DASHBOARD_OVERVIEW_CACHE_TTL_MS = 12000;
+let dashboardOverviewCache = null;
+let dashboardOverviewCacheAt = 0;
+let dashboardOverviewRequest = null;
+
+async function loadUserDashboardOverview(force = true, options = {}) {
+  if (!state.auth.authenticated) return;
+  const showLoader = Boolean(options?.showLoader);
+  const minDuration = Math.max(200, Number(options?.minDuration) || 300);
+  const loaderDelay = showLoader ? startLoaderDelay(minDuration) : null;
+  const dashboardPanel = document.getElementById("user-dashboard-panel");
+
+  if (showLoader) {
+    dashboardPanel?.classList.add("loader-hidden");
+  }
+
+  try {
+    const now = Date.now();
+    if (!force && dashboardOverviewCache && (now - dashboardOverviewCacheAt) < DASHBOARD_OVERVIEW_CACHE_TTL_MS) {
+      hydrateUserDashboard(dashboardOverviewCache);
+      return;
+    }
+
+    if (dashboardOverviewRequest) {
+      await dashboardOverviewRequest;
+      return;
+    }
+
+    dashboardOverviewRequest = (async () => {
+        const response = await fetch("/api/dashboard/overview");
+        const payload = await response.json();
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.error || "Unable to load dashboard overview");
+        }
+        dashboardOverviewCache = payload;
+        dashboardOverviewCacheAt = Date.now();
+        hydrateUserDashboard(payload);
+      })();
+
+    await dashboardOverviewRequest;
+  } catch (error) {
+    console.warn("Failed to load user dashboard overview", error);
+  } finally {
+    if (loaderDelay) {
+      await loaderDelay.finish();
+    }
+    if (showLoader) {
+      dashboardPanel?.classList.remove("loader-hidden");
+    }
+    dashboardOverviewRequest = null;
   }
 }
 
 async function resetSession(options = {}) {
   const { redirect = true, recordHistory = true } = options;
+  await fetch("/api/auth/logout", { method: "POST" });
   await fetch("/api/reset", { method: "POST" });
   state.profile = null;
+  state.auth.authenticated = false;
+  state.auth.user = null;
   state.predictions = {};
   ["diabetes-result", "heart-result", "anemia-result", "pneumonia-result", "tuberculosis-result"].forEach((id) => {
     const container = document.getElementById(id);
     if (container) container.innerHTML = "";
   });
-  patientForm.reset();
+  authForm?.reset();
   clearPatientDobDerivedAge();
   diabetesForm.reset();
   heartForm.reset();
@@ -2546,6 +3694,7 @@ async function resetSession(options = {}) {
   chatHistory.innerHTML = "";
   profilesGrid.innerHTML = "";
   setPatientSummary(null);
+  updateAuthUi(false);
   setSessionValue("currentPage", "landing");
   setSessionValue("currentTab", "diabetes");
   hideReportLoadingModal();
@@ -2569,6 +3718,11 @@ async function restorePageState() {
     setSessionValue("currentTab", storedTab);
   }
   const profile = await fetchCurrentProfile();
+
+  if (state.auth.authenticated) {
+    await enterDashboard(storedTab === "landing" ? "diabetes" : storedTab, { recordHistory: false });
+    return;
+  }
 
   if (storedPage === "patient") {
     showPage("landing", { recordHistory: false });
@@ -2641,22 +3795,164 @@ function setupGooButton(button) {
   window.addEventListener("pointermove", handleAmbientPointerMove, { passive: true });
 }
 
+function enhanceFormSubmitButtons() {
+  const submitButtons = Array.from(document.querySelectorAll("form button[type='submit']"));
+  submitButtons.forEach((button) => {
+    if (!(button instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    if (button.classList.contains("prediction-button")) {
+      return;
+    }
+
+    button.classList.add("goo-button", "form-goo-button");
+
+    let label = button.querySelector(".goo-button-label");
+    if (!label) {
+      const labelText = (button.textContent || "").trim();
+      button.textContent = "";
+      label = document.createElement("span");
+      label.className = "goo-button-label";
+      label.textContent = labelText;
+      button.appendChild(label);
+    }
+
+    setupGooButton(button);
+  });
+}
+
 function bindEvents() {
-  startButton?.addEventListener("click", () => openLoginPopup());
+  document.querySelectorAll('a[href^="/admin"]').forEach((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return;
+    link.addEventListener("click", () => {
+      const sourceToken = buildAdminSourceToken();
+      const target = new URL(link.getAttribute("href") || "/admin/", window.location.origin);
+      target.searchParams.set("from", sourceToken);
+      link.setAttribute("href", `${target.pathname}${target.search}`);
+    });
+  });
+
+  startButton?.addEventListener("click", async () => {
+    if (state.auth.authenticated) {
+      await enterDashboard("diabetes");
+      return;
+    }
+    setAuthMode("login");
+    openLoginPopup();
+  });
   backButton?.addEventListener("click", () => closeLoginPopup({ returnFocus: true }));
   resetSessionButton?.addEventListener("click", resetSession);
-  logoutButton?.addEventListener("click", logoutUser);
-  logoutConfirmOk?.addEventListener("click", () => {
-    closeLogoutConfirmModal();
+  landingLoginLink?.addEventListener("click", (event) => {
+    event.preventDefault();
+    setAuthMode("login");
+    openLoginPopup();
   });
-  patientForm?.addEventListener("submit", createProfile);
-  patientDobInput?.addEventListener("input", () => syncPatientDobDerivedAge({ setInputValidity: false }));
-  patientDobInput?.addEventListener("blur", () => syncPatientDobDerivedAge({ setInputValidity: true }));
+  landingSignupLink?.addEventListener("click", (event) => {
+    event.preventDefault();
+    setAuthMode("signup");
+    openLoginPopup();
+  });
+  landingDashboardLink?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    if (!state.auth.authenticated) {
+      setAuthMode("login");
+      openLoginPopup();
+      return;
+    }
+    await enterDashboard("user-dashboard");
+  });
+
+  logoutButton?.addEventListener("click", () => openLogoutConfirmModal());
+  logoutConfirmOk?.addEventListener("click", async () => {
+    if (logoutConfirmOk) {
+      logoutConfirmOk.disabled = true;
+      logoutConfirmOk.textContent = "Logging out...";
+    }
+    if (logoutConfirmCancel) {
+      logoutConfirmCancel.disabled = true;
+    }
+    try {
+      await logoutUser();
+    } catch (_) {
+      if (logoutConfirmOk) {
+        logoutConfirmOk.disabled = false;
+        logoutConfirmOk.textContent = "Logout";
+      }
+      if (logoutConfirmCancel) {
+        logoutConfirmCancel.disabled = false;
+      }
+    }
+  });
+  logoutConfirmCancel?.addEventListener("click", () => closeLogoutConfirmModal());
+
+  authModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const mode = button.dataset.authMode || "login";
+      setAuthMode(mode);
+    });
+  });
+
+  authPasswordEyeButton?.addEventListener("click", () => {
+    if (!authPasswordInput) return;
+    authPasswordInput.type = authPasswordInput.type === "password" ? "text" : "password";
+  });
+
+  authNewPasswordEyeButton?.addEventListener("click", () => {
+    if (!authNewPasswordInput) return;
+    authNewPasswordInput.type = authNewPasswordInput.type === "password" ? "text" : "password";
+  });
+
+  forgotPasswordButton?.addEventListener("click", () => setAuthMode("forgot"));
+  authGoogleSigninButton?.addEventListener("click", () => {
+    window.location.assign("/api/auth/google/start");
+  });
+  resendVerificationButton?.addEventListener("click", async () => {
+    if (resendOtpSecondsRemaining > 0) {
+      return;
+    }
+
+    const email = authEmailInput?.value?.trim() || "";
+    if (!email) {
+      setAuthInlineStatus("Enter your email first.", { isError: true, autoHideMs: 3000 });
+      return;
+    }
+    try {
+      await runButtonProgress(resendVerificationButton, "Sending OTP", async () => {
+        const response = await fetch("/api/auth/resend-verification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.error || "Unable to resend OTP.");
+        }
+        startResendOtpTimer();
+      });
+    } catch (error) {
+      setAuthInlineStatus(mapAuthErrorMessage(error.message || "Unable to resend OTP.", "verify"), {
+        isError: true,
+        autoHideMs: 3000,
+      });
+    }
+  });
+  authForm?.addEventListener("submit", submitAuth);
   chatbotLauncher?.setAttribute("aria-expanded", "false");
 
   tabTriggers.forEach((trigger) => {
     trigger.addEventListener("click", async (event) => {
       event?.preventDefault();
+      if (trigger === landingDashboardLink) {
+        if (!state.auth.authenticated) {
+          setAuthMode("login");
+          openLoginPopup();
+          return;
+        }
+        await enterDashboard("user-dashboard");
+        return;
+      }
+
       const tabName = trigger.dataset.tab;
       if (!tabName) return;
 
@@ -2719,16 +4015,6 @@ function bindEvents() {
     event.preventDefault();
     event.stopPropagation();
     toggleContactFormPopup();
-  });
-
-  researchPopupTrigger?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    openResearchPopup();
-  });
-
-  researchPopupClose?.addEventListener("click", () => {
-    closeResearchPopup();
   });
 
   contactFormCloseButton?.addEventListener("click", () => {
@@ -2886,11 +4172,6 @@ function bindEvents() {
       handled = true;
     }
 
-    if (isResearchPopupOpen) {
-      closeResearchPopup();
-      handled = true;
-    }
-
     if (isDocsPopupOpen) {
       closeDocsPopup({ returnFocus: true });
       handled = true;
@@ -2932,12 +4213,394 @@ function bindEvents() {
     });
   });
 
+  editProfileButton?.addEventListener("click", () => {
+    if (!profileEditPanel) return;
+    profileEditPanel.hidden = false;
+    profileEditPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  const parseProfileDob = (value) => {
+    const raw = String(value || "").trim();
+    if (!raw) return null;
+
+    let day = 0;
+    let month = 0;
+    let year = 0;
+
+    const ddmmyyyy = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const yyyymmdd = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+    let match = raw.match(ddmmyyyy);
+    if (match) {
+      day = Number(match[1]);
+      month = Number(match[2]);
+      year = Number(match[3]);
+    } else {
+      match = raw.match(yyyymmdd);
+      if (!match) return null;
+      year = Number(match[1]);
+      month = Number(match[2]);
+      day = Number(match[3]);
+    }
+
+    const date = new Date(year, month - 1, day);
+    if (
+      Number.isNaN(date.getTime()) ||
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) {
+      return null;
+    }
+
+    const now = new Date();
+    if (date > now || year < 1900) return null;
+
+    return date;
+  };
+
+  profilePhotoFileInput?.addEventListener("change", async () => {
+    const file = profilePhotoFileInput.files?.[0] || null;
+    if (!file) {
+      if (profilePhotoPreview) {
+        profilePhotoPreview.src = userProfilePhoto?.src || DEFAULT_PROFILE_AVATAR;
+      }
+      return;
+    }
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      if (profilePhotoPreview) profilePhotoPreview.src = dataUrl;
+    } catch (_) {
+      if (profilePhotoPreview) profilePhotoPreview.src = userProfilePhoto?.src || DEFAULT_PROFILE_AVATAR;
+    }
+  });
+
+  profileEditForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const saveButton = profileEditForm.querySelector("button[type='submit']");
+    const saveButtonLabel = saveButton?.querySelector(".goo-button-label");
+    const saveButtonText = (saveButtonLabel?.textContent || saveButton?.textContent || "Save Changes").trim();
+
+    if (saveButton) {
+      saveButton.disabled = true;
+    }
+    if (saveButtonLabel) {
+      saveButtonLabel.textContent = "Saving...";
+    } else if (saveButton) {
+      saveButton.textContent = "Saving...";
+    }
+
+    const formData = new FormData(profileEditForm);
+    const payload = {};
+    for (const [key, value] of formData.entries()) {
+      if (key === "photo_file") continue;
+      if (String(value || "").trim()) {
+        payload[key] = String(value).trim();
+      }
+    }
+
+    const mobileRaw = String(payload.mobile || "").trim();
+    if (mobileRaw) {
+      const digits = mobileRaw.replace(/\D/g, "");
+      if (!/^\d{10}$/.test(digits)) {
+        profileEditStatus.textContent = "Mobile number must be exactly 10 digits.";
+        if (saveButton) saveButton.disabled = false;
+        if (saveButtonLabel) {
+          saveButtonLabel.textContent = saveButtonText;
+        } else if (saveButton) {
+          saveButton.textContent = saveButtonText;
+        }
+        return;
+      }
+      payload.mobile = digits;
+    }
+
+    const abhaRaw = String(payload.abha_id || "").trim();
+    if (abhaRaw) {
+      const digits = abhaRaw.replace(/\D/g, "");
+      if (!/^\d{14}$/.test(digits)) {
+        profileEditStatus.textContent = "ABHA ID must be exactly 14 digits.";
+        if (saveButton) saveButton.disabled = false;
+        if (saveButtonLabel) {
+          saveButtonLabel.textContent = saveButtonText;
+        } else if (saveButton) {
+          saveButton.textContent = saveButtonText;
+        }
+        return;
+      }
+      payload.abha_id = digits;
+    }
+
+    const dobRaw = String(payload.dob || "").trim();
+    if (dobRaw && !parseProfileDob(dobRaw)) {
+      profileEditStatus.textContent = "Please enter a valid DOB (dd/mm/yyyy).";
+      if (saveButton) saveButton.disabled = false;
+      if (saveButtonLabel) {
+        saveButtonLabel.textContent = saveButtonText;
+      } else if (saveButton) {
+        saveButton.textContent = saveButtonText;
+      }
+      return;
+    }
+
+    const newPasswordRaw = String(payload.new_password || "");
+    const currentPasswordRaw = String(payload.current_password || "");
+    if (newPasswordRaw || currentPasswordRaw) {
+      if (!currentPasswordRaw || !newPasswordRaw) {
+        profileEditStatus.textContent = "Enter both current and new password.";
+        if (saveButton) saveButton.disabled = false;
+        if (saveButtonLabel) {
+          saveButtonLabel.textContent = saveButtonText;
+        } else if (saveButton) {
+          saveButton.textContent = saveButtonText;
+        }
+        return;
+      }
+      if (newPasswordRaw.length < 8) {
+        profileEditStatus.textContent = "New password must be at least 8 characters.";
+        if (saveButton) saveButton.disabled = false;
+        if (saveButtonLabel) {
+          saveButtonLabel.textContent = saveButtonText;
+        } else if (saveButton) {
+          saveButton.textContent = saveButtonText;
+        }
+        return;
+      }
+    }
+
+    try {
+      const photoFile = profilePhotoFileInput?.files?.[0] || null;
+      if (photoFile) {
+        const uploadForm = new FormData();
+        uploadForm.append("photo", photoFile);
+        const uploadResponse = await fetch("/api/profile/upload-photo", {
+          method: "POST",
+          body: uploadForm,
+        });
+        const uploadPayload = await uploadResponse.json();
+        if (!uploadResponse.ok || !uploadPayload.success) {
+          throw new Error(uploadPayload.error || "Unable to upload profile image");
+        }
+        payload.photo_path = uploadPayload.photo_path;
+        if (userProfilePhoto && payload.photo_path) {
+          userProfilePhoto.src = payload.photo_path;
+        }
+      }
+
+      const response = await fetch("/api/auth/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Unable to update profile");
+      }
+      profileEditStatus.textContent = "";
+      if (data.require_relogin) {
+        await resetSession({ redirect: true });
+        return;
+      }
+      await loadUserDashboardOverview();
+      await fetchCurrentProfile();
+      if (profilePhotoFileInput) profilePhotoFileInput.value = "";
+      if (profileEditPanel) {
+        profileEditPanel.hidden = true;
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      profileEditStatus.textContent = error.message;
+    } finally {
+      if (saveButton) {
+        saveButton.disabled = false;
+      }
+      if (saveButtonLabel) {
+        saveButtonLabel.textContent = saveButtonText;
+      } else if (saveButton) {
+        saveButton.textContent = saveButtonText;
+      }
+    }
+  });
+
+  reportUploadForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const uploadButton = reportUploadForm.querySelector("button[type='submit']");
+    const uploadButtonLabel = uploadButton?.querySelector(".goo-button-label");
+    const uploadButtonText = (uploadButtonLabel?.textContent || uploadButton?.textContent || "Upload").trim();
+
+    if (uploadButton) {
+      uploadButton.disabled = true;
+    }
+    if (uploadButtonLabel) {
+      uploadButtonLabel.textContent = "Uploading...";
+    } else if (uploadButton) {
+      uploadButton.textContent = "Uploading...";
+    }
+
+    const file = userReportFileInput?.files?.[0] || null;
+    if (!file) {
+      if (reportUploadStatus) reportUploadStatus.textContent = "Select a report file first.";
+      if (uploadButton) {
+        uploadButton.disabled = false;
+      }
+      if (uploadButtonLabel) {
+        uploadButtonLabel.textContent = uploadButtonText;
+      } else if (uploadButton) {
+        uploadButton.textContent = uploadButtonText;
+      }
+      return;
+    }
+
+    try {
+      if (reportUploadStatus) reportUploadStatus.textContent = "";
+      const formPayload = new FormData();
+      formPayload.append("file", file);
+      formPayload.append("status", "Uploaded");
+      formPayload.append("disease_type", "pneumonia");
+
+      const response = await fetch("/api/auth/reports", {
+        method: "POST",
+        body: formPayload,
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.error || "Unable to upload report.");
+      }
+      reportUploadForm.reset();
+      if (userReportFileName) userReportFileName.textContent = "No file selected";
+      await loadUserDashboardOverview();
+    } catch (error) {
+      if (reportUploadStatus) reportUploadStatus.textContent = error.message;
+    } finally {
+      if (uploadButton) {
+        uploadButton.disabled = false;
+      }
+      if (uploadButtonLabel) {
+        uploadButtonLabel.textContent = uploadButtonText;
+      } else if (uploadButton) {
+        uploadButton.textContent = uploadButtonText;
+      }
+    }
+  });
+
+  userReportFileInput?.addEventListener("change", () => {
+    const file = userReportFileInput.files?.[0] || null;
+    if (userReportFileName) {
+      userReportFileName.textContent = file?.name || "No file selected";
+    }
+  });
+
+  historyImageClose?.addEventListener("click", () => closeHistoryImageModal());
+  historyImageModal?.addEventListener("click", (event) => {
+    if (event.target === historyImageModal || event.target.classList?.contains("history-image-backdrop")) {
+      closeHistoryImageModal();
+    }
+  });
+
+  pastHistoryFilters.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const nextFilter = button.getAttribute("data-filter") || "all";
+      state.historyFilter = nextFilter;
+      pastHistoryFilters.forEach((item) => {
+        item.classList.toggle("active", item === button);
+      });
+      await loadUserDashboardOverview();
+    });
+  });
+
+  medAdherenceYes?.addEventListener("click", () => {
+    const today = getTodayKey();
+    const yesterday = getYesterdayKey();
+    const adherence = loadMedicationAdherenceState();
+    let streak = Number(adherence.streak) || 0;
+
+    if (adherence.lastYesDate !== today) {
+      if (adherence.lastYesDate === yesterday) {
+        streak += 1;
+      } else {
+        streak = 1;
+      }
+    }
+
+    const next = {
+      streak,
+      lastYesDate: today,
+      lastActionDate: today,
+      lastAction: "yes",
+    };
+    saveMedicationAdherenceState(next);
+    renderMedicationAdherenceState();
+  });
+
+  medAdherenceNo?.addEventListener("click", () => {
+    const today = getTodayKey();
+    const next = {
+      streak: 0,
+      lastYesDate: String(loadMedicationAdherenceState().lastYesDate || ""),
+      lastActionDate: today,
+      lastAction: "no",
+    };
+    saveMedicationAdherenceState(next);
+    renderMedicationAdherenceState();
+  });
+
+  savePreviousMedicationsButton?.addEventListener("click", () => {
+    const value = String(previousMedicationsInput?.value || "").trim();
+    savePreviousMedications(value);
+    if (previousMedicationsStatus) {
+      previousMedicationsStatus.textContent = "Saved";
+      window.setTimeout(() => {
+        if (previousMedicationsStatus.textContent === "Saved") {
+          previousMedicationsStatus.textContent = "";
+        }
+      }, 2000);
+    }
+  });
+
+  shortcutNearestHospital?.addEventListener("click", async () => {
+    await enterDashboard("consultants");
+    activateConsultantView("hospital-view");
+    if (consultantSearch) consultantSearch.value = "";
+    await loadConsultants("");
+  });
+
+  shortcutFindDoctor?.addEventListener("click", async () => {
+    await enterDashboard("consultants");
+    activateConsultantView("doctor-view");
+    if (consultantSearch) consultantSearch.value = "";
+    await loadConsultants("");
+  });
+
+  dataQualityFixProfile?.addEventListener("click", () => {
+    if (!profileEditPanel) return;
+    profileEditPanel.hidden = false;
+    profileEditPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  dataQualityFixHistory?.addEventListener("click", () => {
+    reportUploadForm?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  downloadLatestReport?.addEventListener("click", () => {
+    const latestDisease = String(downloadLatestReport.dataset.latestDisease || "").trim();
+    if (!latestDisease || latestDisease === "-") return;
+    downloadDiseaseReport(latestDisease);
+  });
+
+  downloadFullHistory?.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.href = "/api/auth/history/export";
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+
   window.addEventListener("popstate", async (event) => {
     if (isRestoringHistory) return;
 
     closeDiseasesDropdown();
     closeResourcesDropdown();
-    closeResearchPopup();
     closeContactFormPopup();
     closeDocsPopup();
     closeLoginPopup();
@@ -2948,11 +4611,9 @@ function bindEvents() {
 
     const currentState = getCurrentAppState();
     if (currentState.page === "dashboard" && targetPage !== "dashboard") {
-      // If a user is still logged in and uses browser Back, ask for confirmation before logging out.
-      if (state.profile) {
-        const confirmed = window.confirm("Do you want to logout?");
+      if (state.auth.authenticated) {
+        const confirmed = window.confirm("You are logged in. Do you want to logout and leave the dashboard?");
         if (!confirmed) {
-          // Cancel back navigation: keep the user on the dashboard.
           updateHistoryState({ page: "dashboard", tab: currentState.tab });
           return;
         }
@@ -2976,7 +4637,7 @@ function bindEvents() {
           await fetchCurrentProfile();
         }
 
-        if (!state.profile) {
+        if (!state.auth.authenticated) {
           showPage("landing", { recordHistory: false });
           return;
         }
@@ -2995,11 +4656,40 @@ function bindEvents() {
 (async function init() {
   initializeTheme();
   try {
+    const params = new URLSearchParams(window.location.search);
+    const resetToken = params.get("reset_token") || "";
+    const verified = params.get("verified");
+    const googleAuth = params.get("google_auth") || "";
+    const returnTo = params.get("return_to") || "";
+
+    if (returnTo) {
+      applyAdminReturnToken(returnTo);
+    }
+
     await fetchConfig();
     bindEvents();
     initializeFormConstraints();
+    setAuthMode(resetToken ? "reset" : "login");
+    if (authResetTokenInput) {
+      authResetTokenInput.value = resetToken;
+    }
+    if (verified === "1") {
+      setAuthInlineStatus("Email verified successfully. Please login.");
+      openLoginPopup();
+    }
+    if (verified === "0") {
+      setAuthInlineStatus("Verification link is invalid or expired.", { isError: true });
+      openLoginPopup();
+    }
+    if (googleAuth === "success") {
+      setAuthInlineStatus("Google sign-in successful.");
+    } else if (googleAuth) {
+      setAuthInlineStatus("Google sign-in failed. Please try again.", { isError: true, autoHideMs: 3000 });
+      setAuthMode("login", { preserveStatus: true });
+      openLoginPopup();
+    }
+    enhanceFormSubmitButtons();
     setupGooButton(startButton);
-    setupGooButton(patientForm?.querySelector(".goo-button"));
     tabButtons.forEach((button) => setupGooButton(button));
     if (diseasesDropdownToggle) {
       setupGooButton(diseasesDropdownToggle);
@@ -3012,6 +4702,9 @@ function bindEvents() {
       activateConsultantView(defaultConsultantTab);
     }
     await restorePageState();
+    if (shouldReopenResourcesMenu && getSessionValue("currentPage") === "landing") {
+      openResourcesDropdown();
+    }
     updateHistoryState(getCurrentAppState(), { replace: true });
   } finally {
     document.body?.classList.remove("app-booting");

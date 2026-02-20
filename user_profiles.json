@@ -1,65 +1,12 @@
 [
     {
-        "id": "user_001",
+        "id": "auth_0c2b6616-3547-4e64-b4d1-c7a9293b3e7f",
         "name": "Asim Husain",
-        "age": 23,
-        "contact": "07310647227",
+        "contact": "7310647227",
         "address": "Shahpur Sirpura",
         "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {
-            "Type-2 Diabetes": {
-                "prob": 86.5,
-                "inputs": {
-                    "Gender": "Female",
-                    "Age": "48",
-                    "BMI": "34.2",
-                    "Glucose": "185",
-                    "Blood Pressure": "145",
-                    "Pregnancies": 4.0,
-                    "Skin Thickness": "35",
-                    "Insulin": "210",
-                    "Diabetes Pedigree Function": "0.92"
-                }
-            }
-        },
-        "created_at": "16-Feb-2026 17:28",
-        "last_updated": "2026-02-16 20:25:02"
-    },
-    {
-        "id": "user_002",
-        "name": "Asim Husain",
-        "age": 23,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
         "predictions": {},
-        "created_at": "16-Feb-2026 20:06",
-        "last_updated": "2026-02-16 20:25:02"
-    },
-    {
-        "id": "user_003",
-        "name": "Asim Husain",
-        "age": 23,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "16-Feb-2026 20:27",
-        "last_updated": "16-Feb-2026 20:27"
-    },
-    {
-        "id": "user_004",
-        "name": "Asim Husain",
-        "age": 23,
-        "contact": "07310647227",
-        "address": "Shahpur Sirpura",
-        "gender": "Male",
-        "marital_status": "Married",
-        "predictions": {},
-        "created_at": "16-Feb-2026 20:35",
-        "last_updated": "16-Feb-2026 20:35"
+        "created_at": "20-Feb-2026 11:08",
+        "last_updated": "2026-02-20 11:30:57"
     }
 ]

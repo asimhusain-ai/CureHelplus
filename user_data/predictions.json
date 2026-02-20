@@ -1,0 +1,211 @@
+{
+  "0c2b6616-3547-4e64-b4d1-c7a9293b3e7f": [
+    {
+      "disease": "Type-2 Diabetes",
+      "payload": {
+        "prob": 20.25,
+        "inputs": {
+          "Gender": "Female",
+          "Age": "40",
+          "BMI": "25",
+          "Glucose": "100",
+          "Blood Pressure": "120",
+          "Pregnancies": 0.0,
+          "Skin Thickness": "20",
+          "Insulin": "79",
+          "Diabetes Pedigree Function": "0.5"
+        }
+      },
+      "at": "2026-02-20T04:52:24Z"
+    },
+    {
+      "disease": "Type-2 Diabetes",
+      "payload": {
+        "prob": 20.25,
+        "inputs": {
+          "Gender": "Female",
+          "Age": "40",
+          "BMI": "25",
+          "Glucose": "100",
+          "Blood Pressure": "120",
+          "Pregnancies": 0.0,
+          "Skin Thickness": "20",
+          "Insulin": "79",
+          "Diabetes Pedigree Function": "0.5"
+        }
+      },
+      "at": "2026-02-20T04:57:31Z"
+    },
+    {
+      "disease": "Coronary Artery Disease",
+      "payload": {
+        "prob": 7.8,
+        "inputs": {
+          "Sex": 1,
+          "Age": "40",
+          "Resting BP": "130",
+          "Cholesterol": "220",
+          "Chest Pain Type": 1,
+          "Fasting BS > 120?": 0,
+          "Resting ECG": "0",
+          "Max Heart Rate": "150",
+          "Exercise Angina": 0,
+          "ST Depression": "1.0",
+          "Slope of ST": 1,
+          "Major Vessels (ca)": "0",
+          "Thal": 3
+        }
+      },
+      "at": "2026-02-20T04:57:42Z"
+    },
+    {
+      "disease": "Type-2 Diabetes",
+      "payload": {
+        "prob": 20.25,
+        "inputs": {
+          "Gender": "Female",
+          "Age": "40",
+          "BMI": "25",
+          "Glucose": "100",
+          "Blood Pressure": "120",
+          "Pregnancies": 0.0,
+          "Skin Thickness": "20",
+          "Insulin": "79",
+          "Diabetes Pedigree Function": "0.5"
+        }
+      },
+      "at": "2026-02-20T05:00:31Z"
+    },
+    {
+      "disease": "Pneumonia",
+      "payload": {
+        "prob": 96.33902311325073,
+        "probability": 0.9633902311325073,
+        "result": "Pneumonia",
+        "inputs": {
+          "Pneumonia Score": 96.34
+        },
+        "normal_values": {
+          "Pneumonia Score": 82.0
+        },
+        "xray_image_path": "/uploads/xray_history/0c2b6616-3547-4e64-b4d1-c7a9293b3e7f_20260220050049454258.jpeg"
+      },
+      "at": "2026-02-20T05:00:49Z"
+    },
+    {
+      "disease": "Type-2 Diabetes",
+      "payload": {
+        "prob": 86.5,
+        "inputs": {
+          "Gender": "Female",
+          "Age": "48",
+          "BMI": "34.2",
+          "Glucose": "185",
+          "Blood Pressure": "145",
+          "Pregnancies": 4.0,
+          "Skin Thickness": "35",
+          "Insulin": "210",
+          "Diabetes Pedigree Function": "0.92"
+        }
+      },
+      "at": "2026-02-20T05:04:56Z"
+    },
+    {
+      "disease": "Pneumonia",
+      "payload": {
+        "prob": 93.6307430267334,
+        "probability": 0.936307430267334,
+        "result": "Pneumonia",
+        "inputs": {
+          "Pneumonia Score": 93.63
+        },
+        "normal_values": {
+          "Pneumonia Score": 82.0
+        },
+        "xray_image_path": "/uploads/xray_history/0c2b6616-3547-4e64-b4d1-c7a9293b3e7f_20260220050515395815.jpeg"
+      },
+      "at": "2026-02-20T05:05:15Z"
+    },
+    {
+      "disease": "Pneumonia",
+      "payload": {
+        "prob": 11.60794273018837,
+        "probability": 0.1160794273018837,
+        "result": "Normal",
+        "inputs": {
+          "Pneumonia Score": 11.61
+        },
+        "normal_values": {
+          "Pneumonia Score": 82.0
+        },
+        "xray_image_path": "/uploads/xray_history/0c2b6616-3547-4e64-b4d1-c7a9293b3e7f_20260220050530131391.jpeg"
+      },
+      "at": "2026-02-20T05:05:30Z"
+    },
+    {
+      "disease": "Coronary Artery Disease",
+      "payload": {
+        "prob": 7.8,
+        "inputs": {
+          "Sex": 1,
+          "Age": "40",
+          "Resting BP": "130",
+          "Cholesterol": "220",
+          "Chest Pain Type": 1,
+          "Fasting BS > 120?": 0,
+          "Resting ECG": "0",
+          "Max Heart Rate": "150",
+          "Exercise Angina": 0,
+          "ST Depression": "1.0",
+          "Slope of ST": 1,
+          "Major Vessels (ca)": "0",
+          "Thal": 3
+        }
+      },
+      "at": "2026-02-20T05:05:36Z"
+    },
+    {
+      "disease": "Tuberculosis",
+      "payload": {
+        "prob": 36.11305058002472,
+        "probability": 0.3611305058002472,
+        "result": "Normal",
+        "prediction": "Normal",
+        "confidence": "Low Risk",
+        "inputs": {
+          "Tuberculosis Score": 36.11
+        },
+        "normal_values": {
+          "Tuberculosis Score": 50.0
+        },
+        "xray_image_path": "/uploads/xray_history/0c2b6616-3547-4e64-b4d1-c7a9293b3e7f_20260220050550685275.png"
+      },
+      "at": "2026-02-20T05:05:50Z"
+    },
+    {
+      "disease": "Anemia",
+      "payload": {
+        "prob": 18.4,
+        "inputs": {
+          "Gender": "Male",
+          "RBC": "5",
+          "Hemoglobin (Hb)": "14",
+          "Hematocrit (HCT)": "42",
+          "MCV": "90",
+          "MCH": "30",
+          "MCHC": "34",
+          "WBC": "7",
+          "Platelets": "250",
+          "RDW": "13.5",
+          "PDW": "12",
+          "PCT": "0.22",
+          "Lymphocytes": "30",
+          "Neutrophils %": "60",
+          "Neutrophils #": "4.2"
+        },
+        "severity": "nan"
+      },
+      "at": "2026-02-20T05:05:57Z"
+    }
+  ]
+}
